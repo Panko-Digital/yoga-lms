@@ -1,0 +1,49 @@
+.audioPlayer {
+  background: #f5f5f0;
+  border: 2px solid #ff7163;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 15px 0;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.playBtn {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: #ff7163;
+  border: none;
+  color: #f5f5f0;
+  font-size: 20px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.playBtn:hover {
+  transform: scale(1.1);
+}
+
+.audioInfo {
+  flex: 1;
+}
+
+.audioTitle {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 5px;
+  font-family: 'Nunito', sans-serif;
+}
+
+.audioDuration {
+  color: #999;
+  font-size: 14px;
+  font-family: 'Quicksand', sans-serif;
+}
+
+.downloadBtn {
+  margin: 0;
+  padding: 8px 16px;
+  font-size: 14px;
+}

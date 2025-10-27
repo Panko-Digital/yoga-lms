@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yoga Instructor Training Course</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .course-container {
+            max-width: 900px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: #e0e0e0;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.5s ease;
+        }
+
+        .slide {
+            display: none;
+            padding: 50px;
+            min-height: 600px;
+        }
+
+        .slide.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .slide-header {
+            margin-bottom: 30px;
+        }
+
+        .slide-number {
+            color: #764ba2;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 32px;
+            margin: 10px 0 15px 0;
+        }
+
+        .instructor-badge {
+            display: inline-flex;
+            align-items: center;
+            background: #f0f4ff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            color: #667eea;
+            margin-top: 10px;
+        }
+
+        .instructor-badge::before {
+            content: "⭐";
+            margin-right: 8px;
+        }
+
+        .content-section {
+            margin: 30px 0;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+        }
+
+        .feature-card h3 {
+            color: #667eea;
+            font-size: 18px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feature-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .icon {
+            font-size: 24px;
+        }
+
+        .interactive-demo {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .demo-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .demo-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .demo-button.secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .audio-player {
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .play-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .play-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .audio-info {
+            flex: 1;
+        }
+
+        .audio-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .audio-duration {
+            color: #999;
+            font-size: 14px;
+        }
+
+        .anatomy-viewer {
+            background: #1a1a2e;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .anatomy-viewer::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(102, 126, 234, 0.3) 0%, transparent 70%);
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        .anatomy-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .muscle-group {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .muscle-group:hover {
+            background: rgba(102, 126, 234, 0.3);
+            transform: scale(1.02);
+        }
+
+        .vr-preview {
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            border-radius: 12px;
+            padding: 30px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .vr-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(rgba(102, 126, 234, 0.3) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(102, 126, 234, 0.3) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { transform: perspective(500px) rotateX(60deg) translateY(0); }
+            100% { transform: perspective(500px) rotateX(60deg) translateY(50px); }
+        }
+
+        .vr-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .achievement-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .achievement-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .streak-counter {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .streak-day {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: #999;
+        }
+
+        .streak-day.completed {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #e0e0e0;
+        }
+
+        .nav-btn {
+            padding: 12px 30px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .quiz-option {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quiz-option:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .quiz-option.selected {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+        }
+
+        .peer-feedback {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .peer-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .peer-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 20px;
+        }
+
+        .peer-name {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .peer-rating {
+            color: #f5576c;
+            font-size: 18px;
+        }
+
+        .completion-celebration {
+            text-align: center;
+            padding: 40px 0;
+        }
+
+        .confetti {
+            font-size: 60px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="course-container">
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <!-- Slide 1: Introduction -->
+        <div class="slide active" data-slide="1">
+            <div class="slide-header">
+                <div class="slide-number">Module 1 • Slide 1 of 7</div>
+                <h1>Mastering the Warrior Sequence</h1>
+                <div class="instructor-badge">Taught by Shiva Rea</div>
+            </div>
+
+            <div class="content-section">
+                <p style="font-size: 18px; color: #666; line-height: 1.8; margin-bottom: 30px;">
+                    Welcome to this comprehensive module on teaching Warrior poses. You'll learn proper alignment, cueing techniques, and how to guide students safely through this foundational sequence.
+                </p>
+
+                <div class="feature-card">
+                    <h3><span class="icon">🎯</span> What You'll Master</h3>
+                    <p>Verbal cueing for all three Warrior variations, common misalignments and corrections, breath integration techniques, and modifications for different body types.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3><span class="icon">⏱️</span> Time Commitment</h3>
+                    <p>45 minutes of video content, 3 audio practice cues, 1 AR alignment demonstration, plus peer teaching practice.</p>
+                </div>
+
+                <div class="achievement-card">
+                    <div class="achievement-icon">🔥</div>
+                    <h3 style="margin-bottom: 10px;">Your Current Streak</h3>
+                    <div class="streak-counter">
+                        <div class="streak-day completed">M</div>
+                        <div class="streak-day completed">T</div>
+                        <div class="streak-day completed">W</div>
+                        <div class="streak-day">T</div>
+                        <div class="streak-day">F</div>
+                        <div class="streak-day">S</div>
+                        <div class="streak-day">S</div>
+                    </div>
+                    <p style="margin-top: 10px;">3 days straight! Keep going to unlock your first badge from Shiva Rea.</p>
+                </div>
+            </div>
+
+            <div class="navigation">
+                <button class="nav-btn" onclick="prevSlide()" disabled>← Previous</button>
+                <button class="nav-btn" onclick="nextSlide()">Next →</button>
+            </div>
+        </div>
+
+        <!-- Slide 2: Video Lesson with Audio Cues -->
+        <div class="slide" data-slide="2">
+            <div class="slide-header">
+                <div class="slide-number">Module 1 • Slide 2 of 7</div>
+                <h1>Foundational Teaching Video</h1>
+                <div class="instructor-badge">Shiva Rea demonstrates</div>
+            </div>
+
+            <div class="content-section">
+                <div class="interactive-demo" style="background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);">
+                    <h3 style="margin-bottom: 20px; color: #333;">🎥 Watch: Warrior I Breakdown</h3>
+                    <div style="background: #1a1a2e; border-radius: 12px; padding: 60px 20px; margin: 20px 0; color: white;">
+                        <p style="font-size: 48px; margin-bottom: 15px;">▶️</p>
+                        <p>12:34 minute teaching demonstration</p>
+                        <p style="font-size: 14px; color: #999; margin-top: 10px;">Warrior I: Alignment, Energy Flow & Common Mistakes</p>
+                    </div>
+                    <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                        <button class="demo-button secondary">⏮️ Skip Back 10s</button>
+                        <button class="demo-button">▶️ Play</button>
+                        <button class="demo-button secondary">⏭️ Skip Forward 10s</button>
+                    </div>
+                </div>
+
+                <h3 style="margin: 30px 0 15px 0; color: #333;">🎧 Practice Your Cueing</h3>
+                <p style="color: #666; margin-bottom: 20px;">Download these professionally-recorded audio cues to practice teaching along with them:</p>
+
+                <div class="audio-player">
+                    <button class="play-btn">▶️</button>
+                    <div class="audio-info">
+                        <div class="audio-title">Warrior I Entry Cue Sequence</div>
+                        <div class="audio-duration">Shiva Rea • 2:15 • Beginner-friendly</div>
+                    </div>
+                    <button class="demo-button secondary" style="margin: 0; padding: 8px 16px; font-size: 14px;">📥 Download</button>
+                </div>
+
+                <div class="audio-player">
+                    <button class="play-btn">▶️</button>
+                    <div class="audio-info">
+                        <div class="audio-title">Breath-Integrated Warrior Flow</div>
+                        <div class="audio-duration">Shiva Rea • 3:42 • Advanced students</div>
+                    </div>
+                    <button class="demo-button secondary" style="margin: 0; padding: 8px 16px; font-size: 14px;">📥 Download</button>
+                </div>
+
+                <div class="audio-player">
+                    <button class="play-btn">▶️</button>
+                    <div class="audio-info">
+                        <div class="audio-title">Modification Cues for Limited Mobility</div>
+                        <div class="audio-duration">Shiva Rea • 1:58 • Accessibility-focused</div>
+                    </div>
+                    <button class="demo-button secondary" style="margin: 0; padding: 8px 16px; font-size: 14px;">📥 Download</button>
+                </div>
+            </div>
+
+            <div class="navigation">
+                <button class="nav-btn" onclick="prevSlide()">← Previous</button>
+                <button class="nav-btn" onclick="nextSlide()">Next →</button>
+            </div>
+        </div>
+
+        <!-- Slide 3: 3D Anatomy Visualization -->
+        <div class="slide" data-slide="3">
+            <div class="slide-header">
+                <div class="slide-number">Module 1 • Slide 3 of 7</div>
+                <h1>3D Anatomy Deep Dive</h1>
+                <div class="instructor-badge">Based on Leslie Kaminoff's work</div>
+            </div>
+
+            <div class="content-section">
+                <p style="color: #666; margin-bottom: 30px; font-size: 16px;">
+                    Understanding muscle engagement helps you cue more effectively and prevent student injuries. Explore the interactive anatomy model below:
+                </p>
+
+                <div class="anatomy-viewer">
+                    <div class="anatomy-content">
+                        <h3 style="margin-bottom: 25px; font-size: 24px;">Interactive Muscle Engagement Map</h3>
+                        <p style="margin-bottom: 30px; opacity: 0.9;">Click on muscle groups to see their role in Warrior I</p>
+                        
+                        <div class="muscle-group">
+                            <h4 style="margin-bottom: 8px;">🦵 Quadriceps (Front Leg)</h4>
+                            <p style="font-size: 14px; opacity: 0.8;">Primary stabilizer • Eccentric contraction • 70-85% activation</p>
+                        </div>
+
+                        <div class="muscle-group">
+                            <h4 style="margin-bottom: 8px;">🍑 Gluteus Maximus (Back Leg)</h4>
+                            <p style="font-size: 14px; opacity: 0.8;">Hip extension • Maintains neutral pelvis • 60-75% activation</p>
+                        </div>
+
+                        <div class="muscle-group">
+                            <h4 style="margin-bottom: 8px;">💪 Core Stabilizers</h4>
+                            <p style="font-size: 14px; opacity: 0.8;">Transverse abdominis & obliques • Prevents lumbar hyperextension • 40-50% activation</p>
+                        </div>
+
+                        <div class="muscle-group">
+                            <h4 style="margin-bottom: 8px;">👐 Shoulder Girdle</h4>
+                            <p style="font-size: 14px; opacity: 0.8;">Serratus anterior & trapezius • Arm elevation support • 30-40% activation</p>
+                        </div>
+
+                        <button class="demo-button" style="margin-top: 25px;">🔄 Rotate 3D Model</button>
+                        <button class="demo-button secondary" style="margin-top: 25px;">👁️ Toggle Muscle Layers</button>
+                    </div>
+                </div>
+
+                <div class="feature-card" style="margin-top: 25px;">
+                    <h3><span class="icon">💡</span> Teaching Insight</h3>
+                    <p>Notice how the front quadriceps works eccentrically? This is why students often shake in Warrior I. Cue them to "press firmly through the outer edge of the back foot" to engage the posterior chain and reduce quad fatigue.</p>
+                </div>
+            </div>
+
+            <div class="navigation">
+                <button class="nav-btn" onclick="prevSlide()">← Previous</button>
+                <button class="nav-btn" onclick="nextSlide()">Next →</button>
+            </div>
+        </div>
+
+        <!-- Slide 4: AR Alignment Overlay Demo -->
+        <div class="slide" data-slide="4">
+            <div class="slide-header">
+                <div class="slide-number">Module 1 • Slide 4 of 7</div>
+                <h1>AR Alignment Practice</h1>
+                <div class="instructor-badge">Augmented Reality Tool</div>
+            </div>
+
+            <div class="content-section">
+                <div class="vr-preview">
+                    <div class="vr-grid"></div>
+                    <div class="vr-content">
+                        <h3 style="margin-bottom: 20px; font-size: 24px;">📱 Phone Camera Alignment Tool</h3>
+                        <p style="margin-bottom: 30px; opacity: 0.9;">Use your phone camera to overlay proper alignment guides on your practice students</p>
+                        
+                        <div style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: 12px; padding: 30px; margin: 25px 0;">
+                            <p style="font-size: 48px; margin-bottom: 15px;">📷</p>
+                            <p style="margin-bottom: 20px;">Point your camera at a student or yourself in a mirror</p>
+                            <ul style="text-align: left; max-width: 400px; margin: 20px auto; line-height: 2;">
+                                <li>✓ See alignment lines for knee-over-ankle</li>
+                                <li>✓ Check hip square positioning</li>
+                                <li>✓ Verify shoulder stacking</li>
+                                <li>✓ Measure back leg engagement angle</li>
+                            </ul>
+                        </div>
+
+                        <button class="demo-button" style="margin-top: 20px;">📱 Launch AR Camera</button>
+                        <button class="demo-button secondary" style="margin-top: 20px;">📖 View Tutorial</button>
+                    </div>
+                </div>
+
+                <div class="feature-card" style="margin-top: 25px;">
+                    <h3><span class="icon">🎯</span> Practice Challenge</h3>
+                    <p><strong>Your Assignment:</strong> Use the AR tool to assess 3 different body types practicing Warrior I. Take screenshots of the alignment overlays and note what adjustments you'd cue for each person. Submit to your peer group for feedback.</p>
+                </div>
+
+                <div style="background: #f8f9fa; border-radius: 12px; padding: 25px; margin-top: 25px;">
+                    <h4 style="color: #333; margin-bottom: 15px;">🏆 Unlock Achievement</h4>
+                    <p style="color: #666; margin-bottom: 15px;">Complete 5 AR assessments to earn the "Alignment Expert" badge signed by Shiva Rea</p>
+                    <div style="background: #e0e0e0; height: 8px; border-radius: 4px; overflow: hidden;">
+                        <div style="background: linear-gradient(90deg, #667eea 0%, #764ba2 100%); width: 40%; height: 100%;"></div>
+                    </div>
+                    <p style="color: #999; font-size: 14px; margin-top: 8px;">2 of 5 assessments complete</p>
+                </div>
+            </div>
+
+            <div class="navigation">
+                <button class="nav-btn" onclick="prevSlide()">← Previous</button>
+                <button class="nav-btn" onclick="nextSlide()">Next →</button>
+            </div>
+        </div>
+
+        <!-- Slide 5: Knowledge Check Quiz -->
+        <div class="slide" data-slide="5">
+            <div class="slide-header">
+                <div class="slide-number">Module 1 • Slide 5 of 7</div>
+                <h1>Knowledge Check</h1>
+                <div class="instructor-badge">Quick Assessment</div>
+            </div>
+
+            <div class="content-section">
+                <div style="background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%); border-radius: 12px; padding: 30px; margin-bottom: 30px;">
+                    <h3 style="color: #333; margin-bottom: 20px;">Question 1 of 3</h3>
+                    <p style="color: #666; font-size: 18px; margin-bottom: 25px;">A student in Warrior I has their back heel lifted and hip externally rotated. What's your PRIMARY verbal cue?</p>
+
+                    <div class="quiz-option" onclick="selectOption(this)">
+                        <strong style="color: #667eea;">A)</strong> "Lift your arms higher to engage your shoulders"
+                    </div>
+                    <div class="quiz-option" onclick="selectOption(this)">
+                        <strong style="color: #667eea;">B)</strong> "Ground down through your back heel and internally rotate your back hip"
+                    </div>
+                    <div class="quiz-option" onclick="selectOption(this)">
+                        <strong style="color: #667eea;">C)</strong> "Bend your front knee deeper"
+                    </div>
+                    <div class="quiz-option" onclick="selectOption(this)">
+                        <strong style="color: #667eea;">D)</strong> "Narrow your stance"
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <h3><span class="icon">💭</span> Teaching Tip</h3>
+                    <p>When you notice multiple misalignments, address foundation first (feet and legs) before moving to upper body cues. This prevents overwhelming your students.</p>
+                </div>
+
+                <div style="background: #fff9e6; border-left: 4px solid #ffc107; padding: 20px; border-radius: 8px; margin-top: 25px;">
+                    <p style="color: #856404;"><strong>⚡ xAPI Tracking:</strong> Your answer, time spent, and confidence level are being recorded. This helps us identify areas where you might need additional practice.</p>
+                </div>
+            </div>
+
+            <div class="navigation">
+                <button class="nav-btn" onclick="prevSlide()">← Previous</button>
+                <button class="nav-btn" onclick="nextSlide()">Next →</button>
+            </div>
+        </div>
+
+        <!-- Slide 6: Peer Teaching & Feedback -->
+        <div class="slide" data-slide="6">
+            <div class="slide-header">
+                <div class="slide-number">Module 1 • Slide 6 of 7</div>
+                <h1>Peer Teaching Practice</h1>
+                <div class="instructor-badge">Community Learning</div>
+            </div>
+
+            <div class="content-section">
+                <div class="interactive-demo">
+                    <h3 style="margin-bottom: 15px; color: #333;">🎥 Submit Your Teaching Video</h3>
+                    <p style="color: #666; margin-bottom: 25px;">Record yourself teaching a 3-minute Warrior sequence. Your peer group will provide feedback within 48 hours.</p>
+                    <button class="demo-button">📹 Record Video</button>
+                    <button class="demo-button secondary">📤 Upload Existing Video</button>
+                </div>
+
+                <h3 style="margin: 30px 0 20px 0; color: #333;">Recent Feedback from Your Peers</h3>
+
+                <div class="peer-feedback">
+                    <div class="peer-header">
+                        <div class="peer-avatar">JK</div>
+                        <div>
+                            <div class="peer-name">Jennifer Kim</div>
+                            <div style="font-size: 14px; color: #999;">RYT-200 • 2 hours ago</div>
+                        </div>
+                        <div class="peer-rating" style="margin-left: auto;">⭐⭐⭐⭐⭐</div>
+                    </div>
+                    <p style="color: #666; line-height: 1.6;">"Great pacing and breath integration! One suggestion: when you cued the back foot positioning, consider adding 'outer edge of the foot pressing down' for more specificity. Your energy was wonderful!"</p>
+                </div>
+
+                <div class="peer-feedback">
+                    <div class="peer-header">
+                        <div class="peer-avatar">MS</div>
+                        <div>
+                            <div class="peer-name">Marcus Silva</div>
+                            <div style="font-size: 14px; color: #999;">RYT-500 • 5 hours ago</div>
+                        </div>
+                        <div class="peer-rating" style="margin-left: auto;">⭐⭐⭐⭐</div>
+                    </div>
+                    <p style="color: #666; line-height: 1.6;">"I loved your anatomical references! The quadriceps explanation was spot-on. Watch your own alignment in the demo though - your back heel lifted slightly around 1:45. Otherwise excellent work!"</p>
+                </div>
+
+                <div class="peer-feedback">
+                    <div class="peer-header">
+                        <div class="peer-avatar">SR</div>
+                        <div>
+                            <div class="peer-name">Shiva Rea</div>
+                            <div style="font-size: 14px; color: #999;">Lead Instructor • 1 day ago</div>
+                        </div>
+                        <div class="peer-rating" style="margin-left: auto;">⭐⭐⭐⭐⭐</div>
+                    </div>
+                    <p style="color: #666; line-height: 1.6; background: #fff9e6; padding: 15px; border-radius: 8px; margin-top: 10px;"><strong>🎉 Instructor Note:</strong> "Beautiful work! Your voice has a calming quality that will serve your students well. I particularly appreciated how you acknowledged different body types. You're ready for the next module. Keep going!"</p>
+                </div>
+
+                <div class="feature-card" style="margin-top: 25px;">
+                    <h3><span class="icon">👥</span> Your Teaching Circle</h3>
+                    <p>You're matched with 3 other instructors at a similar level. You'll review each other's videos and meet for a live peer teaching session next Tuesday at 7pm EST. Check your email for the Zoom link!</p>
+                </div>
+            </div>
+
+            <div class="navigation">
+                <button class="nav-btn" onclick="prevSlide()">← Previous</button>
+                <button class="nav-btn" onclick="nextSlide()">Next →</button>
+            </div>
+        </div>
+
+        <!-- Slide 7: Module Complete -->
+        <div class="slide" data-slide="7">
+            <div class="slide-header">
+                <div class="slide-number">Module 1 • Slide 7 of 7</div>
+                <h1>Module Complete!</h1>
+            </div>
+
+            <div class="content-section">
+                <div class="completion-celebration">
+                    <div class="confetti">🎉🎊✨🏆🌟</div>
+                    <h2 style="color: #333; margin: 30px 0 20px 0; font-size: 28px;">Congratulations!</h2>
+                    <p style="color: #666; font-size: 18px; max-width: 600px; margin: 0 auto 30px auto; line-height: 1.6;">
+                        You've completed "Mastering the Warrior Sequence" and earned 2.5 teaching hours toward your RYT-500 certification.
+                    </p>
+                </div>
+
+                <div class="achievement-card">
+                    <div class="achievement-icon">🏅</div>
+                    <h3 style="margin-bottom: 15px;">Badge Unlocked!</h3>
+                    <h2 style="font-size: 24px; margin-bottom: 10px;">Warrior Sequence Specialist</h2>
+                    <p style="opacity: 0.9;">Endorsed by Shiva Rea</p>
+                    <button class="demo-button" style="margin-top: 20px; background: white; color: #f5576c;">📤 Share on LinkedIn</button>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 30px 0;">
+                    <div style="background: #f8f9fa; padding: 25px; border-radius: 12px; text-align: center;">
+                        <div style="font-size: 36px; color: #667eea; font-weight: bold;">95%</div>
+                        <div style="color: #666; margin-top: 10px;">Quiz Score</div>
+                    </div>
+                    <div style="background: #f8f9fa; padding: 25px; border-radius: 12px; text-align: center;">
+                        <div style="font-size: 36px; color: #667eea; font-weight: bold;">4.8/5</div>
+                        <div style="color: #666; margin-top: 10px;">Peer Rating</div>
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <h3><span class="icon">📊</span> Your Learning Data (xAPI Tracked)</h3>
+                    <ul style="color: #666; line-height: 2; margin-top: 15px;">
+                        <li>✓ Watched 45 minutes of video content</li>
+                        <li>✓ Downloaded 3 audio practice files</li>
+                        <li>✓ Completed 2 AR alignment assessments</li>
+                        <li>✓ Submitted 1 peer teaching video</li>
+                        <li>✓ Provided feedback to 2 peers</li>
+                        <li>✓ Spent 12 minutes in 3D anatomy exploration</li>
+                    </ul>
+                </div>
+
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 12px; padding: 30px; margin: 30px 0;">
+                    <h3 style="margin-bottom: 15px;">🚀 Ready for More?</h3>
+                    <p style="margin-bottom: 20px; opacity: 0.9;">Continue your journey with these recommended modules:</p>
+                    <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                        <button class="demo-button" style="background: white; color: #667eea;">Warrior II & III Progressions</button>
+                        <button class="demo-button secondary" style="border-color: white; color: white;">Advanced Cueing Techniques</button>
+                    </div>
+                </div>
+
+                <div style="background: #f0f4ff; border-radius: 12px; padding: 25px; text-align: center;">
+                    <h4 style="color: #333; margin-bottom: 15px;">💬 Help Us Improve</h4>
+                    <p style="color: #666; margin-bottom: 20px;">How would you rate this module?</p>
+                    <div style="font-size: 32px; cursor: pointer;">⭐⭐⭐⭐⭐</div>
+                    <button class="demo-button secondary" style="margin-top: 15px; padding: 10px 24px; font-size: 14px;">Leave Detailed Feedback</button>
+                </div>
+            </div>
+
+            <div class="navigation">
+                <button class="nav-btn" onclick="prevSlide()">← Previous</button>
+                <button class="nav-btn" onclick="nextSlide()" disabled>Next →</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 7;
+
+        function updateProgress() {
+            const progress = (currentSlide / totalSlides) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function showSlide(n) {
+            const slides = document.querySelectorAll('.slide');
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[n - 1].classList.add('active');
+            currentSlide = n;
+            updateProgress();
+            window.scrollTo(0, 0);
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                showSlide(currentSlide + 1);
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 1) {
+                showSlide(currentSlide - 1);
+            }
+        }
+
+        function selectOption(element) {
+            const options = element.parentElement.querySelectorAll('.quiz-option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            element.classList.add('selected');
+        }
+
+        // Initialize
+        updateProgress();
+    </script>
+</body>
+</html>
+                
