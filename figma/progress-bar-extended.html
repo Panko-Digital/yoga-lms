@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Progress Bar - Extended Full Width</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+
+      .progress-wrapper {
+        position: relative;
+        padding: 40px 0;
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      }
+
+      /* Full width gray track */
+      .progress-track {
+        position: absolute;
+        top: 58px;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background-color: #e9eef3;
+      }
+
+      /* Left side - always blue */
+      .progress-left {
+        position: absolute;
+        top: 58px;
+        left: 0;
+        width: calc(50% - 300px);
+        height: 2px;
+        background-color: #1165ef;
+      }
+
+      /* Progress fill between first and last step - animated */
+      .progress-fill {
+        position: absolute;
+        top: 58px;
+        left: calc(50% - 300px);
+        height: 2px;
+        background-color: #1165ef;
+        width: 0;
+        animation: fillProgress 2.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        animation-delay: 0.2s;
+      }
+
+      @keyframes fillProgress {
+        from {
+          width: 0;
+        }
+        to {
+          width: calc(600px * var(--progress, 0) / 100);
+        }
+      }
+
+      /* Right side - blue only at 100% */
+      .progress-right {
+        position: absolute;
+        top: 58px;
+        right: 0;
+        width: calc(50% - 300px);
+        height: 2px;
+        background-color: #e9eef3;
+      }
+
+      .progress-right.complete {
+        animation: fadeToBlue 0.3s ease forwards;
+        animation-delay: 2.7s;
+      }
+
+      @keyframes fadeToBlue {
+        from {
+          background-color: #e9eef3;
+        }
+        to {
+          background-color: #1165ef;
+        }
+      }
+
+      /* Steps container */
+      .steps-container {
+        max-width: 600px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+      }
+
+      .steps {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+      }
+
+      .step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .step-circle {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        font-weight: 500;
+        border: 2px solid #e9eef3;
+        background-color: #e9eef3;
+        color: #6c7684;
+      }
+
+      .step-circle.active {
+        border-color: #1165ef;
+        background-color: white;
+        color: #1165ef;
+      }
+
+      .step-circle.completed {
+        border-color: #1165ef;
+        background-color: #1165ef;
+        color: white;
+        cursor: pointer;
+        transition: transform 0.2s ease;
+      }
+
+      .step-circle.completed:hover {
+        transform: scale(1.15);
+      }
+
+      .step-circle.completed .tick {
+        opacity: 0;
+        transform: scale(0);
+        animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        animation-delay: calc(2.7s + var(--step-index, 0) * 0.15s);
+      }
+
+      @keyframes popIn {
+        0% {
+          opacity: 0;
+          transform: scale(0);
+        }
+        50% {
+          opacity: 1;
+          transform: scale(1.3);
+        }
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      .step-label {
+        font-size: 12px;
+        color: #6c7684;
+      }
+
+      .step-label.active {
+        color: #1165ef;
+      }
+
+      /* Substeps */
+      .substeps {
+        display: flex;
+        gap: 6px;
+        margin-top: 6px;
+      }
+
+      .substep-circle {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background-color: #e9eef3;
+        border: 1px solid #e9eef3;
+      }
+
+      .substep-circle.completed {
+        background-color: #1165ef;
+        border-color: #1165ef;
+        animation: substepPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)
+          forwards;
+        animation-delay: calc(2.7s + var(--substep-delay, 0) * 0.1s);
+      }
+
+      @keyframes substepPop {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.4);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      .substep-circle.active {
+        background-color: white;
+        border-color: #1165ef;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="progress1"></div>
+    <br /><br />
+    <div id="progress2"></div>
+
+    <script>
+      function createProgressBar(
+        containerId,
+        { steps, progress, currentStep, currentSubstep },
+      ) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+
+        const totalSteps = steps.length;
+
+        if (currentStep === undefined) {
+          currentStep = Math.ceil((progress / 100) * totalSteps) || 1;
+          if (progress === 100) currentStep = totalSteps;
+        }
+
+        const stepsHtml = steps
+          .map((step, i) => {
+            const stepNum = i + 1;
+            const isCompleted =
+              stepNum < currentStep ||
+              (progress === 100 && stepNum === totalSteps);
+            const isActive = stepNum === currentStep && progress < 100;
+
+            const circleClass = isCompleted
+              ? "completed"
+              : isActive
+                ? "active"
+                : "";
+            const labelClass = stepNum <= currentStep ? "active" : "";
+            const circleContent = isCompleted
+              ? `<span class="tick" style="--step-index: ${i}">✓</span>`
+              : stepNum;
+
+            let substepsHtml = "";
+            if (step.substeps && step.substeps > 0) {
+              const substepDots = [];
+              for (let s = 1; s <= step.substeps; s++) {
+                let substepClass = "";
+                const substepDelay = i * step.substeps + s;
+                if (isCompleted) {
+                  substepClass = "completed";
+                } else if (isActive && currentSubstep !== undefined) {
+                  if (s < currentSubstep) substepClass = "completed";
+                  else if (s === currentSubstep) substepClass = "active";
+                }
+                substepDots.push(
+                  `<div class="substep-circle ${substepClass}" style="--substep-delay: ${substepDelay}"></div>`,
+                );
+              }
+              substepsHtml = `<div class="substeps">${substepDots.join("")}</div>`;
+            }
+
+            return `
+            <div class="step">
+              <div class="step-circle ${circleClass}">${circleContent}</div>
+              <span class="step-label ${labelClass}">${step.label}</span>
+              ${substepsHtml}
+            </div>
+          `;
+          })
+          .join("");
+
+        const rightClass =
+          progress === 100 ? "progress-right complete" : "progress-right";
+
+        container.innerHTML = `
+          <div class="progress-wrapper" style="--progress: ${progress}">
+            <div class="progress-track"></div>
+            <div class="progress-left"></div>
+            <div class="progress-fill"></div>
+            <div class="${rightClass}"></div>
+            <div class="steps-container">
+              <div class="steps">
+                ${stepsHtml}
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      // 50% progress
+      createProgressBar("progress1", {
+        steps: [
+          { label: "Intro" },
+          { label: "Basics" },
+          { label: "Advanced", substeps: 5 },
+          { label: "Quiz" },
+          { label: "Complete" },
+        ],
+        progress: 50,
+        currentStep: 3,
+        currentSubstep: 3,
+      });
+
+      // 100% complete
+      createProgressBar("progress2", {
+        steps: [
+          { label: "Setup" },
+          { label: "Learn" },
+          { label: "Practice" },
+          { label: "Review" },
+        ],
+        progress: 100,
+      });
+    </script>
+  </body>
+</html>
