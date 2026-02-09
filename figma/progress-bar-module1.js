@@ -224,6 +224,7 @@
     function calculateReadTime() {
         var WORDS_PER_MIN = 200;
         var SECS_PER_IMAGE = 10;
+        var MINS_PER_IFRAME = 5;
 
         // Scope to .user_content container (LMS course content area)
         var contentEl = document.querySelector('.user_content');
@@ -244,7 +245,11 @@
             videoMins += (parseInt(el.dataset.duration, 10) || 0) / 60;
         });
 
-        var totalMins = Math.ceil(readMins + imageMins + videoMins);
+        // Count iframes (interactive exercises) - 5 min each
+        var iframeCount = contentEl.querySelectorAll('iframe').length;
+        var iframeMins = iframeCount * MINS_PER_IFRAME;
+
+        var totalMins = Math.ceil(readMins + imageMins + videoMins + iframeMins);
         if (totalMins < 1) totalMins = 1;
 
         return totalMins;
