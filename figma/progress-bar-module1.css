@@ -106,70 +106,87 @@
 
 .ylms-pb_wrapper {
   --ylms-pb-content-width: min(1400px, calc(100% - 80px));
-  --ylms-pb-side-width: calc((100% - var(--ylms-pb-content-width)) / 2);
-  --ylms-pb-line-top: 36px;
+  --ylms-pb-line-top: 16px;
   position: relative;
   padding: 20px 0 10px 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  overflow: hidden;
 }
 
+.ylms-pb_steps-container {
+  max-width: var(--ylms-pb-content-width);
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+/* Track - full viewport width via negative margins */
 .ylms-pb_track {
   position: absolute;
   top: var(--ylms-pb-line-top);
-  left: 0;
-  right: 0;
+  left: -50vw;
+  right: -50vw;
   height: 2px;
   background-color: #ccc;
+  z-index: 0;
 }
 
+/* Blue line from left edge to first step */
 .ylms-pb_left {
   position: absolute;
   top: var(--ylms-pb-line-top);
-  left: 0;
-  width: var(--ylms-pb-side-width);
+  left: -50vw;
+  right: 100%;
   height: 2px;
   background-color: #327fef;
+  z-index: 1;
 }
 
-/* Static fill - already completed (no animation) */
+/* Static fill - already completed (simple percentage) */
 .ylms-pb_fill-static {
   position: absolute;
   top: var(--ylms-pb-line-top);
-  left: var(--ylms-pb-side-width);
+  left: 0;
   height: 2px;
   background-color: #327fef;
-  width: calc(var(--ylms-pb-content-width) * var(--ylms-pb-previous, 0) / 100);
+  width: calc(var(--ylms-pb-previous, 0) * 1%);
+  z-index: 1;
 }
 
 /* Animated fill - just the last segment */
 .ylms-pb_fill-animated {
   position: absolute;
   top: var(--ylms-pb-line-top);
-  left: calc(var(--ylms-pb-side-width) + var(--ylms-pb-content-width) * var(--ylms-pb-previous, 0) / 100);
+  left: calc(var(--ylms-pb-previous, 0) * 1%);
+  right: calc((100 - var(--ylms-pb-current, 0)) * 1%);
   height: 2px;
   background-color: #327fef;
-  width: 0;
+  transform: scaleX(0);
+  transform-origin: left;
   animation: ylms-pb_fillSegment 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   animation-delay: 0.2s;
+  z-index: 1;
 }
 
 @keyframes ylms-pb_fillSegment {
   from {
-    width: 0;
+    transform: scaleX(0);
   }
 
   to {
-    width: calc(var(--ylms-pb-content-width) * var(--ylms-pb-segment, 0) / 100);
+    transform: scaleX(1);
   }
 }
 
+/* Right side - from last step to right edge */
 .ylms-pb_right {
   position: absolute;
   top: var(--ylms-pb-line-top);
-  right: 0;
-  width: var(--ylms-pb-side-width);
+  left: 100%;
+  right: -50vw;
   height: 2px;
   background-color: #ccc;
+  z-index: 0;
 }
 
 .ylms-pb_right.ylms-pb_complete {
@@ -179,7 +196,7 @@
 
 @keyframes ylms-pb_fadeToBlue {
   from {
-    background-color: #fff;
+    background-color: #ccc;
   }
 
   to {
@@ -187,17 +204,12 @@
   }
 }
 
-.ylms-pb_steps-container {
-  max-width: min(1400px, calc(100% - 80px));
-  margin: 0 auto;
-  position: relative;
-  z-index: 1;
-}
-
 .ylms-pb_steps {
   display: flex;
   justify-content: space-between;
   width: 100%;
+  position: relative;
+  z-index: 2;
 }
 
 .ylms-pb_step {
@@ -205,6 +217,8 @@
   flex-direction: column;
   align-items: center;
   gap: 6px;
+  width: 0;
+  overflow: visible;
 }
 
 .ylms-pb_circle {
@@ -232,7 +246,6 @@
   border-color: #327fef;
   background-color: #327fef;
   color: white;
-  cursor: pointer;
   transition: transform 0.2s ease;
 }
 
@@ -359,4 +372,17 @@
 
 .ylms-tb_panel.ylms-tb_active {
   display: block;
+}
+
+
+/* Read time indicator */
+.ylms-pb_readtime {
+  display: inline-block;
+  margin: 8px 0 0 0;
+  padding: 4px 12px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 12px;
+  color: #6c7684;
+  background: #f0f2f5;
+  border-radius: 12px;
 }

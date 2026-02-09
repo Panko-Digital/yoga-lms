@@ -6,17 +6,17 @@
 
     // Module 1 lesson data - substeps will be set dynamically from panels on the page
     var module1Lessons = [
-        { short: "Why", full: "Why Anatomy?" },
+        { short: "Why Anatomy", full: "Why Anatomy?" },
         { short: "Locations", full: "Locations of Structures on the Body" },
         { short: "Pose", full: "Pose with Movements" },
         { short: "Positions", full: "Positions and Curvatures of the Spine and Pelvis" },
-        { short: "Bone", full: "Structure of Bone Tissue" },
+        { short: "Bone Tisue", full: "Structure of Bone Tissue" },
         { short: "Skeleton", full: "The Axial and Appendicular Skeletons" },
         { short: "Joints", full: "Joints in the Skeletal System" },
         { short: "Variable", full: "Variable Anatomy" },
-        { short: "Tissue", full: "Types of Tissue" },
+        { short: "Tissue Types", full: "Types of Tissue" },
         { short: "Stretching", full: "Physiology of Stretching" },
-        { short: "Pelvis", full: "Anatomy of the Pelvis, Shoulder Girdle and Trunk" },
+        { short: "Anatomy", full: "Anatomy of the Pelvis, Shoulder Girdle and Trunk" },
         { short: "Tadasana", full: "Tadasana Alignment" },
         { short: "Energy", full: "Muscular and Organic Energy" },
         { short: "Principles", full: "Principles of Forward Folding, Back-Bending, Lateral Bending and Twisting" },
@@ -52,9 +52,20 @@
     function createProgressBar(container, lessons, currentStep, currentSubstep) {
         var totalSteps = lessons.length;
 
+        // Only animate if on substep 1 (just arrived at this step)
+        var shouldAnimate = currentSubstep <= 1;
+
         // Calculate progress percentages
-        var previousProgress = currentStep > 1 ? ((currentStep - 2) / (totalSteps - 1)) * 100 : 0;
-        var segmentWidth = currentStep > 1 ? (1 / (totalSteps - 1)) * 100 : 0;
+        var previousProgress, segmentWidth;
+        if (shouldAnimate) {
+            // Animate: static fill up to previous step, animated segment for current
+            previousProgress = currentStep > 1 ? ((currentStep - 2) / (totalSteps - 1)) * 100 : 0;
+            segmentWidth = currentStep > 1 ? (1 / (totalSteps - 1)) * 100 : 0;
+        } else {
+            // No animation: static fill all the way to current step
+            previousProgress = ((currentStep - 1) / (totalSteps - 1)) * 100;
+            segmentWidth = 0;
+        }
 
         var stepsHtml = lessons.map(function (lesson, i) {
             var stepNum = i + 1;
@@ -71,7 +82,8 @@
 
             var circleContent;
             if (isCompleted) {
-                var tickClass = isLastCompleted ? 'ylms-pb_tick ylms-pb_tick-animate' : 'ylms-pb_tick';
+                // Only animate tick on substep 1
+                var tickClass = (isLastCompleted && shouldAnimate) ? 'ylms-pb_tick ylms-pb_tick-animate' : 'ylms-pb_tick';
                 circleContent = '<span class="' + tickClass + '">✓</span>';
             } else {
                 circleContent = stepNum;
@@ -93,14 +105,17 @@
 
         var rightClass = currentStep > totalSteps ? 'ylms-pb_right ylms-pb_complete' : 'ylms-pb_right';
 
+        // Calculate actual content width in pixels for reliable animation
+        var wrapperStyle = '--ylms-pb-previous: ' + previousProgress + '; --ylms-pb-segment: ' + segmentWidth + '; --ylms-pb-current: ' + (previousProgress + segmentWidth);
+
         container.innerHTML =
-            '<div class="ylms-pb_wrapper" style="--ylms-pb-previous: ' + previousProgress + '; --ylms-pb-segment: ' + segmentWidth + '">' +
+            '<div class="ylms-pb_wrapper">' +
+            '<div class="ylms-pb_steps-container" style="--ylms-pb-previous: ' + previousProgress + '; --ylms-pb-current: ' + (previousProgress + segmentWidth) + '">' +
             '<div class="ylms-pb_track"></div>' +
             '<div class="ylms-pb_left"></div>' +
             '<div class="ylms-pb_fill-static"></div>' +
-            '<div class="ylms-pb_fill-animated"></div>' +
+            (shouldAnimate ? '<div class="ylms-pb_fill-animated"></div>' : '') +
             '<div class="' + rightClass + '"></div>' +
-            '<div class="ylms-pb_steps-container">' +
             '<div class="ylms-pb_steps">' +
             stepsHtml +
             '</div>' +
@@ -206,6 +221,56 @@
         createProgressBar(container, module1Lessons, currentState.step, currentState.substep);
     }
 
+    function calculateReadTime() {
+        var WORDS_PER_MIN = 200;
+        var SECS_PER_IMAGE = 10;
+
+        // Scope to .user_content container (LMS course content area)
+        var contentEl = document.querySelector('.user_content');
+        if (!contentEl) return 0;
+
+        // Count words from text content
+        var textContent = contentEl.textContent || '';
+        var words = textContent.trim().split(/\s+/).filter(function (w) { return w.length > 0; }).length;
+        var readMins = words / WORDS_PER_MIN;
+
+        // Count images
+        var imageCount = contentEl.querySelectorAll('img').length;
+        var imageMins = (imageCount * SECS_PER_IMAGE) / 60;
+
+        // Sum video durations from data-duration attributes (in seconds)
+        var videoMins = 0;
+        contentEl.querySelectorAll('[data-duration]').forEach(function (el) {
+            videoMins += (parseInt(el.dataset.duration, 10) || 0) / 60;
+        });
+
+        var totalMins = Math.ceil(readMins + imageMins + videoMins);
+        if (totalMins < 1) totalMins = 1;
+
+        return totalMins;
+    }
+
+    function renderReadTime(container) {
+        var mins = calculateReadTime();
+        var badge = document.createElement('div');
+        badge.className = 'ylms-pb_readtime';
+        badge.textContent = mins + ' min';
+        container.after(badge);
+    }
+
+    function parseProgress(value) {
+        // Format: "step" or "step-substepCount-activeSubstep"
+        // e.g. "4" = step 4, no substeps
+        // e.g. "4-3-1" = step 4, 3 substeps, active substep 1
+        if (!value) return { step: 1, substepCount: 1, substep: 1 };
+        var parts = value.split('-').map(function (p) { return parseInt(p, 10); });
+        return {
+            step: parts[0] || 1,
+            substepCount: parts[1] || 1,
+            substep: parts[2] || 1
+        };
+    }
+
     function init() {
         var container = document.getElementById('ylms-module1-progress');
 
@@ -214,14 +279,21 @@
             return;
         }
 
-        // Read current step and substep from data attributes
-        currentState.step = container.dataset.step ? parseInt(container.dataset.step, 10) : 1;
-        currentState.substep = container.dataset.substep ? parseInt(container.dataset.substep, 10) : 1;
+        // Parse data-progress attribute (format: "step-substepCount-activeSubstep")
+        var progress = parseProgress(container.dataset.progress);
+        currentState.step = progress.step;
+        currentState.substep = progress.substep;
 
-        // Create tabs from panels first (updates substep count)
+        // Set substep count on the current step's lesson
+        var currentLesson = module1Lessons[currentState.step - 1];
+        if (currentLesson && progress.substepCount > 1) {
+            currentLesson.substeps = progress.substepCount;
+        }
+
+        // Create tabs from panels if they exist (overrides substep count)
         createTabsFromPanels(container);
 
-        // If no panels found, just render progress bar
+        // If no tabs were created, just render progress bar
         if (!document.querySelector('.ylms-tb_container')) {
             createProgressBar(container, module1Lessons, currentState.step, currentState.substep);
         }
@@ -229,11 +301,8 @@
         // Expose update function globally for tab integration
         window.ylmsUpdateSubstep = updateSubsteps;
 
-        // Also expose lesson data for tab generation
-        window.ylmsGetCurrentStepSubsteps = function () {
-            var lesson = module1Lessons[currentState.step - 1];
-            return lesson ? lesson.substeps || 1 : 1;
-        };
+        // Render read time indicator
+        renderReadTime(container);
     }
 
     setTimeout(init, 250);
