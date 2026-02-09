@@ -155,7 +155,7 @@
         var tabsHtml = tabData.map(function (tab, index) {
             var activeClass = index === 0 ? ' ylms-tb_active' : '';
             return '<button class="ylms-tb_tab' + activeClass + '" data-tab="' + tab.id + '">' +
-                (index + 1) + ' ' + tab.label +
+                tab.label +
                 '</button>';
         }).join('');
 
