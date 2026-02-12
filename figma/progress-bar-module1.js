@@ -1,32 +1,41 @@
-/* Progress Bar Module 1 - Scoped JavaScript */
-/* Auto-initializes on page load if element exists */
+/* Progress Bar - Multi-Module JavaScript */
+/* Auto-initializes on page load based on which container exists */
 
 (function () {
     'use strict';
 
-    // Module 1 lesson data - substeps will be set dynamically from panels on the page
-    var module1Lessons = [
-        { short: "Why Anatomy", full: "Why Anatomy?" },
-        { short: "Locations", full: "Locations of Structures on the Body" },
-        { short: "Pose", full: "Pose with Movements" },
-        { short: "Positions", full: "Positions and Curvatures of the Spine and Pelvis" },
-        { short: "Bone Tisue", full: "Structure of Bone Tissue" },
-        { short: "Skeleton", full: "The Axial and Appendicular Skeletons" },
-        { short: "Joints", full: "Joints in the Skeletal System" },
-        { short: "Variable", full: "Variable Anatomy" },
-        { short: "Tissue Types", full: "Types of Tissue" },
-        { short: "Stretching", full: "Physiology of Stretching" },
-        { short: "Anatomy", full: "Anatomy of the Pelvis, Shoulder Girdle and Trunk" },
-        { short: "Tadasana", full: "Tadasana Alignment" },
-        { short: "Energy", full: "Muscular and Organic Energy" },
-        { short: "Principles", full: "Principles of Forward Folding, Back-Bending, Lateral Bending and Twisting" },
-        { short: "History", full: "History of Yoga" }
-    ];
+    // Module lesson data registry
+    var moduleLessons = {
+        module1: [
+            { short: "Why Anatomy", full: "Why Anatomy?" },
+            { short: "Locations", full: "Locations of Structures on the Body" },
+            { short: "Pose", full: "Pose with Movements" },
+            { short: "Positions", full: "Positions and Curvatures of the Spine and Pelvis" },
+            { short: "Bone Tisue", full: "Structure of Bone Tissue" },
+            { short: "Skeleton", full: "The Axial and Appendicular Skeletons" },
+            { short: "Joints", full: "Joints in the Skeletal System" },
+            { short: "Variable", full: "Variable Anatomy" },
+            { short: "Tissue Types", full: "Types of Tissue" },
+            { short: "Stretching", full: "Physiology of Stretching" },
+            { short: "Anatomy", full: "Anatomy of the Pelvis, Shoulder Girdle and Trunk" },
+            { short: "Tadasana", full: "Tadasana Alignment" },
+            { short: "Energy", full: "Muscular and Organic Energy" },
+            { short: "Principles", full: "Principles of Forward Folding, Back-Bending, Lateral Bending and Twisting" }
+        ],
+        module2: [
+            { short: "History", full: "History of Yoga" },
+            { short: "Breath", full: "Anatomy of the Breath" },
+            { short: "Breathing Dynamics", full: "Breathing Dynamics" },
+            { short: "Movement", full: "Movement of the body with Breath" }
+        ]
+    };
 
     // Store reference to update substeps externally
     var currentState = {
         step: 1,
-        substep: 1
+        substep: 1,
+        moduleId: null,
+        lessons: null
     };
 
     function createSubstepDots(count, activeSubstep, isActiveStep, isCompleted) {
@@ -105,12 +114,12 @@
 
         var rightClass = currentStep > totalSteps ? 'ylms-pb_right ylms-pb_complete' : 'ylms-pb_right';
 
-        // Calculate actual content width in pixels for reliable animation
-        var wrapperStyle = '--ylms-pb-previous: ' + previousProgress + '; --ylms-pb-segment: ' + segmentWidth + '; --ylms-pb-current: ' + (previousProgress + segmentWidth);
+        // Calculate dynamic max-width based on number of steps (roughly 100px per step)
+        var containerMaxWidth = Math.min(1400, Math.max(400, totalSteps * 100));
 
         container.innerHTML =
             '<div class="ylms-pb_wrapper">' +
-            '<div class="ylms-pb_steps-container" style="--ylms-pb-previous: ' + previousProgress + '; --ylms-pb-current: ' + (previousProgress + segmentWidth) + '">' +
+            '<div class="ylms-pb_steps-container" style="--ylms-pb-previous: ' + previousProgress + '; --ylms-pb-current: ' + (previousProgress + segmentWidth) + '; max-width: ' + containerMaxWidth + 'px">' +
             '<div class="ylms-pb_track"></div>' +
             '<div class="ylms-pb_left"></div>' +
             '<div class="ylms-pb_fill-static"></div>' +
@@ -125,7 +134,7 @@
 
     function updateSubsteps(substep) {
         currentState.substep = substep;
-        var container = document.getElementById('ylms-module1-progress');
+        var container = document.getElementById('ylms-' + currentState.moduleId + '-progress');
         if (container) {
             // Find the active step's substep dots
             var activeStep = container.querySelector('.ylms-pb_step[data-step="' + currentState.step + '"]');
@@ -212,13 +221,13 @@
         });
 
         // Update substeps count for current step based on panel count
-        var currentLesson = module1Lessons[currentState.step - 1];
+        var currentLesson = currentState.lessons[currentState.step - 1];
         if (currentLesson) {
             currentLesson.substeps = tabData.length;
         }
 
         // Re-render progress bar with correct substep count
-        createProgressBar(container, module1Lessons, currentState.step, currentState.substep);
+        createProgressBar(container, currentState.lessons, currentState.step, currentState.substep);
     }
 
     function calculateReadTime() {
@@ -245,11 +254,23 @@
             videoMins += (parseInt(el.dataset.duration, 10) || 0) / 60;
         });
 
+        // Sum timecodes from .ylms-time-code elements (format: "M.SS" e.g. "1.31" = 1 min 31 sec)
+        var timecodeMins = 0;
+        document.querySelectorAll('.ylms-time-code').forEach(function (el) {
+            var text = el.textContent.trim();
+            var match = text.match(/(\d+)\.(\d+)/);
+            if (match) {
+                var mins = parseInt(match[1], 10) || 0;
+                var secs = parseInt(match[2], 10) || 0;
+                timecodeMins += mins + (secs / 60);
+            }
+        });
+
         // Count iframes (interactive exercises) - 5 min each
         var iframeCount = contentEl.querySelectorAll('iframe').length;
         var iframeMins = iframeCount * MINS_PER_IFRAME;
 
-        var totalMins = Math.ceil(readMins + imageMins + videoMins + iframeMins);
+        var totalMins = Math.ceil(readMins + imageMins + videoMins + timecodeMins + iframeMins);
         if (totalMins < 1) totalMins = 1;
 
         return totalMins;
@@ -276,13 +297,73 @@
         };
     }
 
-    function init() {
-        var container = document.getElementById('ylms-module1-progress');
+    // Module header content registry
+    var moduleHeaders = {
+        '1': {
+            bgImage: '/courses/548/files/20031/preview',
+            bgImageAlt: 'module-1-cutout.png',
+            logoImage: '/courses/548/files/20032/preview',
+            logoImageAlt: 'White SOM logo circular',
+            title: 'Module 1',
+            subtitle: 'Anatomy, Alignment & Intention'
+        }
+    };
 
-        if (!container) {
-            console.log('[YLMS-PB] Container #ylms-module1-progress not found');
+    function renderModuleHeader(container, moduleNum) {
+        var header = moduleHeaders[moduleNum];
+        if (!header) return false;
+
+        container.innerHTML =
+            '<img class="ylms-img-blended" src="' + header.bgImage + '" alt="' + header.bgImageAlt + '" />' +
+            '<div class="ylms-header_container">' +
+            '<img class="ylms-header_logo" src="' + header.logoImage + '" alt="' + header.logoImageAlt + '" />' +
+            '<div>' +
+            '<h1>' + header.title + '</h1>' +
+            '<h2>' + header.subtitle + '</h2>' +
+            '</div>' +
+            '</div>';
+        return true;
+    }
+
+    function init() {
+        // Check for module header container first
+        var headerContainer = document.getElementById('ylms-header');
+        if (headerContainer && headerContainer.dataset.module) {
+            renderModuleHeader(headerContainer, headerContainer.dataset.module);
+        }
+
+        // Reading-time-only mode: just show the badge, no progress bar
+        var readTimeOnly = document.getElementById('ylms-reading-time');
+        if (readTimeOnly) {
+            renderReadTime(readTimeOnly);
             return;
         }
+
+        // Detect which module container exists
+        var container = null;
+        var moduleId = null;
+        var lessons = null;
+
+        // Check for module containers (module1, module2, etc.)
+        for (var key in moduleLessons) {
+            var containerId = 'ylms-' + key + '-progress';
+            var el = document.getElementById(containerId);
+            if (el) {
+                container = el;
+                moduleId = key;
+                lessons = moduleLessons[key];
+                break;
+            }
+        }
+
+        if (!container) {
+            console.log('[YLMS-PB] No progress bar container found');
+            return;
+        }
+
+        // Store module reference
+        currentState.moduleId = moduleId;
+        currentState.lessons = lessons;
 
         // Parse data-progress attribute (format: "step-substepCount-activeSubstep")
         var progress = parseProgress(container.dataset.progress);
@@ -290,7 +371,7 @@
         currentState.substep = progress.substep;
 
         // Set substep count on the current step's lesson
-        var currentLesson = module1Lessons[currentState.step - 1];
+        var currentLesson = lessons[currentState.step - 1];
         if (currentLesson && progress.substepCount > 1) {
             currentLesson.substeps = progress.substepCount;
         }
@@ -300,7 +381,7 @@
 
         // If no tabs were created, just render progress bar
         if (!document.querySelector('.ylms-tb_container')) {
-            createProgressBar(container, module1Lessons, currentState.step, currentState.substep);
+            createProgressBar(container, lessons, currentState.step, currentState.substep);
         }
 
         // Expose update function globally for tab integration

@@ -45,17 +45,25 @@
   font-size: clamp(2.1rem, 1.68rem + 1.08vw, 2.88rem) !important;
   line-height: 1.25;
   max-width: 93.5ch;
+  margin-top: 20px;
+  color: #000000;
+  font-weight: bold;
 }
 
 .user_content h3 {
   font-size: clamp(1.68rem, 1.44rem + 0.72vw, 2.16rem) !important;
   line-height: 1.3;
   max-width: var(--text-max-width);
+  color: #000000;
+  font-weight: bold;
 }
 
 .user_content h4 {
   font-size: clamp(1.44rem, 1.32rem + 0.36vw, 1.68rem) !important;
   max-width: var(--text-max-width);
+  color: #000000;
+  font-weight: bold;
+  margin-top: 16px;
 }
 
 .user_content h5,
@@ -105,17 +113,21 @@
 /* SCOPED */
 
 .ylms-pb_wrapper {
-  --ylms-pb-content-width: min(1400px, calc(100% - 80px));
+  --ylms-pb-content-width: calc(100% - 64px);
   --ylms-pb-line-top: 16px;
   position: relative;
-  padding: 20px 0 10px 0;
+  padding: 20px 32px 10px 32px;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   overflow: hidden;
+  box-sizing: border-box;
 }
 
 .ylms-pb_steps-container {
-  max-width: var(--ylms-pb-content-width);
+  width: 100%;
+  max-width: 1400px;
   margin: 0 auto;
+  padding: 0 32px;
+  box-sizing: border-box;
   position: relative;
   z-index: 1;
 }
@@ -124,8 +136,8 @@
 .ylms-pb_track {
   position: absolute;
   top: var(--ylms-pb-line-top);
-  left: -50vw;
-  right: -50vw;
+  left: -100vw;
+  right: -100vw;
   height: 2px;
   background-color: #ccc;
   z-index: 0;
@@ -135,8 +147,8 @@
 .ylms-pb_left {
   position: absolute;
   top: var(--ylms-pb-line-top);
-  left: -50vw;
-  right: 100%;
+  left: -100vw;
+  right: calc(100% - 32px);
   height: 2px;
   background-color: #327fef;
   z-index: 1;
@@ -146,10 +158,10 @@
 .ylms-pb_fill-static {
   position: absolute;
   top: var(--ylms-pb-line-top);
-  left: 0;
+  left: 32px;
   height: 2px;
   background-color: #327fef;
-  width: calc(var(--ylms-pb-previous, 0) * 1%);
+  width: calc((100% - 64px) * var(--ylms-pb-previous, 0) / 100);
   z-index: 1;
 }
 
@@ -157,8 +169,8 @@
 .ylms-pb_fill-animated {
   position: absolute;
   top: var(--ylms-pb-line-top);
-  left: calc(var(--ylms-pb-previous, 0) * 1%);
-  right: calc((100 - var(--ylms-pb-current, 0)) * 1%);
+  left: calc(32px + (100% - 64px) * var(--ylms-pb-previous, 0) / 100);
+  width: calc((100% - 64px) * (var(--ylms-pb-current, 0) - var(--ylms-pb-previous, 0)) / 100);
   height: 2px;
   background-color: #327fef;
   transform: scaleX(0);
@@ -385,4 +397,120 @@
   color: #6c7684;
   background: #f0f2f5;
   border-radius: 12px;
+}
+
+#ylms-reading-time {
+  /* Standalone reading time when no progress bar. */
+  margin-top: 20px;
+}
+
+.ylms-iframe-wrapper {
+  width: 75%;
+}
+
+.ylms-time-code {
+  display: none;
+}
+
+
+/* Header */
+#ylms-header {
+  height: 200px;
+  width: 100%;
+  background: linear-gradient(to right, #023f94, #327fef, #023076);
+  padding: 10px 0;
+  display: flex;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+.ylms-img-blended {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: 60% 70%;
+  mix-blend-mode: darken;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(0);
+  animation: ylms-header-fade-in 1.2s ease-out forwards;
+  animation-delay: 0.3s;
+}
+
+@keyframes ylms-header-fade-in {
+  from {
+    opacity: 0;
+    object-position: 40% 90%;
+  }
+
+  to {
+    opacity: 0.9;
+    object-position: 60% 50%;
+  }
+}
+
+.ylms-header_container {
+  width: 80%;
+  display: flex;
+  align-items: center;
+  margin: 0 auto;
+}
+
+.ylms-header_logo {
+  height: 110px;
+  width: 110px;
+  margin-right: 20px;
+  display: block;
+}
+
+.ylms-header_container h1 {
+  font-family: 'ITC Garamond Condensed', Georgia, 'Times New Roman', serif;
+  color: white;
+  font-size: 75px;
+  font-weight: lighter;
+  margin: 10px 0 0 0;
+  line-height: 1;
+  opacity: 0;
+  animation: ylms-heading-fade-in 0.8s ease-out forwards;
+  animation-delay: 1s;
+}
+
+.ylms-header_container h2 {
+  font-family: 'ITC Garamond Condensed', Georgia, 'Times New Roman', serif;
+  color: white;
+  font-size: 40px;
+  font-style: italic;
+  font-weight: lighter;
+  margin: -12px 0 0 0;
+  line-height: 1;
+  opacity: 0;
+  animation: ylms-heading-fade-in 0.8s ease-out forwards;
+  animation-delay: 1.2s;
+}
+
+@keyframes ylms-heading-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* Mobile: hide labels and substeps */
+@media (max-width: 767px) {
+
+  .ylms-pb_label,
+  .ylms-pb_substeps {
+    display: none;
+  }
 }
