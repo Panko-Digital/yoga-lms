@@ -30,7 +30,45 @@
         ]
     };
 
-    // Store reference to update substeps externally
+    // Module header content registry
+    // animVariant: 'from-left' | 'from-right' | 'from-bottom' | 'zoom'
+    // Shared header assets (logo is the same across all modules)
+    var headerDefaults = {
+        logoImage: '/courses/548/files/20032/preview',
+        logoImageAlt: 'White SOM logo circular'
+    };
+
+    var moduleHeaders = {
+        '1': {
+            bgImage: '/courses/548/files/20031/preview',
+            bgImageAlt: 'module-1-cutout.png',
+            title: 'Module 1',
+            subtitle: 'Anatomy, Alignment & Intention',
+            animVariant: 'from-left'
+        },
+        '2': {
+            bgImage: '/courses/548/files/20048/preview',
+            bgImageAlt: 'module-2-cutout.png',
+            title: 'Module 2',
+            subtitle: 'Language of Movement & Power of Sequencing',
+            animVariant: 'from-right'
+        },
+        '3': {
+            bgImage: '/courses/548/files/20049/preview',
+            bgImageAlt: 'module-3-cutout.png',
+            title: 'Module 3',
+            subtitle: 'Assists, Meditation & Teaching Skills',
+            animVariant: 'fade'
+        },
+        '4': {
+            bgImage: '/courses/548/files/20051/preview',
+            bgImageAlt: 'module-4-cutout.png',
+            title: 'Module 4',
+            subtitle: 'From Teaching Skills to Transformation',
+            animVariant: 'zoom'
+        }
+    };
+
     var currentState = {
         step: 1,
         substep: 1,
@@ -40,18 +78,13 @@
 
     function createSubstepDots(count, activeSubstep, isActiveStep, isCompleted) {
         if (count <= 1) return '';
-
         var dots = [];
         for (var i = 1; i <= count; i++) {
             var dotClass = 'ylms-pb_substep';
             if (isCompleted) {
-                // All dots filled for completed steps
                 dotClass += ' ylms-pb_substep-completed';
-            } else if (isActiveStep) {
-                // Fill all dots up to and including the active substep
-                if (i <= activeSubstep) {
-                    dotClass += ' ylms-pb_substep-completed';
-                }
+            } else if (isActiveStep && i <= activeSubstep) {
+                dotClass += ' ylms-pb_substep-completed';
             }
             dots.push('<span class="' + dotClass + '"></span>');
         }
@@ -60,18 +93,12 @@
 
     function createProgressBar(container, lessons, currentStep, currentSubstep) {
         var totalSteps = lessons.length;
-
-        // Only animate if on substep 1 (just arrived at this step)
         var shouldAnimate = currentSubstep <= 1;
-
-        // Calculate progress percentages
         var previousProgress, segmentWidth;
         if (shouldAnimate) {
-            // Animate: static fill up to previous step, animated segment for current
             previousProgress = currentStep > 1 ? ((currentStep - 2) / (totalSteps - 1)) * 100 : 0;
             segmentWidth = currentStep > 1 ? (1 / (totalSteps - 1)) * 100 : 0;
         } else {
-            // No animation: static fill all the way to current step
             previousProgress = ((currentStep - 1) / (totalSteps - 1)) * 100;
             segmentWidth = 0;
         }
@@ -91,7 +118,6 @@
 
             var circleContent;
             if (isCompleted) {
-                // Only animate tick on substep 1
                 var tickClass = (isLastCompleted && shouldAnimate) ? 'ylms-pb_tick ylms-pb_tick-animate' : 'ylms-pb_tick';
                 circleContent = '<span class="' + tickClass + '">✓</span>';
             } else {
@@ -113,8 +139,6 @@
         }).join('');
 
         var rightClass = currentStep > totalSteps ? 'ylms-pb_right ylms-pb_complete' : 'ylms-pb_right';
-
-        // Calculate dynamic max-width based on number of steps (roughly 100px per step)
         var containerMaxWidth = Math.min(1400, Math.max(400, totalSteps * 100));
 
         container.innerHTML =
@@ -136,15 +160,12 @@
         currentState.substep = substep;
         var container = document.getElementById('ylms-' + currentState.moduleId + '-progress');
         if (container) {
-            // Find the active step's substep dots
             var activeStep = container.querySelector('.ylms-pb_step[data-step="' + currentState.step + '"]');
             if (activeStep) {
                 var dots = activeStep.querySelectorAll('.ylms-pb_substep');
                 dots.forEach(function (dot, i) {
-                    var dotIndex = i + 1;
                     dot.classList.remove('ylms-pb_substep-completed', 'ylms-pb_substep-active');
-                    // Fill all dots up to and including the active substep
-                    if (dotIndex <= substep) {
+                    if (i + 1 <= substep) {
                         dot.classList.add('ylms-pb_substep-completed');
                     }
                 });
@@ -153,80 +174,54 @@
     }
 
     function createTabsFromPanels(container) {
-        // Find all panels with data-panel attribute
         var panels = document.querySelectorAll('[data-panel]');
         if (panels.length === 0) return;
 
-        // Extract tab data from panels
         var tabData = [];
         panels.forEach(function (panel, index) {
             var panelId = panel.dataset.panel || (index + 1);
-            // Find first heading (h1, h2, h3, or h4)
             var heading = panel.querySelector('h1, h2, h3, h4');
             var label = heading ? heading.textContent.trim() : 'Tab ' + (index + 1);
             tabData.push({ id: panelId, label: label });
-
-            // Add panel class and hide non-first panels
             panel.classList.add('ylms-tb_panel');
-            if (index === 0) {
-                panel.classList.add('ylms-tb_active');
-            }
+            if (index === 0) panel.classList.add('ylms-tb_active');
         });
 
-        if (tabData.length <= 1) return; // No tabs needed for single panel
+        if (tabData.length <= 1) return;
 
-        // Create tabs HTML
         var tabsHtml = tabData.map(function (tab, index) {
             var activeClass = index === 0 ? ' ylms-tb_active' : '';
             return '<button class="ylms-tb_tab' + activeClass + '" data-tab="' + tab.id + '">' +
-                tab.label +
-                '</button>';
+                tab.label + '</button>';
         }).join('');
 
-        // Create tab container
         var tabContainer = document.createElement('div');
         tabContainer.className = 'ylms-tb_container';
         tabContainer.innerHTML = '<div class="ylms-tb_tabs">' + tabsHtml + '</div>';
 
-        // Wrap panels in a panels container
         var panelsContainer = document.createElement('div');
         panelsContainer.className = 'ylms-tb_panels';
-        panels.forEach(function (panel) {
-            panelsContainer.appendChild(panel);
-        });
+        panels.forEach(function (panel) { panelsContainer.appendChild(panel); });
 
-        // Insert after the progress bar
         container.after(tabContainer);
         tabContainer.after(panelsContainer);
 
-        // Add click handlers
         var tabs = tabContainer.querySelectorAll('.ylms-tb_tab');
         tabs.forEach(function (tab) {
             tab.addEventListener('click', function () {
                 var tabId = this.dataset.tab;
                 var tabIndex = Array.from(tabs).indexOf(this) + 1;
-
-                // Update tab active states
                 tabs.forEach(function (t) { t.classList.remove('ylms-tb_active'); });
                 this.classList.add('ylms-tb_active');
-
-                // Update panel visibility
                 panels.forEach(function (p) { p.classList.remove('ylms-tb_active'); });
                 var targetPanel = document.querySelector('[data-panel="' + tabId + '"]');
                 if (targetPanel) targetPanel.classList.add('ylms-tb_active');
-
-                // Update progress bar substeps
                 updateSubsteps(tabIndex);
             });
         });
 
-        // Update substeps count for current step based on panel count
         var currentLesson = currentState.lessons[currentState.step - 1];
-        if (currentLesson) {
-            currentLesson.substeps = tabData.length;
-        }
-
-        // Re-render progress bar with correct substep count
+        if (currentLesson) currentLesson.substeps = tabData.length;
         createProgressBar(container, currentState.lessons, currentState.step, currentState.substep);
     }
 
@@ -234,45 +229,29 @@
         var WORDS_PER_MIN = 200;
         var SECS_PER_IMAGE = 10;
         var MINS_PER_IFRAME = 5;
-
-        // Scope to .user_content container (LMS course content area)
         var contentEl = document.querySelector('.user_content');
         if (!contentEl) return 0;
-
-        // Count words from text content
         var textContent = contentEl.textContent || '';
         var words = textContent.trim().split(/\s+/).filter(function (w) { return w.length > 0; }).length;
         var readMins = words / WORDS_PER_MIN;
-
-        // Count images
         var imageCount = contentEl.querySelectorAll('img').length;
         var imageMins = (imageCount * SECS_PER_IMAGE) / 60;
-
-        // Sum video durations from data-duration attributes (in seconds)
         var videoMins = 0;
         contentEl.querySelectorAll('[data-duration]').forEach(function (el) {
             videoMins += (parseInt(el.dataset.duration, 10) || 0) / 60;
         });
-
-        // Sum timecodes from .ylms-time-code elements (format: "M.SS" e.g. "1.31" = 1 min 31 sec)
         var timecodeMins = 0;
         document.querySelectorAll('.ylms-time-code').forEach(function (el) {
             var text = el.textContent.trim();
             var match = text.match(/(\d+)\.(\d+)/);
             if (match) {
-                var mins = parseInt(match[1], 10) || 0;
-                var secs = parseInt(match[2], 10) || 0;
-                timecodeMins += mins + (secs / 60);
+                timecodeMins += (parseInt(match[1], 10) || 0) + ((parseInt(match[2], 10) || 0) / 60);
             }
         });
-
-        // Count iframes (interactive exercises) - 5 min each
         var iframeCount = contentEl.querySelectorAll('iframe').length;
         var iframeMins = iframeCount * MINS_PER_IFRAME;
-
         var totalMins = Math.ceil(readMins + imageMins + videoMins + timecodeMins + iframeMins);
         if (totalMins < 1) totalMins = 1;
-
         return totalMins;
     }
 
@@ -285,9 +264,6 @@
     }
 
     function parseProgress(value) {
-        // Format: "step" or "step-substepCount-activeSubstep"
-        // e.g. "4" = step 4, no substeps
-        // e.g. "4-3-1" = step 4, 3 substeps, active substep 1
         if (!value) return { step: 1, substepCount: 1, substep: 1 };
         var parts = value.split('-').map(function (p) { return parseInt(p, 10); });
         return {
@@ -297,26 +273,15 @@
         };
     }
 
-    // Module header content registry
-    var moduleHeaders = {
-        '1': {
-            bgImage: '/courses/548/files/20031/preview',
-            bgImageAlt: 'module-1-cutout.png',
-            logoImage: '/courses/548/files/20032/preview',
-            logoImageAlt: 'White SOM logo circular',
-            title: 'Module 1',
-            subtitle: 'Anatomy, Alignment & Intention'
-        }
-    };
-
     function renderModuleHeader(container, moduleNum) {
         var header = moduleHeaders[moduleNum];
         if (!header) return false;
-
+        var d = headerDefaults;
+        var variantClass = 'ylms-img-blended ylms-img-blended--' + (header.animVariant || 'from-left');
         container.innerHTML =
-            '<img class="ylms-img-blended" src="' + header.bgImage + '" alt="' + header.bgImageAlt + '" />' +
+            '<img class="' + variantClass + '" src="' + header.bgImage + '" alt="' + header.bgImageAlt + '" />' +
             '<div class="ylms-header_container">' +
-            '<img class="ylms-header_logo" src="' + header.logoImage + '" alt="' + header.logoImageAlt + '" />' +
+            '<img class="ylms-header_logo" src="' + (header.logoImage || d.logoImage) + '" alt="' + (header.logoImageAlt || d.logoImageAlt) + '" />' +
             '<div>' +
             '<h1>' + header.title + '</h1>' +
             '<h2>' + header.subtitle + '</h2>' +
@@ -326,13 +291,13 @@
     }
 
     function init() {
-        // Check for module header container first
+        // Render module header if present
         var headerContainer = document.getElementById('ylms-header');
         if (headerContainer && headerContainer.dataset.module) {
             renderModuleHeader(headerContainer, headerContainer.dataset.module);
         }
 
-        // Reading-time-only mode: just show the badge, no progress bar
+        // Reading-time-only mode
         var readTimeOnly = document.getElementById('ylms-reading-time');
         if (readTimeOnly) {
             renderReadTime(readTimeOnly);
@@ -343,8 +308,6 @@
         var container = null;
         var moduleId = null;
         var lessons = null;
-
-        // Check for module containers (module1, module2, etc.)
         for (var key in moduleLessons) {
             var containerId = 'ylms-' + key + '-progress';
             var el = document.getElementById(containerId);
@@ -355,39 +318,30 @@
                 break;
             }
         }
-
         if (!container) {
             console.log('[YLMS-PB] No progress bar container found');
             return;
         }
 
-        // Store module reference
         currentState.moduleId = moduleId;
         currentState.lessons = lessons;
 
-        // Parse data-progress attribute (format: "step-substepCount-activeSubstep")
         var progress = parseProgress(container.dataset.progress);
         currentState.step = progress.step;
         currentState.substep = progress.substep;
 
-        // Set substep count on the current step's lesson
         var currentLesson = lessons[currentState.step - 1];
         if (currentLesson && progress.substepCount > 1) {
             currentLesson.substeps = progress.substepCount;
         }
 
-        // Create tabs from panels if they exist (overrides substep count)
         createTabsFromPanels(container);
 
-        // If no tabs were created, just render progress bar
         if (!document.querySelector('.ylms-tb_container')) {
             createProgressBar(container, lessons, currentState.step, currentState.substep);
         }
 
-        // Expose update function globally for tab integration
         window.ylmsUpdateSubstep = updateSubsteps;
-
-        // Render read time indicator
         renderReadTime(container);
     }
 

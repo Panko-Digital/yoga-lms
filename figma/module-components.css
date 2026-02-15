@@ -433,24 +433,101 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
-  object-position: 60% 70%;
   mix-blend-mode: darken;
   pointer-events: none;
   opacity: 0;
-  transform: translateY(0);
-  animation: ylms-header-fade-in 1.2s ease-out forwards;
+  animation-duration: 1.2s;
+  animation-timing-function: ease-out;
+  animation-fill-mode: forwards;
   animation-delay: 0.3s;
 }
 
-@keyframes ylms-header-fade-in {
+/* Variant 1: Slide in from left (default) */
+.ylms-img-blended--from-left {
+  object-position: 40% 90%;
+  animation-name: ylms-header-from-left;
+}
+
+@keyframes ylms-header-from-left {
   from {
     opacity: 0;
-    object-position: 40% 90%;
+    object-position: 20% 90%;
   }
 
   to {
     opacity: 0.9;
     object-position: 60% 50%;
+  }
+}
+
+/* Variant 2: Slide in from right */
+.ylms-img-blended--from-right {
+  object-position: 80% 90%;
+  animation-name: ylms-header-from-right;
+}
+
+@keyframes ylms-header-from-right {
+  from {
+    opacity: 0;
+    object-position: 100% 90%;
+  }
+
+  to {
+    opacity: 0.9;
+    object-position: 40% 50%;
+  }
+}
+
+/* Variant 3: Rise from bottom */
+.ylms-img-blended--from-bottom {
+  object-position: 60% 100%;
+  animation-name: ylms-header-from-bottom;
+}
+
+@keyframes ylms-header-from-bottom {
+  from {
+    opacity: 0;
+    object-position: 60% 100%;
+  }
+
+  to {
+    opacity: 0.9;
+    object-position: 60% 50%;
+  }
+}
+
+/* Variant 4: Fade in with zoom */
+.ylms-img-blended--zoom {
+  object-position: 50% 50%;
+  transform: scale(1.3);
+  animation-name: ylms-header-zoom;
+}
+
+@keyframes ylms-header-zoom {
+  from {
+    opacity: 0;
+    transform: scale(1.3);
+  }
+
+  to {
+    opacity: 0.9;
+    transform: scale(1);
+  }
+}
+
+/* Variant 5: Plain fade */
+.ylms-img-blended--fade {
+  object-position: 60% 50%;
+  animation-name: ylms-header-fade;
+}
+
+@keyframes ylms-header-fade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 0.9;
   }
 }
 
