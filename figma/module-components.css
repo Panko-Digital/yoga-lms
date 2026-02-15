@@ -436,7 +436,7 @@
   mix-blend-mode: darken;
   pointer-events: none;
   opacity: 0;
-  animation-duration: 1.2s;
+  animation-duration: 2.4s;
   animation-timing-function: ease-out;
   animation-fill-mode: forwards;
   animation-delay: 0.3s;
@@ -469,12 +469,12 @@
 @keyframes ylms-header-from-right {
   from {
     opacity: 0;
-    object-position: 100% 90%;
+    object-position: 140% 90%;
   }
 
   to {
     opacity: 0.9;
-    object-position: 40% 50%;
+    object-position: 70% 50%;
   }
 }
 
