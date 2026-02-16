@@ -11,7 +11,7 @@
             { short: "Locations", full: "Locations of Structures on the Body" },
             { short: "Pose", full: "Pose with Movements" },
             { short: "Positions", full: "Positions and Curvatures of the Spine and Pelvis" },
-            { short: "Bone Tisue", full: "Structure of Bone Tissue" },
+            { short: "Bone Tissue", full: "Structure of Bone Tissue" },
             { short: "Skeleton", full: "The Axial and Appendicular Skeletons" },
             { short: "Joints", full: "Joints in the Skeletal System" },
             { short: "Variable", full: "Variable Anatomy" },
@@ -39,6 +39,13 @@
     };
 
     var moduleHeaders = {
+        '0': {
+            bgImage: '/courses/548/files/20031/preview',
+            bgImageAlt: 'module-1-cutout.png',
+            title: 'Course Orientation',
+            subtitle: 'Asana Library',
+            animVariant: 'from-left'
+        },
         '1': {
             bgImage: '/courses/548/files/20031/preview',
             bgImageAlt: 'module-1-cutout.png',
@@ -345,6 +352,70 @@
         renderReadTime(container);
     }
 
+    function initAttachments() {
+        var contentEl = document.querySelector('.user_content');
+        if (!contentEl) return;
+
+        var links = contentEl.querySelectorAll('a[href*="/files/"]');
+        if (links.length === 0) return;
+
+        // Dedupe by file ID extracted from URL path
+        var seen = {};
+        var items = [];
+        var stripWords = /\b(download|view|click|open|here|file|preview|the|this|a|an)\b/gi;
+        links.forEach(function (link) {
+            var href = link.href;
+            var match = href.match(/\/files\/(\d+)/);
+            var fileId = match ? match[1] : href;
+            if (seen[fileId]) return;
+            seen[fileId] = true;
+            var text = link.textContent.trim()
+                .replace(stripWords, '')
+                .replace(/\s{2,}/g, ' ')
+                .trim();
+            items.push({
+                href: href,
+                text: text || 'File'
+            });
+        });
+
+        if (items.length === 0) return;
+
+        // Build panel
+        var panel = document.createElement('div');
+        panel.className = 'ylms-att_panel';
+
+        var collapsed = localStorage.getItem('ylms-att-collapsed') === 'true';
+        if (collapsed) panel.classList.add('ylms-att_collapsed');
+
+        var header = '<div class="ylms-att_header">' +
+            '<span class="ylms-att_title">Resources</span>' +
+            '<button class="ylms-att_toggle" aria-label="Toggle resources">' +
+            '<span class="ylms-att_arrow"></span>' +
+            '</button>' +
+            '</div>';
+
+        var listHtml = items.map(function (item) {
+            return '<a class="ylms-att_link" href="' + item.href + '" target="_blank">' + item.text + '</a>';
+        }).join('');
+
+        panel.innerHTML = header + '<div class="ylms-att_list">' + listHtml + '</div>';
+        document.body.appendChild(panel);
+
+        // Toggle handler
+        panel.querySelector('.ylms-att_toggle').addEventListener('click', function () {
+            var isCollapsed = panel.classList.toggle('ylms-att_collapsed');
+            localStorage.setItem('ylms-att-collapsed', isCollapsed);
+        });
+
+        panel.querySelector('.ylms-att_header').addEventListener('click', function (e) {
+            if (e.target.closest('.ylms-att_toggle')) return;
+            var isCollapsed = panel.classList.toggle('ylms-att_collapsed');
+            localStorage.setItem('ylms-att-collapsed', isCollapsed);
+        });
+    }
+
     setTimeout(init, 250);
+    setTimeout(initAttachments, 500);
 
 })();

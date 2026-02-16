@@ -4,8 +4,25 @@ import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
+function extractStrings(src) {
+    // Replace string literals with placeholders to protect them
+    const strings = [];
+    const placeholder = src.replace(/(["'])(?:(?!\1|\\).|\\.)*\1/g, function (match) {
+        strings.push(match);
+        return '___STR' + (strings.length - 1) + '___';
+    });
+    return { placeholder, strings };
+}
+
+function restoreStrings(src, strings) {
+    return src.replace(/___STR(\d+)___/g, function (_, i) {
+        return strings[parseInt(i)];
+    });
+}
+
 function minifyJS(src) {
-    let out = src
+    const { placeholder, strings } = extractStrings(src);
+    let out = placeholder
         .replace(/\/\*[\s\S]*?\*\//g, '')
         .replace(/\/\/.*$/gm, '');
     out = out
@@ -14,12 +31,20 @@ function minifyJS(src) {
         .replace(/\s+$/gm, '')
         .replace(/\s*([{}();,=+\-<>!&|?:])\s*/g, '$1')
         .replace(/\n/g, '');
-    return out;
+    return restoreStrings(out, strings);
 }
 
 function minifyCSS(src) {
     let out = src
         .replace(/\/\*[\s\S]*?\*\//g, '');
+
+    // Protect content inside CSS functions (clamp, calc, etc.)
+    const funcs = [];
+    out = out.replace(/\b(clamp|calc|min|max|env)\(([^)]*)\)/g, function (match) {
+        funcs.push(match);
+        return '___FN' + (funcs.length - 1) + '___';
+    });
+
     out = out
         .replace(/\n\s*\n/g, '\n')
         .replace(/^\s+/gm, '')
@@ -27,6 +52,12 @@ function minifyCSS(src) {
         .replace(/\s*([{}:;,>~+])\s*/g, '$1')
         .replace(/;}/g, '}')
         .replace(/\n/g, '');
+
+    // Restore CSS functions
+    out = out.replace(/___FN(\d+)___/g, function (_, i) {
+        return funcs[parseInt(i)];
+    });
+
     return out;
 }
 
