@@ -517,7 +517,8 @@
 
 /* Variant 5: Plain fade */
 .ylms-img-blended--fade {
-  object-position: 60% 50%;
+  object-fit: cover;
+  object-position: center;
   animation-name: ylms-header-fade;
 }
 
@@ -539,8 +540,8 @@
 }
 
 .ylms-header_logo {
-  height: 110px;
-  width: 110px;
+  height: 128px;
+  width: 128px;
   margin-right: 20px;
   display: block;
   opacity: 0;
@@ -564,7 +565,7 @@
 .ylms-header_container h1 {
   font-family: 'ITC Garamond Condensed', Georgia, 'Times New Roman', serif;
   color: white;
-  font-size: 90px;
+  font-size: clamp(3.4rem, 2.8rem + 1.8vw, 5.2rem) !important;
   font-weight: lighter;
   margin: 10px 0 0 0;
   line-height: 1;
@@ -576,7 +577,7 @@
 .ylms-header_container h2 {
   font-family: 'ITC Garamond Condensed', Georgia, 'Times New Roman', serif;
   color: white;
-  font-size: 50px;
+  font-size: clamp(2.25rem, 1.85rem + 1.44vw, 3.25rem) !important;
   font-style: italic;
   font-weight: lighter;
   margin: -12px 0 0 0;
@@ -606,6 +607,15 @@
   .ylms-pb_substeps {
     display: none;
   }
+
+}
+
+/* Mobile: Crunch of Titles below 900px width could look prettier */
+@media (max-width: 767px) {
+  .ylms-header_container h1 {
+    line-height: 0.8;
+    margin-bottom: 0.3em;
+  }
 }
 
 .user_content .link_holder a[title="Link"] {
@@ -621,7 +631,28 @@
 }
 
 .user_content .link_holder a[title="Link"]:hover {
-  transform: scale(1.05);
+  transform: scale(1.02);
+}
+
+.user_content a.file_download_btn {
+  background: #6c7684;
+  padding: 0.5em 1em;
+  display: inline-flex;
+  justify-content: space-between;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  transition: all 0.3s ease;
+  color: white !important;
+  text-decoration: none !important;
+  min-width: 375px;
+}
+
+.user_content a.file_download_btn::before {
+  content: "Download ";
+}
+
+.user_content a.file_download_btn:hover {
+  transform: scale(1.02);
 }
 
 /* Course Attachments Panel - ylms-att_ prefix */

@@ -39,12 +39,18 @@
     };
 
     var moduleHeaders = {
-        '0': {
-            bgImage: '/courses/548/files/20031/preview',
-            bgImageAlt: 'module-1-cutout.png',
+        '0-1': {
+            bgImage: '/courses/548/files/20075/preview',
+            bgImageAlt: 'module-0-bg-1.jpg',
             title: 'Course Orientation',
             subtitle: 'Asana Library',
-            animVariant: 'from-left'
+            animVariant: 'fade'
+        }, '0-2': {
+            bgImage: '/courses/548/files/20072/preview',
+            bgImageAlt: 'module-0-bg-1.jpg',
+            title: 'Course Orientation',
+            subtitle: 'Asana Library',
+            animVariant: 'fade'
         },
         '1': {
             bgImage: '/courses/548/files/20031/preview',
