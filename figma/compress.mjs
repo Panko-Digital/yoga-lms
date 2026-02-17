@@ -1,6 +1,7 @@
 import { readFileSync, writeFileSync } from 'fs';
-import { dirname, join, basename, extname } from 'path';
+import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
+import { execSync } from 'child_process';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -34,46 +35,28 @@ function minifyJS(src) {
     return restoreStrings(out, strings);
 }
 
-function minifyCSS(src) {
-    let out = src
-        .replace(/\/\*[\s\S]*?\*\//g, '');
-
-    // Protect content inside CSS functions (clamp, calc, etc.)
-    const funcs = [];
-    out = out.replace(/\b(clamp|calc|min|max|env)\(([^)]*)\)/g, function (match) {
-        funcs.push(match);
-        return '___FN' + (funcs.length - 1) + '___';
-    });
-
-    out = out
-        .replace(/\n\s*\n/g, '\n')
-        .replace(/^\s+/gm, '')
-        .replace(/\s+$/gm, '')
-        .replace(/\s*([{}:;,>~+])\s*/g, '$1')
-        .replace(/;}/g, '}')
-        .replace(/\n/g, '');
-
-    // Restore CSS functions
-    out = out.replace(/___FN(\d+)___/g, function (_, i) {
-        return funcs[parseInt(i)];
-    });
-
-    return out;
-}
-
-function compress(filename) {
+function compressJS(filename) {
     const input = join(__dirname, filename);
-    const ext = extname(filename);
-    const name = basename(filename, ext);
-    const output = join(__dirname, name + '.min' + ext);
+    const output = join(__dirname, 'module-components.min.js');
 
-    const src = readFileSync(input, 'utf8');
-    const out = ext === '.css' ? minifyCSS(src) : minifyJS(src);
+    let src = readFileSync(input, 'utf8');
 
+    // Blank out imageBaseLocal for deployed build (LMS serves relative paths)
+    src = src.replace(/(var\s+imageBaseLocal\s*=\s*)(["'])(?:(?!\2|\\).|\\.)*\2/, "$1''");
+
+    const out = minifyJS(src);
     writeFileSync(output, out, 'utf8');
     const pct = ((1 - out.length / src.length) * 100).toFixed(1);
-    console.log(`${filename} → ${name}.min${ext}  (${src.length} → ${out.length} bytes, ${pct}% smaller)`);
+    console.log(`${filename} → module-components.min.js  (${src.length} → ${out.length} bytes, ${pct}% smaller)`);
 }
 
-compress('module-components.js');
-compress('module-components.css');
+compressJS('module-components.js');
+
+// Compile SCSS → compressed CSS
+const scssInput = join(__dirname, 'module-components.scss');
+const cssOutput = join(__dirname, 'module-components.min.css');
+execSync(`npx sass "${scssInput}" "${cssOutput}" --style=compressed --no-source-map`);
+const scssSize = readFileSync(scssInput, 'utf8').length;
+const cssSize = readFileSync(cssOutput, 'utf8').length;
+const cssPct = ((1 - cssSize / scssSize) * 100).toFixed(1);
+console.log(`module-components.scss → module-components.min.css  (${scssSize} → ${cssSize} bytes, ${cssPct}% smaller)`);

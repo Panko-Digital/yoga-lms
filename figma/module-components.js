@@ -38,18 +38,34 @@
         logoImageAlt: 'White SOM logo circular'
     };
 
+    var imageBaseLocal = 'https://coreplus.instructure.com';
+
     var moduleHeaders = {
         '0-1': {
+            bgImage: '/courses/548/files/20074/preview',
+            bgImageAlt: 'module-0-bg-2.jpg',
+            title: 'Course Orientation',
+            subtitle: 'Course Essentials',
+            animVariant: 'fade'
+        }, '0-2': {
             bgImage: '/courses/548/files/20075/preview',
             bgImageAlt: 'module-0-bg-1.jpg',
             title: 'Course Orientation',
             subtitle: 'Asana Library',
             animVariant: 'fade'
-        }, '0-2': {
-            bgImage: '/courses/548/files/20072/preview',
+        },
+        '0-3': {
+            bgImage: '/courses/548/files/20075/preview',
             bgImageAlt: 'module-0-bg-1.jpg',
             title: 'Course Orientation',
-            subtitle: 'Asana Library',
+            subtitle: 'Additional Resources',
+            animVariant: 'fade'
+        },
+        '0-4': {
+            bgImage: '/courses/548/files/20104/preview',
+            bgImageAlt: 'module-0-bg-4.jpg',
+            title: 'Course Orientation',
+            subtitle: 'Intro to Yoga',
             animVariant: 'fade'
         },
         '1': {
@@ -152,11 +168,12 @@
         }).join('');
 
         var rightClass = currentStep > totalSteps ? 'ylms-pb_right ylms-pb_complete' : 'ylms-pb_right';
-        var containerMaxWidth = Math.min(1400, Math.max(400, totalSteps * 100));
+        var containerMaxWidth = totalSteps <= 6 ? totalSteps * 72 : Math.min(1400, totalSteps * 100);
+        var containerPad = totalSteps <= 6 ? 24 : 32;
 
         container.innerHTML =
-            '<div class="ylms-pb_wrapper">' +
-            '<div class="ylms-pb_steps-container" style="--ylms-pb-previous: ' + previousProgress + '; --ylms-pb-current: ' + (previousProgress + segmentWidth) + '; max-width: ' + containerMaxWidth + 'px">' +
+            '<div class="ylms-pb_wrapper" data-steps="' + totalSteps + '">' +
+            '<div class="ylms-pb_steps-container" style="--ylms-pb-previous: ' + previousProgress + '; --ylms-pb-current: ' + (previousProgress + segmentWidth) + '; --ylms-pb-pad: ' + containerPad + 'px; max-width: ' + containerMaxWidth + 'px">' +
             '<div class="ylms-pb_track"></div>' +
             '<div class="ylms-pb_left"></div>' +
             '<div class="ylms-pb_fill-static"></div>' +
@@ -387,37 +404,39 @@
 
         if (items.length === 0) return;
 
-        // Build panel
-        var panel = document.createElement('div');
-        panel.className = 'ylms-att_panel';
+        var headerEl = document.getElementById('ylms-header');
+        if (!headerEl) return;
 
-        var collapsed = localStorage.getItem('ylms-att-collapsed') === 'true';
-        if (collapsed) panel.classList.add('ylms-att_collapsed');
-
-        var header = '<div class="ylms-att_header">' +
-            '<span class="ylms-att_title">Resources</span>' +
-            '<button class="ylms-att_toggle" aria-label="Toggle resources">' +
-            '<span class="ylms-att_arrow"></span>' +
-            '</button>' +
-            '</div>';
+        var dlIcon = '<svg class="ylms-att_icon" viewBox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg"><path d="m1807.093 1482.477 79.736 79.963-355.313 355.312H355.346L.035 1562.44l79.85-79.963 322.22 322.334H1484.76l322.334-322.334ZM997.677-.033v1167.02l355.313-355.313 79.962 79.85-491.858 491.633L449.46 891.524l79.962-79.85 355.313 355.313V-.033h112.941Z" fill-rule="evenodd"/></svg>';
 
         var listHtml = items.map(function (item) {
-            return '<a class="ylms-att_link" href="' + item.href + '" target="_blank">' + item.text + '</a>';
+            return '<a class="ylms-att_link" href="' + item.href + '" target="_blank">' + dlIcon + item.text + '</a>';
         }).join('');
 
-        panel.innerHTML = header + '<div class="ylms-att_list">' + listHtml + '</div>';
-        document.body.appendChild(panel);
+        var widget = document.createElement('div');
+        widget.className = 'ylms-att_widget';
+        widget.innerHTML =
+            '<button class="ylms-att_btn" aria-label="Downloads">' +
+            dlIcon +
+            '<span class="ylms-att_badge">' + items.length + '</span>' +
+            '</button>' +
+            '<div class="ylms-att_dropdown">' +
+            '<div class="ylms-att_dropdown-header">Downloads</div>' +
+            listHtml +
+            '</div>';
 
-        // Toggle handler
-        panel.querySelector('.ylms-att_toggle').addEventListener('click', function () {
-            var isCollapsed = panel.classList.toggle('ylms-att_collapsed');
-            localStorage.setItem('ylms-att-collapsed', isCollapsed);
+        headerEl.appendChild(widget);
+
+        var btn = widget.querySelector('.ylms-att_btn');
+        btn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            widget.classList.toggle('ylms-att_open');
         });
 
-        panel.querySelector('.ylms-att_header').addEventListener('click', function (e) {
-            if (e.target.closest('.ylms-att_toggle')) return;
-            var isCollapsed = panel.classList.toggle('ylms-att_collapsed');
-            localStorage.setItem('ylms-att-collapsed', isCollapsed);
+        document.addEventListener('click', function (e) {
+            if (!widget.contains(e.target)) {
+                widget.classList.remove('ylms-att_open');
+            }
         });
     }
 

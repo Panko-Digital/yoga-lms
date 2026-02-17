@@ -71,3 +71,21 @@ export default defineConfig([
   },
 ])
 ```
+
+## Figma / LMS Components (`figma/`)
+
+### SCSS Workflow
+
+The CSS for the LMS module components is authored in `figma/module-components.scss`.
+
+**Watch for changes** (recompiles on save):
+
+```sh
+npx sass --watch figma/module-components.scss:figma/module-components.min.css --style=compressed --no-source-map
+```
+
+**Build for production** (minifies JS with LMS path swapping + compiles SCSS):
+
+```sh
+node figma/compress.mjs
+```

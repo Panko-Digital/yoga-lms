@@ -1,0 +1,819 @@
+// ─── Variables ───
+$font-heading: 'ITC Garamond Condensed', Georgia, 'Times New Roman', serif;
+$font-body: 'Banana Grotesk Regular', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+$font-system: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+$blue: #327fef;
+$blue-dark: #023f94;
+$blue-darker: #023076;
+$gray: #6c7684;
+$gray-light: #ccc;
+$border-light: #eef1f5;
+$radius: 6px;
+
+// ─── Font Faces ───
+@font-face {
+  font-family: 'ITC Garamond Condensed';
+  src: url('https://yoga-lms.netlify.app/fonts/itc-garamond-cond.static.woff2') format('woff2'),
+    url('https://yoga-lms.netlify.app/fonts/itc-garamond-cond.static.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Banana Grotesk Regular';
+  src: url('https://yoga-lms.netlify.app/fonts/BananaGrotesk-Regular.woff2') format('woff2'),
+    url('https://yoga-lms.netlify.app/fonts/BananaGrotesk-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+// ─── User Content ───
+.user_content {
+  --text-max-width: 60rem;
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: $font-heading;
+  }
+
+  p, li, button {
+    font-family: $font-body;
+  }
+
+  h1 {
+    font-size: clamp(2.4rem, 1.92rem + 1.44vw, 3.6rem) !important;
+    line-height: 1.2;
+    max-width: 93.5ch;
+  }
+
+  h2 {
+    font-size: clamp(2.1rem, 1.68rem + 1.08vw, 2.88rem) !important;
+    line-height: 1.25;
+    max-width: 93.5ch;
+    margin-top: 20px;
+    color: #000;
+    font-weight: bold;
+  }
+
+  h3 {
+    font-size: clamp(1.68rem, 1.44rem + 0.72vw, 2.16rem) !important;
+    line-height: 1.3;
+    max-width: var(--text-max-width);
+    color: #000;
+    font-weight: bold;
+  }
+
+  h4 {
+    font-size: clamp(1.44rem, 1.32rem + 0.36vw, 1.68rem) !important;
+    max-width: var(--text-max-width);
+    color: #000;
+    font-weight: bold;
+    margin-top: 16px;
+  }
+
+  h5, h6 {
+    font-size: 1.32rem;
+    max-width: var(--text-max-width);
+  }
+
+  p, li {
+    font-size: clamp(1rem, 0.9rem + 0.4vw, 1.125rem) !important;
+    line-height: 1.4;
+    max-width: var(--text-max-width);
+  }
+
+  img {
+    border-radius: $radius;
+  }
+
+  // Link buttons
+  .link_holder a[title="Link"] {
+    background: $blue;
+    padding: 0.5em 1em;
+    display: inline-block;
+    border-radius: $radius;
+    margin-bottom: 8px;
+    transition: all 0.3s ease;
+    color: white !important;
+    text-decoration: none !important;
+    min-width: 375px;
+
+    &:hover {
+      transform: scale(1.02);
+    }
+  }
+
+  a.file_download_btn {
+    background: $gray;
+    padding: 0.5em 1em;
+    display: inline-flex;
+    justify-content: space-between;
+    border-radius: $radius;
+    margin-bottom: 8px;
+    transition: all 0.3s ease;
+    color: white !important;
+    text-decoration: none !important;
+    min-width: 375px;
+
+    &::before {
+      content: "Download ";
+    }
+
+    &:hover {
+      transform: scale(1.02);
+    }
+  }
+
+  // Tables
+  table {
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+    border: none !important;
+    border-radius: $radius;
+    overflow: hidden;
+  }
+
+  td, th {
+    border: solid 1px #000 !important;
+    border-style: none solid solid none !important;
+  }
+
+  tr:first-child td,
+  tr:first-child th,
+  thead:first-child tr:first-child td,
+  thead:first-child tr:first-child th,
+  tbody:first-child tr:first-child td,
+  tbody:first-child tr:first-child th {
+    border-top-style: solid !important;
+  }
+
+  td:first-child,
+  th:first-child {
+    border-left-style: solid !important;
+  }
+
+  tr:first-child td:first-child,
+  tr:first-child th:first-child,
+  thead:first-child tr:first-child td:first-child,
+  thead:first-child tr:first-child th:first-child,
+  tbody:first-child tr:first-child td:first-child,
+  tbody:first-child tr:first-child th:first-child {
+    border-top-left-radius: $radius;
+  }
+
+  tr:first-child td:last-child,
+  tr:first-child th:last-child,
+  thead:first-child tr:first-child td:last-child,
+  thead:first-child tr:first-child th:last-child,
+  tbody:first-child tr:first-child td:last-child,
+  tbody:first-child tr:first-child th:last-child {
+    border-top-right-radius: $radius;
+  }
+
+  tr:last-child td:first-child,
+  tr:last-child th:first-child,
+  tbody:last-child tr:last-child td:first-child,
+  tbody:last-child tr:last-child th:first-child {
+    border-bottom-left-radius: $radius;
+  }
+
+  tr:last-child td:last-child,
+  tr:last-child th:last-child,
+  tbody:last-child tr:last-child td:last-child,
+  tbody:last-child tr:last-child th:last-child {
+    border-bottom-right-radius: $radius;
+  }
+}
+
+@media (min-width: 2200px) {
+  .user_content p,
+  .user_content li {
+    font-size: 1.15rem;
+  }
+}
+
+// ─── Global (non-scoped) ───
+.ic-app-header__menu-list li {
+  margin: 20px 0 !important;
+}
+
+// ─── Progress Bar ───
+.ylms-pb_wrapper {
+  --ylms-pb-content-width: calc(100% - 64px);
+  --ylms-pb-line-top: 16px;
+  position: relative;
+  padding: 20px 32px 10px 32px;
+  font-family: $font-system;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.ylms-pb_steps-container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 var(--ylms-pb-pad, 32px);
+  box-sizing: border-box;
+  position: relative;
+  z-index: 1;
+}
+
+.ylms-pb_track {
+  position: absolute;
+  top: var(--ylms-pb-line-top);
+  left: -100vw;
+  right: -100vw;
+  height: 2px;
+  background-color: $gray-light;
+  z-index: 0;
+}
+
+.ylms-pb_left {
+  position: absolute;
+  top: var(--ylms-pb-line-top);
+  left: -100vw;
+  right: calc(100% - var(--ylms-pb-pad, 32px));
+  height: 2px;
+  background-color: $blue;
+  z-index: 1;
+}
+
+.ylms-pb_fill-static {
+  position: absolute;
+  top: var(--ylms-pb-line-top);
+  left: var(--ylms-pb-pad, 32px);
+  height: 2px;
+  background-color: $blue;
+  width: calc((100% - var(--ylms-pb-pad, 32px) * 2) * var(--ylms-pb-previous, 0) / 100);
+  z-index: 1;
+}
+
+.ylms-pb_fill-animated {
+  position: absolute;
+  top: var(--ylms-pb-line-top);
+  left: calc(var(--ylms-pb-pad, 32px) + (100% - var(--ylms-pb-pad, 32px) * 2) * var(--ylms-pb-previous, 0) / 100);
+  width: calc((100% - var(--ylms-pb-pad, 32px) * 2) * (var(--ylms-pb-current, 0) - var(--ylms-pb-previous, 0)) / 100);
+  height: 2px;
+  background-color: $blue;
+  transform: scaleX(0);
+  transform-origin: left;
+  animation: ylms-pb_fillSegment 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation-delay: 0.2s;
+  z-index: 1;
+}
+
+@keyframes ylms-pb_fillSegment {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+.ylms-pb_right {
+  position: absolute;
+  top: var(--ylms-pb-line-top);
+  left: 100%;
+  right: -50vw;
+  height: 2px;
+  background-color: $gray-light;
+  z-index: 0;
+
+  &.ylms-pb_complete {
+    animation: ylms-pb_fadeToBlue 0.3s ease forwards;
+    animation-delay: 1.2s;
+  }
+}
+
+@keyframes ylms-pb_fadeToBlue {
+  from { background-color: $gray-light; }
+  to { background-color: $blue; }
+}
+
+.ylms-pb_steps {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  position: relative;
+  z-index: 2;
+}
+
+.ylms-pb_step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 0;
+  overflow: visible;
+}
+
+.ylms-pb_circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 500;
+  border: 2px solid #aaa;
+  background-color: #fff;
+  color: $gray;
+  box-sizing: border-box;
+
+  &.ylms-pb_active {
+    border-color: $blue;
+    background-color: white;
+    color: $blue;
+  }
+
+  &.ylms-pb_completed {
+    border-color: $blue;
+    background-color: $blue;
+    color: white;
+    transition: transform 0.2s ease;
+
+    &:hover {
+      transform: scale(1.15);
+    }
+  }
+}
+
+.ylms-pb_tick {
+  opacity: 1;
+  transform: scale(1);
+
+  &.ylms-pb_tick-animate {
+    opacity: 0;
+    transform: scale(0);
+    animation: ylms-pb_popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    animation-delay: 1.2s;
+  }
+}
+
+@keyframes ylms-pb_popIn {
+  0% { opacity: 0; transform: scale(0); }
+  50% { opacity: 1; transform: scale(1.3); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.ylms-pb_label {
+  font-family: $font-body;
+  font-size: clamp(0.625rem, 0.6rem + 0.1vw, 0.75rem) !important;
+  text-align: center;
+  line-height: 1.2;
+
+  &.ylms-pb_active {
+    color: $blue;
+  }
+}
+
+// Substep dots
+.ylms-pb_substeps {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+  margin-top: 4px;
+}
+
+.ylms-pb_substep {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: white;
+  border: 1.5px solid $blue;
+  box-sizing: border-box;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.ylms-pb_substep-active {
+  background: white;
+  border-color: $blue;
+}
+
+.ylms-pb_substep-completed {
+  background: $blue;
+  border-color: $blue;
+}
+
+// ─── Tab Bar ───
+.ylms-tb_container {
+  margin: 20px auto 0;
+  font-family: $font-system;
+}
+
+.ylms-tb_tabs {
+  display: flex;
+  gap: 4px;
+  padding-left: 16px;
+}
+
+.ylms-tb_tab {
+  padding: 12px 24px;
+  background: rgba($blue, 0.35);
+  border: none;
+  border-radius: 0;
+  color: $blue;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  position: relative;
+  transition: background-color 0.2s ease, color 0.2s ease;
+
+  &.ylms-tb_active {
+    background: $blue;
+    color: white;
+  }
+}
+
+.ylms-tb_panels {
+  background: white;
+  height: calc(100vh - 200px);
+  min-height: 300px;
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.ylms-tb_panel {
+  display: none;
+  padding: 24px;
+  height: 100%;
+  box-sizing: border-box;
+
+  &.ylms-tb_active {
+    display: block;
+  }
+}
+
+// ─── Read Time ───
+.ylms-pb_readtime {
+  display: inline-block;
+  margin: 8px 0 0 0;
+  padding: 4px 12px;
+  font-family: $font-system;
+  font-size: 12px;
+  color: $gray;
+  background: #f0f2f5;
+  border-radius: 12px;
+}
+
+#ylms-reading-time {
+  margin-top: 20px;
+}
+
+.ylms-iframe-wrapper {
+  width: 75%;
+
+  p { width: 100%; margin-bottom: 1em; }
+  div { width: 100%; margin-bottom: 1em; }
+}
+
+.ylms-time-code {
+  display: none;
+}
+
+// ─── Header ───
+#ylms-header {
+  height: 240px;
+  width: 100%;
+  background: linear-gradient(to right, $blue-dark, $blue, $blue-darker);
+  padding: 8px 0;
+  display: flex;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+.ylms-img-blended {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  mix-blend-mode: darken;
+  pointer-events: none;
+  opacity: 0;
+  animation-duration: 2.4s;
+  animation-timing-function: ease-out;
+  animation-fill-mode: forwards;
+  animation-delay: 0.3s;
+
+  &--from-left {
+    object-position: 40% 90%;
+    animation-name: ylms-header-from-left;
+  }
+
+  &--from-right {
+    object-position: 80% 90%;
+    animation-name: ylms-header-from-right;
+  }
+
+  &--from-bottom {
+    object-position: 60% 100%;
+    animation-name: ylms-header-from-bottom;
+  }
+
+  &--zoom {
+    object-position: 50% 50%;
+    transform: scale(1.3);
+    animation-name: ylms-header-zoom;
+  }
+
+  &--fade {
+    object-fit: cover;
+    object-position: center;
+    animation-name: ylms-header-fade;
+  }
+}
+
+@keyframes ylms-header-from-left {
+  from { opacity: 0; object-position: 20% 90%; }
+  to { opacity: 0.9; object-position: 60% 50%; }
+}
+
+@keyframes ylms-header-from-right {
+  from { opacity: 0; object-position: 140% 90%; }
+  to { opacity: 0.9; object-position: 70% 50%; }
+}
+
+@keyframes ylms-header-from-bottom {
+  from { opacity: 0; object-position: 60% 100%; }
+  to { opacity: 0.9; object-position: 60% 50%; }
+}
+
+@keyframes ylms-header-zoom {
+  from { opacity: 0; transform: scale(1.3); }
+  to { opacity: 0.9; transform: scale(1); }
+}
+
+@keyframes ylms-header-fade {
+  from { opacity: 0; }
+  to { opacity: 0.9; }
+}
+
+.ylms-header_container {
+  width: 80%;
+  display: flex;
+  align-items: center;
+  margin: 0 auto;
+
+  h1 {
+    font-family: $font-heading;
+    color: white;
+    font-size: clamp(3.4rem, 2.8rem + 1.8vw, 5.2rem) !important;
+    font-weight: lighter;
+    margin: 10px 0 0 0;
+    line-height: 1;
+    opacity: 0;
+    animation: ylms-heading-fade-in 0.8s ease-out forwards;
+    animation-delay: 0.5s;
+  }
+
+  h2 {
+    font-family: $font-heading;
+    color: white;
+    font-size: clamp(2.25rem, 1.85rem + 1.44vw, 3.25rem) !important;
+    font-style: italic;
+    font-weight: lighter;
+    margin: -12px 0 0 0;
+    line-height: 1;
+    opacity: 0;
+    animation: ylms-heading-fade-in 0.8s ease-out forwards;
+    animation-delay: 0.8s;
+  }
+}
+
+.ylms-header_logo {
+  height: 128px;
+  width: 128px;
+  margin-right: 20px;
+  display: block;
+  opacity: 0;
+  transform: rotate(-180deg);
+  animation: ylms-logo-spin-in 1.5s ease-out forwards;
+  animation-delay: 0.4s;
+}
+
+@keyframes ylms-logo-spin-in {
+  from { opacity: 0; transform: rotate(-30deg); }
+  to { opacity: 1; transform: rotate(0deg); }
+}
+
+@keyframes ylms-heading-fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+// ─── Attachments Widget ───
+.ylms-att_widget {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 10;
+  font-family: $font-system;
+  font-size: 13px;
+}
+
+.ylms-att_btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(white, 0.2);
+  border: 1px solid rgba(white, 0.4);
+  border-radius: $radius;
+  padding: 6px 10px;
+  cursor: pointer;
+  color: white;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: rgba(white, 0.35);
+  }
+
+  .ylms-att_icon {
+    width: 16px;
+    height: 16px;
+    fill: white;
+  }
+}
+
+.ylms-att_badge {
+  background: white;
+  color: $blue;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.ylms-att_dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 200px;
+  max-height: 0;
+  overflow: hidden;
+  background: white;
+  border-radius: $radius;
+  box-shadow: 0 4px 12px rgba(black, 0.15);
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: max-height 0.25s ease, opacity 0.2s ease, transform 0.2s ease;
+  pointer-events: none;
+}
+
+.ylms-att_open .ylms-att_dropdown {
+  max-height: 300px;
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+  overflow-y: auto;
+}
+
+.ylms-att_dropdown-header {
+  padding: 8px 12px;
+  font-weight: 600;
+  font-size: 12px;
+  color: $blue;
+  border-bottom: 1px solid $border-light;
+  letter-spacing: 0.5px;
+}
+
+.ylms-att_link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  color: $blue;
+  text-decoration: none;
+  text-transform: capitalize;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: background-color 0.15s ease;
+
+  & + & {
+    border-top: 1px solid $border-light;
+  }
+
+  &:hover {
+    background: #f0f6ff;
+  }
+}
+
+.ylms-att_icon {
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  fill: $gray;
+}
+
+// ─── Mobile ───
+@media (max-width: 767px) {
+  .user_content {
+    --text-max-width: 100%;
+
+    .link_holder a[title="Link"] {
+      min-width: 0 !important;
+      width: 90%;
+    }
+
+    a.file_download_btn {
+      min-width: 0 !important;
+      width: 90%;
+      margin-inline-start: 0 !important;
+    }
+  }
+
+  .ylms-pb_label {
+    display: none;
+  }
+
+  .ylms-pb_substeps {
+    display: none;
+  }
+
+  // Show tiny substep dots on mobile for 10+ steps
+  .ylms-pb_wrapper[data-steps="10"] .ylms-pb_substeps,
+  .ylms-pb_wrapper[data-steps="11"] .ylms-pb_substeps,
+  .ylms-pb_wrapper[data-steps="12"] .ylms-pb_substeps,
+  .ylms-pb_wrapper[data-steps="13"] .ylms-pb_substeps,
+  .ylms-pb_wrapper[data-steps="14"] .ylms-pb_substeps {
+    display: flex;
+    gap: 2px;
+    margin-top: 2px;
+
+    .ylms-pb_substep {
+      width: 4px;
+      height: 4px;
+      border-width: 1px;
+    }
+  }
+
+  .ylms-header_container {
+    width: 90%;
+
+    h1 {
+      line-height: 0.8;
+      margin-bottom: 0.3em;
+      font-size: 3rem !important;
+    }
+
+    h2 {
+      font-size: 1.4rem !important;
+    }
+  }
+
+  #ylms-header {
+    height: auto;
+    padding: 8px 0;
+  }
+
+  .ylms-iframe-wrapper {
+    width: 100%;
+  }
+
+  #ylms-reading-time {
+    margin-top: 12px;
+  }
+
+  .ylms-header_logo {
+    height: 70px;
+    width: 70px;
+    margin-right: 10px;
+  }
+
+  .ylms-pb_wrapper {
+    --ylms-pb-content-width: calc(100% - 8px);
+    --ylms-pb-line-top: 12px;
+    padding: 12px 8px 10px 8px;
+  }
+
+  .ylms-pb_steps-container {
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 8px;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 1;
+  }
+
+  .ylms-pb_step {
+    gap: 4px;
+  }
+
+  .ylms-pb_circle {
+    width: 24px;
+    height: 24px;
+    font-size: 10px;
+  }
+
+  .ylms-pb_track {
+    top: var(--ylms-pb-line-top);
+  }
+}
