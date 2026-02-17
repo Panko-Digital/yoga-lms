@@ -278,8 +278,15 @@
                 timecodeMins += (parseInt(match[1], 10) || 0) + ((parseInt(match[2], 10) || 0) / 60);
             }
         });
-        var iframeCount = contentEl.querySelectorAll('iframe').length;
-        var iframeMins = iframeCount * MINS_PER_IFRAME;
+        var iframes = contentEl.querySelectorAll('iframe');
+        var activityIframeCount = 0;
+        iframes.forEach(function (iframe) {
+            var src = iframe.src || '';
+            if (src.indexOf('genially.com') !== -1) {
+                activityIframeCount++;
+            }
+        });
+        var iframeMins = activityIframeCount * MINS_PER_IFRAME;
         var totalMins = Math.ceil(readMins + imageMins + videoMins + timecodeMins + iframeMins);
         if (totalMins < 1) totalMins = 1;
         return totalMins;
