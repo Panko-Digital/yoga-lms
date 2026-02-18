@@ -514,12 +514,6 @@
     }
 
     function init() {
-        // Ensure the content element has .user_content so CSS font rules apply
-        var contentEl = findContentEl();
-        if (contentEl && !contentEl.classList.contains('user_content')) {
-            contentEl.classList.add('user_content');
-        }
-
         // Render module header if present
         var headerContainer = document.getElementById('ylms-header');
         if (headerContainer && headerContainer.dataset.module) {
