@@ -729,8 +729,6 @@ $download-button-bg: #f8f8f8;
     }
 
     a.file_download_btn {
-      // min-width: 0 !important;
-      // width: 90%;
       margin-inline-start: 0 !important;
     }
   }
@@ -813,8 +811,8 @@ $download-button-bg: #f8f8f8;
   }
 
   .ylms-pb_circle {
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     font-size: 10px;
   }
 
@@ -1198,7 +1196,7 @@ $download-button-bg: #f8f8f8;
 
 @media (max-width: 475px) {
   .ylms-sg_modal {
-    padding: 16px 10px 14px;
+    padding: 16px 8px 14px;
     width: 98%;
     border-radius: 8px;
     min-height: 340px;
@@ -1214,25 +1212,38 @@ $download-button-bg: #f8f8f8;
     padding: 2px 2px;
   }
 
+  .ylms-sg_table {
+    table-layout: fixed;
+    width: 100%;
+  }
+
   .ylms-sg_table td {
-    padding: 6px 5px;
+    padding: 6px 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .ylms-sg_word {
-    font-size: 0.82rem;
+    font-size: 0.78rem;
+    width: 72px;
+    max-width: 72px;
   }
 
   .ylms-sg_iast {
-    font-size: 0.72rem;
+    font-size: 0.68rem;
+    width: 62px;
+    max-width: 62px;
   }
 
   .ylms-sg_meaning {
-    font-size: 0.75rem;
+    font-size: 0.73rem;
+    white-space: normal;
+    word-wrap: break-word;
   }
 
   .ylms-sg_letter-heading td {
     font-size: 1rem;
-    padding: 10px 5px 3px;
+    padding: 10px 4px 3px;
   }
 
   .ylms-sg_legend {
@@ -1243,5 +1254,9 @@ $download-button-bg: #f8f8f8;
 
   .ylms-sg_legend-col b {
     font-size: 0.76rem;
+  }
+
+  .ylms-sg_table-wrap {
+    overflow-x: hidden;
   }
 }

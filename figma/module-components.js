@@ -411,11 +411,36 @@
         createProgressBar(container, currentState.lessons, currentState.step, currentState.substep);
     }
 
+    // Find the main content element — try multiple selectors for Canvas web + mobile app
+    var contentSelectors = ['.user_content', '#content', '.page-content', '.show-content', '.entry-content', 'article', '[role="main"]'];
+    function findContentEl() {
+        for (var i = 0; i < contentSelectors.length; i++) {
+            var el = document.querySelector(contentSelectors[i]);
+            if (el && el.textContent.trim().length > 0) return el;
+        }
+        return null;
+    }
+
+    // Preload custom fonts via JS for mobile webviews that may not process @font-face reliably
+    function preloadFonts() {
+        var fonts = [
+            { family: 'ITC Garamond Condensed', src: 'url(https://yoga-lms.netlify.app/fonts/itc-garamond-cond.static.woff2) format("woff2"), url(https://yoga-lms.netlify.app/fonts/itc-garamond-cond.static.woff) format("woff")' },
+            { family: 'Banana Grotesk Regular', src: 'url(https://yoga-lms.netlify.app/fonts/BananaGrotesk-Regular.woff2) format("woff2"), url(https://yoga-lms.netlify.app/fonts/BananaGrotesk-Regular.woff) format("woff")' }
+        ];
+        if (typeof FontFace === 'undefined' || !document.fonts) return;
+        fonts.forEach(function (f) {
+            var face = new FontFace(f.family, f.src, { display: 'swap' });
+            face.load().then(function (loaded) {
+                document.fonts.add(loaded);
+            }).catch(function () { });
+        });
+    }
+
     function calculateReadTime() {
         var WORDS_PER_MIN = 200;
         var SECS_PER_IMAGE = 10;
         var MINS_PER_IFRAME = 5;
-        var contentEl = document.querySelector('.user_content');
+        var contentEl = findContentEl();
         if (!contentEl) return 0;
         var textContent = contentEl.textContent || '';
         var words = textContent.trim().split(/\s+/).filter(function (w) { return w.length > 0; }).length;
@@ -448,8 +473,13 @@
         return totalMins;
     }
 
-    function renderReadTime(container) {
+    function renderReadTime(container, retries) {
         var mins = calculateReadTime();
+        if (mins === 0 && (retries || 0) < 5) {
+            setTimeout(function () { renderReadTime(container, (retries || 0) + 1); }, 500);
+            return;
+        }
+        if (mins < 1) mins = 1;
         var badge = document.createElement('div');
         badge.className = 'ylms-pb_readtime';
         badge.textContent = mins + ' min';
@@ -539,7 +569,7 @@
     }
 
     function initAttachments() {
-        var contentEl = document.querySelector('.user_content');
+        var contentEl = findContentEl();
         if (!contentEl) return;
 
         var links = contentEl.querySelectorAll('a[href*="/files/"]');
@@ -623,8 +653,14 @@
         words.sort(function (a, b) { return b.length - a.length; });
         var pattern = new RegExp('\\b(' + words.join('|') + ')\\b', 'gi');
 
-        // Scan text nodes in panels and user_content
-        var containers = document.querySelectorAll('[data-panel], .user_content');
+        // Scan text nodes in panels and content area
+        var contentEl = findContentEl();
+        var containers = document.querySelectorAll('[data-panel]');
+        if (contentEl) {
+            var panelContainers = Array.prototype.slice.call(containers);
+            panelContainers.push(contentEl);
+            containers = panelContainers;
+        }
         if (containers.length === 0) {
             containers = document.querySelectorAll('body');
         }
@@ -887,6 +923,7 @@
         }
     }
 
+    preloadFonts();
     setTimeout(init, 250);
     setTimeout(initAttachments, 500);
     setTimeout(initSanskritGlossary, 600);
