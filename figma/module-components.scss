@@ -364,6 +364,7 @@ $download-button-bg: #f8f8f8;
   font-size: clamp(0.625rem, 0.6rem + 0.1vw, 0.75rem) !important;
   text-align: center;
   line-height: 1.2;
+  min-width: 80px;
 
   &.ylms-pb_active {
     color: $blue;
@@ -819,5 +820,428 @@ $download-button-bg: #f8f8f8;
 
   .ylms-pb_track {
     top: var(--ylms-pb-line-top);
+  }
+}
+
+// ─── Sanskrit Glossary ───
+.ylms-sanskrit {
+  text-decoration: underline;
+  text-decoration-color: $blue;
+  text-underline-offset: 3px;
+  cursor: pointer;
+  transition: color 0.2s ease;
+
+  &:hover,
+  &:focus {
+    color: $blue;
+    outline: none;
+  }
+}
+
+.ylms-sg_overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+
+  &.ylms-sg_visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+.ylms-sg_modal {
+  background: $blue-dark;
+  color: white;
+  border-radius: 12px;
+  padding: 36px 40px 32px;
+  width: 90%;
+  max-width: 740px;
+  min-height: 520px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+  transform: translateY(20px);
+  transition: transform 0.25s ease;
+
+  .ylms-sg_visible & {
+    transform: translateY(0);
+  }
+}
+
+.ylms-sg_close {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 28px;
+  cursor: pointer;
+  line-height: 1;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background 0.2s ease;
+
+  &:hover,
+  &:focus {
+    background: rgba(white, 0.15);
+    outline: none;
+  }
+}
+
+.ylms-sg_title {
+  font-family: $font-heading !important;
+  font-size: 2rem !important;
+  font-weight: normal;
+  color: white !important;
+  margin: 0 0 20px 0;
+}
+
+.ylms-sg_table-wrap {
+  overflow-x: auto;
+  overflow-y: auto;
+  flex: 1 1 0;
+  min-height: 0;
+}
+
+// ─── Letter heading rows ───
+.ylms-sg_letter-heading {
+  td {
+    font-family: $font-heading;
+    font-size: 1.4rem;
+    font-weight: normal;
+    color: rgba(white, 0.5);
+    padding: 18px 16px 6px;
+    border: none !important;
+    letter-spacing: 1px;
+  }
+}
+
+// ─── A–Z letter bar ───
+.ylms-sg_az-bar {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0;
+  margin-bottom: 16px;
+  justify-content: center;
+}
+
+.ylms-sg_az-tab {
+  background: none;
+  border: none;
+  color: rgba(white, 0.7);
+  font-family: $font-system;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 4px 5px;
+  cursor: pointer;
+  transition: color 0.15s ease;
+  border-bottom: 2px solid transparent;
+
+  &:hover:not(.ylms-sg_az-disabled) {
+    color: white;
+  }
+
+  &.ylms-sg_az-active {
+    color: white;
+    border-bottom-color: white;
+  }
+
+  &.ylms-sg_az-disabled {
+    opacity: 0.25;
+    cursor: default;
+  }
+}
+
+.ylms-sg_table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: $font-body;
+  font-size: 0.95rem;
+
+  thead th {
+    text-align: left;
+    padding: 10px 16px;
+    border-bottom: 2px solid rgba(white, 0.3);
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: rgba(white, 0.7);
+  }
+
+  tbody tr {
+    border-bottom: 1px solid rgba(white, 0.12);
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  td {
+    padding: 12px 16px;
+    vertical-align: top;
+    border: none !important;
+  }
+}
+
+.ylms-sg_word {
+  font-weight: 700;
+  white-space: nowrap;
+  width: 130px;
+  font-size: 1.05rem;
+}
+
+.ylms-sg_iast {
+  font-size: 0.95rem;
+  font-weight: normal;
+  color: rgba(white, 0.6);
+  white-space: nowrap;
+  width: 110px;
+}
+
+.ylms-sg_meaning {
+  color: rgba(white, 0.9);
+  line-height: 1.45;
+}
+
+.ylms-sg_highlight {
+  background: rgba(white, 0.15);
+  border-radius: 4px;
+
+  .ylms-sg_word {
+    color: #fff;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+}
+
+// ─── Diacritics legend ───
+.ylms-sg_legend {
+  margin-top: 12px;
+  font-family: $font-system;
+  font-size: 0.8rem;
+  color: rgba(white, 0.6);
+
+  summary {
+    cursor: pointer;
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    color: rgba(white, 0.5);
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: color 0.2s ease;
+
+    &::-webkit-details-marker { display: none; }
+
+    &::before {
+      content: '▸';
+      display: inline-block;
+      transition: transform 0.2s ease;
+    }
+
+    &:hover { color: rgba(white, 0.8); }
+  }
+
+  &[open] summary::before {
+    transform: rotate(90deg);
+  }
+}
+
+.ylms-sg_legend-body {
+  display: flex;
+  gap: 24px;
+  margin-top: 10px;
+  padding: 12px 0 4px;
+  border-top: 1px solid rgba(white, 0.1);
+}
+
+.ylms-sg_legend-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  b {
+    font-weight: 600;
+    color: rgba(white, 0.85);
+    font-size: 0.88rem;
+  }
+
+  i {
+    color: rgba(white, 0.5);
+  }
+}
+
+// ─── Sanskrit header button ───
+.ylms-sg_header-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(white, 0.2);
+  border: 1px solid rgba(white, 0.4);
+  border-radius: $radius;
+  padding: 6px 10px;
+  cursor: pointer;
+  color: white;
+  font-family: $font-system;
+  font-size: 13px;
+  transition: background 0.2s ease;
+
+  .ylms-att_icon {
+    width: 16px;
+    height: 16px;
+    fill: white;
+  }
+
+  &:hover {
+    background: rgba(white, 0.35);
+  }
+
+  // When downloads widget exists, push below it
+  .ylms-att_widget ~ & {
+    top: 48px;
+  }
+}
+
+@media (max-width: 767px) {
+  .ylms-sg_modal {
+    padding: 20px 14px 18px;
+    width: 96%;
+    min-height: 380px;
+    max-height: 85vh;
+  }
+
+  .ylms-sg_title {
+    font-size: 1.6rem !important;
+    margin-bottom: 12px;
+  }
+
+  .ylms-sg_az-bar {
+    margin-bottom: 10px;
+  }
+
+  .ylms-sg_az-tab {
+    font-size: 11px;
+    padding: 3px 3px;
+  }
+
+  .ylms-sg_table {
+    font-size: 0.85rem;
+  }
+
+  .ylms-sg_table td {
+    padding: 8px 8px;
+  }
+
+  .ylms-sg_word {
+    width: auto;
+    font-size: 0.92rem;
+  }
+
+  .ylms-sg_iast {
+    width: auto;
+    font-size: 0.78rem;
+  }
+
+  .ylms-sg_meaning {
+    font-size: 0.82rem;
+    line-height: 1.35;
+  }
+
+  .ylms-sg_letter-heading td {
+    font-size: 1.15rem;
+    padding: 14px 8px 4px;
+  }
+
+  .ylms-sg_legend {
+    font-size: 0.72rem;
+  }
+
+  .ylms-sg_legend-body {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .ylms-sg_close {
+    font-size: 24px;
+    top: 8px;
+    right: 10px;
+  }
+
+  .ylms-sg_header-btn span {
+    display: none;
+  }
+
+  .ylms-sg_header-btn {
+    padding: 6px 8px;
+    gap: 0;
+  }
+}
+
+@media (max-width: 475px) {
+  .ylms-sg_modal {
+    padding: 16px 10px 14px;
+    width: 98%;
+    border-radius: 8px;
+    min-height: 340px;
+  }
+
+  .ylms-sg_title {
+    font-size: 1.35rem !important;
+    margin-bottom: 8px;
+  }
+
+  .ylms-sg_az-tab {
+    font-size: 10px;
+    padding: 2px 2px;
+  }
+
+  .ylms-sg_table td {
+    padding: 6px 5px;
+  }
+
+  .ylms-sg_word {
+    font-size: 0.82rem;
+  }
+
+  .ylms-sg_iast {
+    font-size: 0.72rem;
+  }
+
+  .ylms-sg_meaning {
+    font-size: 0.75rem;
+  }
+
+  .ylms-sg_letter-heading td {
+    font-size: 1rem;
+    padding: 10px 5px 3px;
+  }
+
+  .ylms-sg_legend {
+    font-size: 0.68rem;
+
+    summary { font-size: 0.65rem; }
+  }
+
+  .ylms-sg_legend-col b {
+    font-size: 0.76rem;
   }
 }

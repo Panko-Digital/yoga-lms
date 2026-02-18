@@ -4,6 +4,148 @@
 (function () {
     'use strict';
 
+    // Sanskrit Glossary config — full A–Z with IAST diacritics
+    // Content paraphrased from public sources. Diacritics from yesvedanta.com (public domain).
+    var sanskritGlossary = [
+        { word: 'Abhyasa', iast: 'abhyāsa', meaning: 'Consistent, dedicated spiritual practice over time' },
+        { word: 'Adho', iast: 'adho', meaning: 'Downward — as in Adho Mukha Svanasana (Downward Facing Dog)' },
+        { word: 'Ahamkara', iast: 'ahaṃkāra', meaning: 'The ego or "I-maker" that clouds higher awareness' },
+        { word: 'Ahimsa', iast: 'ahiṃsā', meaning: 'Non-violence and non-harming towards all living beings' },
+        { word: 'Ajna', iast: 'ājñā', meaning: 'Third-eye chakra — the centre of intuition and inner wisdom' },
+        { word: 'Ananda', iast: 'ānanda', meaning: 'A state of pure bliss and unconditional joy' },
+        { word: 'Anahata', iast: 'anāhata', meaning: 'Heart chakra — the energy centre of love and compassion' },
+        { word: 'Antar Mouna', iast: 'antar mauna', meaning: 'Inner silence — a meditation practice of stilling mental chatter' },
+        { word: 'Apana', iast: 'apāna', meaning: 'The downward-moving vital energy governing elimination' },
+        { word: 'Aparigraha', iast: 'aparigraha', meaning: 'Non-possessiveness — freedom from greed and attachment' },
+        { word: 'Ardha', iast: 'ardha', meaning: 'Half — as in Ardha Chandrasana (Half Moon Pose)' },
+        { word: 'Ardha Matsyendrasana', iast: 'ardha matsyendrāsana', meaning: 'Seated spinal twist named after the sage Matsyendra' },
+        { word: 'Asana', iast: 'āsana', meaning: 'A physical posture practised in yoga' },
+        { word: 'Ashram', iast: 'āśrama', meaning: 'A spiritual hermitage or school dedicated to yoga study' },
+        { word: 'Ashtanga', iast: 'aṣṭāṅga', meaning: 'The eight-limbed path of yoga described by Patanjali' },
+        { word: 'Atman', iast: 'ātman', meaning: 'The eternal, transcendental Self or indwelling spirit' },
+        { word: 'Avidya', iast: 'avidyā', meaning: 'Ignorance — the root cause of suffering in yogic philosophy' },
+        { word: 'Balasana', iast: 'bālāsana', meaning: 'Child\'s Pose — a resting posture of surrender and comfort' },
+        { word: 'Bandha', iast: 'bandha', meaning: 'An internal energy lock created by muscular contraction' },
+        { word: 'Bhagavad Gita', iast: 'bhagavad gītā', meaning: 'Ancient Sanskrit scripture on yoga, duty and devotion' },
+        { word: 'Bhakti', iast: 'bhakti', meaning: 'The path of devotion and love directed toward the Divine' },
+        { word: 'Bhastrika', iast: 'bhastrīkā', meaning: 'Bellows breath — a vigorous pranayama that energises the system' },
+        { word: 'Bhramari', iast: 'bhrāmarī', meaning: 'Humming bee breath — creates vibrations that quiet the mind' },
+        { word: 'Bhujangasana', iast: 'bhujaṅgāsana', meaning: 'Cobra Pose — a backbend that opens the heart and chest' },
+        { word: 'Brahmacharya', iast: 'brahmacarya', meaning: 'Wise use of energy and moderation in all things' },
+        { word: 'Buddhi', iast: 'buddhi', meaning: 'The higher mind — the seat of wisdom and discernment' },
+        { word: 'Chakra', iast: 'cakra', meaning: 'A spinning wheel of energy in the subtle body' },
+        { word: 'Chakrasana', iast: 'cakrāsana', meaning: 'Full Wheel Pose — a deep backbend opening the entire front body' },
+        { word: 'Chandra', iast: 'candra', meaning: 'The moon — as in Ardha Chandrasana (Half Moon Pose)' },
+        { word: 'Chandra Bhedana', iast: 'candra bhedana', meaning: 'Left-nostril breathing that cools the body and calms emotions' },
+        { word: 'Chaturanga', iast: 'caturaṅga', meaning: 'Four-limbed staff pose — the yogi\'s push-up' },
+        { word: 'Dharana', iast: 'dhāraṇā', meaning: 'Single-pointed concentration — the sixth limb of yoga' },
+        { word: 'Dharma', iast: 'dharma', meaning: 'One\'s purpose, duty and path toward truth' },
+        { word: 'Dhanurasana', iast: 'dhanurāsana', meaning: 'Bow Pose — builds strength and flexibility through the spine' },
+        { word: 'Dhyana', iast: 'dhyāna', meaning: 'Meditation — sustained, unbroken mental focus' },
+        { word: 'Drishti', iast: 'dṛṣṭi', meaning: 'A focused gaze point used to anchor attention during practice' },
+        { word: 'Duhkha', iast: 'duḥkha', meaning: 'Suffering or dissatisfaction — a state yoga seeks to resolve' },
+        { word: 'Dwi', iast: 'dvi', meaning: 'Two — used in pose names involving two limbs' },
+        { word: 'Eka', iast: 'eka', meaning: 'One — used in pose names focusing on a single limb' },
+        { word: 'Gayatri Mantra', iast: 'gāyatrī mantra', meaning: 'An ancient solar chant for awakening wisdom and clarity' },
+        { word: 'Granthi', iast: 'granthi', meaning: 'An energetic knot or blockage in the central energy channel' },
+        { word: 'Guna', iast: 'guṇa', meaning: 'One of three qualities of nature: tamas, rajas, or sattva' },
+        { word: 'Guru', iast: 'guru', meaning: 'A spiritual teacher who guides one toward awakening' },
+        { word: 'Hasta', iast: 'hasta', meaning: 'The hand or arm — used in many pose names' },
+        { word: 'Hatha', iast: 'haṭha', meaning: 'The "forceful path" — balancing sun (ha) and moon (tha) energy' },
+        { word: 'Ida Nadi', iast: 'iḍā nāḍī', meaning: 'The left energy channel carrying cooling, lunar energy' },
+        { word: 'Ishvara Pranidhana', iast: 'īśvara praṇidhāna', meaning: 'Surrender to the Divine — the fifth Niyama' },
+        { word: 'Iyengar', iast: 'iyeṅgār', meaning: 'A style of yoga emphasising precision, alignment and use of props' },
+        { word: 'Jalandhara Bandha', iast: 'jālandhara bandha', meaning: 'Throat lock — prevents energy from escaping upward' },
+        { word: 'Janu Sirsasana', iast: 'jānu śīrṣāsana', meaning: 'Head-to-knee forward fold for deep introspection' },
+        { word: 'Japa', iast: 'japa', meaning: 'Repetitive recitation of mantras or sacred sounds' },
+        { word: 'Jnana', iast: 'jñāna', meaning: 'The yogic path of knowledge and intellectual inquiry' },
+        { word: 'Kapalabhati', iast: 'kapālabhāti', meaning: 'Skull-shining breath — rapid exhalations that cleanse and energise' },
+        { word: 'Karma', iast: 'karma', meaning: 'The law of cause and effect — action and its consequences' },
+        { word: 'Kirtan', iast: 'kīrtana', meaning: 'Devotional call-and-response chanting in community' },
+        { word: 'Kosha', iast: 'kośa', meaning: 'One of five sheaths or layers surrounding the true Self' },
+        { word: 'Kumbhaka', iast: 'kumbhaka', meaning: 'Breath retention — holding the breath to build energy and focus' },
+        { word: 'Kundalini', iast: 'kuṇḍalinī', meaning: 'Dormant serpent energy at the base of the spine' },
+        { word: 'Maha Bandha', iast: 'mahā bandha', meaning: 'The great lock — all three bandhas engaged simultaneously' },
+        { word: 'Manas', iast: 'manas', meaning: 'The rational, sensory aspect of the mind' },
+        { word: 'Mandala', iast: 'maṇḍala', meaning: 'A circular geometric design used as a focus for meditation' },
+        { word: 'Manipura', iast: 'maṇipūra', meaning: 'Solar plexus chakra — the centre of personal power and confidence' },
+        { word: 'Mantra', iast: 'mantra', meaning: 'A sacred sound or phrase with transformative power in meditation' },
+        { word: 'Marichyasana', iast: 'marīcyāsana', meaning: 'A binding twist that cultivates patience and inward focus' },
+        { word: 'Maya', iast: 'māyā', meaning: 'Illusion — the mind\'s projection that veils true reality' },
+        { word: 'Moksha', iast: 'mokṣa', meaning: 'Liberation — freedom from the cycle of suffering and rebirth' },
+        { word: 'Mudra', iast: 'mudrā', meaning: 'A symbolic hand or body gesture that channels energy' },
+        { word: 'Mula Bandha', iast: 'mūla bandha', meaning: 'Root lock at the pelvic floor — builds core stability and focus' },
+        { word: 'Muladhara', iast: 'mūlādhāra', meaning: 'Root chakra at the base of the spine — grounding and stability' },
+        { word: 'Nadi', iast: 'nāḍī', meaning: 'A subtle energy channel through which prana flows' },
+        { word: 'Nadi Shodhana', iast: 'nāḍī śodhana', meaning: 'Alternate-nostril breathing to balance the nervous system' },
+        { word: 'Namaste', iast: 'namaste', meaning: '"I bow to you" — a greeting honouring the light in another' },
+        { word: 'Nidra', iast: 'nidrā', meaning: 'Yogic sleep — the body rests while awareness remains' },
+        { word: 'Niyama', iast: 'niyama', meaning: 'The five internal observances — the second limb of yoga' },
+        { word: 'Om', iast: 'oṃ', meaning: 'The primordial sound representing the vibration of the universe' },
+        { word: 'Pada', iast: 'pāda', meaning: 'Foot or leg — used in many asana names' },
+        { word: 'Parivrtta Trikonasana', iast: 'parivṛtta trikoṇāsana', meaning: 'Revolved Triangle — a deep twist that challenges balance' },
+        { word: 'Paschimottanasana', iast: 'paścimottānāsana', meaning: 'Seated forward fold — calms the mind and stretches the back body' },
+        { word: 'Patanjali', iast: 'patañjali', meaning: 'Ancient sage who compiled the Yoga Sutras' },
+        { word: 'Pincha Mayurasana', iast: 'piñcha mayūrāsana', meaning: 'Forearm balance — builds patience and upper-body strength' },
+        { word: 'Pingala Nadi', iast: 'piṅgalā nāḍī', meaning: 'The right energy channel carrying heating, solar energy' },
+        { word: 'Prakriti', iast: 'prakṛti', meaning: 'Nature — the material world including body and mind' },
+        { word: 'Prana', iast: 'prāṇa', meaning: 'Life-force energy that sustains and animates the body' },
+        { word: 'Pranayama', iast: 'prāṇāyāma', meaning: 'Breath control — techniques for regulating the flow of prana' },
+        { word: 'Pratyahara', iast: 'pratyāhāra', meaning: 'Sense withdrawal — turning attention inward away from distractions' },
+        { word: 'Puraka', iast: 'pūraka', meaning: 'Controlled inhalation in pranayama practice' },
+        { word: 'Purusha', iast: 'puruṣa', meaning: 'Pure, unchanging consciousness or awareness' },
+        { word: 'Raja Yoga', iast: 'rāja yoga', meaning: 'The "royal path" — using meditation to master the mind' },
+        { word: 'Rechaka', iast: 'recaka', meaning: 'Controlled exhalation in pranayama practice' },
+        { word: 'Sadhana', iast: 'sādhanā', meaning: 'A dedicated daily spiritual practice' },
+        { word: 'Sahasrara', iast: 'sahasrāra', meaning: 'Crown chakra — connection to divine consciousness' },
+        { word: 'Sama Vritti', iast: 'sama vṛtti', meaning: 'Equal-ratio breathing that brings balance to the mind' },
+        { word: 'Samadhi', iast: 'samādhi', meaning: 'The highest state — complete absorption in universal consciousness' },
+        { word: 'Samsara', iast: 'saṃsāra', meaning: 'The cycle of birth, death and rebirth' },
+        { word: 'Samskara', iast: 'saṃskāra', meaning: 'Subconscious impressions or patterns that shape behaviour' },
+        { word: 'Santosha', iast: 'saṃtoṣa', meaning: 'Contentment — finding peace with what is' },
+        { word: 'Sarvangasana', iast: 'sarvāṅgāsana', meaning: 'Shoulder Stand — calms the nervous system and restores balance' },
+        { word: 'Satchitananda', iast: 'saccidānanda', meaning: 'Truth, consciousness and bliss — the nature of ultimate reality' },
+        { word: 'Satya', iast: 'satya', meaning: 'Truthfulness — living and speaking with honesty' },
+        { word: 'Saucha', iast: 'śauca', meaning: 'Purity and cleanliness of body, mind and environment' },
+        { word: 'Savasana', iast: 'śavāsana', meaning: 'Corpse Pose — final relaxation of complete stillness and surrender' },
+        { word: 'Setu Bandhasana', iast: 'setu bandhāsana', meaning: 'Bridge Pose — connects lower and upper body with strength' },
+        { word: 'Shakti', iast: 'śakti', meaning: 'The feminine aspect of dynamic, creative divine energy' },
+        { word: 'Shala', iast: 'śālā', meaning: 'A dedicated space for yoga practice and study' },
+        { word: 'Shanti', iast: 'śānti', meaning: 'Peace — often chanted three times at the close of practice' },
+        { word: 'Sheetali', iast: 'śītalī', meaning: 'Cooling breath through a curled tongue — reduces body heat' },
+        { word: 'Sirsasana', iast: 'śīrṣāsana', meaning: 'Headstand — builds mental clarity and shifts perspective' },
+        { word: 'Sitkari', iast: 'sītkārī', meaning: 'Hissing breath through the teeth — cools and calms the system' },
+        { word: 'So Hum', iast: 'so\'ham', meaning: '"I am That" — a mantra connecting self to universal consciousness' },
+        { word: 'Supta Baddha Konasana', iast: 'supta baddha koṇāsana', meaning: 'Reclined Butterfly — opens the hips in deep relaxation' },
+        { word: 'Surya Bhedana', iast: 'sūrya bhedana', meaning: 'Right-nostril breathing that heats the body and sharpens focus' },
+        { word: 'Surya Namaskar', iast: 'sūrya namaskāra', meaning: 'Sun Salutation — a flowing sequence linking breath and movement' },
+        { word: 'Sushumna Nadi', iast: 'suṣumṇā nāḍī', meaning: 'The central energy channel where kundalini rises' },
+        { word: 'Sutra', iast: 'sūtra', meaning: 'A concise thread of teaching — as in the Yoga Sutras' },
+        { word: 'Svadhyaya', iast: 'svādhyāya', meaning: 'Self-study — reflection through sacred texts and introspection' },
+        { word: 'Svadhisthana', iast: 'svādhiṣṭhāna', meaning: 'Sacral chakra — the centre of creativity and emotional flow' },
+        { word: 'Tadasana', iast: 'tāḍāsana', meaning: 'Mountain Pose — a foundational standing posture of stillness and alignment' },
+        { word: 'Tantra', iast: 'tantra', meaning: 'A path using internal energy, chakras and ritual for spiritual growth' },
+        { word: 'Tapas', iast: 'tapas', meaning: 'Inner fire — the heat of discipline and self-effort' },
+        { word: 'Trikonasana', iast: 'trikoṇāsana', meaning: 'Triangle Pose — stretches the side body and improves balance' },
+        { word: 'Turiya', iast: 'turīya', meaning: 'The fourth state of consciousness beyond waking, dreaming and sleep' },
+        { word: 'Uddiyana Bandha', iast: 'uḍḍīyāna bandha', meaning: 'Abdominal lock — lifts the diaphragm and stokes inner fire' },
+        { word: 'Ujjayi', iast: 'ujjāyī', meaning: 'Ocean-sounding victorious breath that calms and warms the body' },
+        { word: 'Upavistha Konasana', iast: 'upaviṣṭha koṇāsana', meaning: 'Wide-angle seated forward fold — opens hips and quiets the mind' },
+        { word: 'Ustrasana', iast: 'uṣṭrāsana', meaning: 'Camel Pose — a kneeling backbend that opens the throat and heart' },
+        { word: 'Utkatasana', iast: 'utkaṭāsana', meaning: 'Chair Pose — builds leg strength, focus and determination' },
+        { word: 'Uttanasana', iast: 'uttānāsana', meaning: 'Standing Forward Fold — calms the mind and lengthens the spine' },
+        { word: 'Utthita', iast: 'utthita', meaning: 'Extended — used in poses where the body stretches beyond its usual range' },
+        { word: 'Vairagya', iast: 'vairāgya', meaning: 'Detachment — inner renunciation of worldly attachment' },
+        { word: 'Vedas', iast: 'vedāḥ', meaning: 'The oldest yogic scriptures — foundational texts of Indian philosophy' },
+        { word: 'Vinyasa', iast: 'vinyāsa', meaning: 'Flow — linking breath with movement in a continuous sequence' },
+        { word: 'Viparita Karani', iast: 'viparīta karaṇī', meaning: 'Legs Up the Wall — a restorative inversion that calms anxiety' },
+        { word: 'Virabhadrasana', iast: 'vīrabhadrāsana', meaning: 'Warrior Pose — builds courage, strength and determination' },
+        { word: 'Vishuddha', iast: 'viśuddha', meaning: 'Throat chakra — the centre of truthful expression and clarity' },
+        { word: 'Yama', iast: 'yama', meaning: 'The five ethical restraints — the first limb of yoga' },
+        { word: 'Yoga', iast: 'yoga', meaning: 'Union — the practice of joining mind, body and spirit' },
+        { word: 'Yoga Sutras', iast: 'yoga sūtrāṇi', meaning: 'Patanjali\'s foundational text outlining the philosophy and practice of yoga' }
+    ];
+
     // Module lesson data registry
     var moduleLessons = {
         module1: [
@@ -27,6 +169,20 @@
             { short: "Breath", full: "Anatomy of the Breath" },
             { short: "Breathing Dynamics", full: "Breathing Dynamics" },
             { short: "Movement", full: "Movement of the body with Breath" }
+        ],
+        module3: [
+            { short: "Sequencing", full: "How to Sequence" },
+            { short: "Meditation", full: "How to Teach Meditation" },
+            { short: "Assisting", full: "Intro to Assisting" },
+            { short: "Pre-Post Natal", full: "Pre-Post Natal Yoga" }
+        ],
+        module4: [
+            { short: "Sequencing", full: "How to Sequencing around Beginners/Gentle" },
+            { short: "Standard", full: "Standard Online Class" },
+            { short: "Beginners", full: "Beginners Online Class" },
+            { short: "Mellow", full: "Mellow Online Class" },
+            { short: "Yin Intro", full: "Intro to Yin - Yin Principals" },
+            { short: "Yin Class", full: "Yin Class" }
         ]
     };
 
@@ -447,7 +603,292 @@
         });
     }
 
+    function initSanskritGlossary() {
+        if (!sanskritGlossary || sanskritGlossary.length === 0) return;
+
+        // Build a lookup map (lowercase word -> glossary entry)
+        var glossaryMap = {};
+        sanskritGlossary.forEach(function (entry) {
+            glossaryMap[entry.word.toLowerCase()] = entry;
+        });
+
+        // Build regex from glossary words (longest first to avoid partial matches)
+        // Also detect the word "Sanskrit" itself as a link to the glossary
+        // Exclude overly common words (e.g. "Yoga") from inline detection
+        var skipDetection = { 'yoga': true, 'yoga sutras': true };
+        var words = sanskritGlossary
+            .map(function (e) { return e.word; })
+            .filter(function (w) { return !skipDetection[w.toLowerCase()]; });
+        words.push('Sanskrit Glossary', 'Sanskrit');
+        words.sort(function (a, b) { return b.length - a.length; });
+        var pattern = new RegExp('\\b(' + words.join('|') + ')\\b', 'gi');
+
+        // Scan text nodes in panels and user_content
+        var containers = document.querySelectorAll('[data-panel], .user_content');
+        if (containers.length === 0) {
+            containers = document.querySelectorAll('body');
+        }
+
+        containers.forEach(function (container) {
+            var walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, null, false);
+            var textNodes = [];
+            while (walker.nextNode()) textNodes.push(walker.currentNode);
+
+            textNodes.forEach(function (node) {
+                if (!pattern.test(node.textContent)) return;
+                pattern.lastIndex = 0;
+
+                var parent = node.parentNode;
+                if (!parent) return;
+                if (parent.classList && parent.classList.contains('ylms-sanskrit')) return;
+                if (parent.closest && parent.closest('.ylms-sg_modal')) return;
+                if (parent.closest && parent.closest('.ylms-pb_wrapper')) return;
+
+                // Only detect in body copy — p, span, li (skip headings, buttons, etc.)
+                var allowedParent = parent.closest && parent.closest('p, span, li');
+                if (!allowedParent) return;
+
+                var frag = document.createDocumentFragment();
+                var text = node.textContent;
+                var lastIndex = 0;
+                var match;
+                pattern.lastIndex = 0;
+
+                while ((match = pattern.exec(text)) !== null) {
+                    if (match.index > lastIndex) {
+                        frag.appendChild(document.createTextNode(text.slice(lastIndex, match.index)));
+                    }
+                    var span = document.createElement('span');
+                    span.className = 'ylms-sanskrit';
+                    span.textContent = match[0];
+                    span.setAttribute('tabindex', '0');
+                    span.setAttribute('role', 'button');
+                    span.setAttribute('aria-label', match[0] + ' — click to open Sanskrit Glossary');
+                    span.addEventListener('click', function () {
+                        var word = this.textContent;
+                        if (word.toLowerCase().indexOf('sanskrit') === 0) {
+                            openGlossaryModal();
+                        } else {
+                            openGlossaryModal(word);
+                        }
+                    });
+                    span.addEventListener('keydown', function (e) {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            var word = this.textContent;
+                            if (word.toLowerCase().indexOf('sanskrit') === 0) {
+                                openGlossaryModal();
+                            } else {
+                                openGlossaryModal(word);
+                            }
+                        }
+                    });
+                    frag.appendChild(span);
+                    lastIndex = pattern.lastIndex;
+                }
+
+                if (lastIndex < text.length) {
+                    frag.appendChild(document.createTextNode(text.slice(lastIndex)));
+                }
+
+                parent.replaceChild(frag, node);
+            });
+        });
+
+        // Add standalone "Sanskrit" button in the header, below downloads if present
+        var headerEl = document.getElementById('ylms-header');
+        if (headerEl) {
+            var sgIcon = '<svg class="ylms-att_icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">' +
+                '<path d="M12.87 15.07l-2.54-2.51.03-.03A17.52 17.52 0 0014.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z" fill="currentColor"/>' +
+                '</svg>';
+
+            var sgBtn = document.createElement('button');
+            sgBtn.className = 'ylms-sg_header-btn';
+            sgBtn.setAttribute('aria-label', 'Sanskrit Glossary');
+            sgBtn.innerHTML = sgIcon + '<span>Sanskrit</span>';
+            sgBtn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                openGlossaryModal();
+            });
+            headerEl.appendChild(sgBtn);
+        }
+
+        // Create modal (hidden by default)
+        createGlossaryModal();
+    }
+
+    function createGlossaryModal() {
+        var overlay = document.createElement('div');
+        overlay.className = 'ylms-sg_overlay';
+        overlay.id = 'ylms-sg-overlay';
+
+        // Group entries by first letter
+        var letterGroups = {};
+        sanskritGlossary.forEach(function (entry) {
+            var letter = entry.word.charAt(0).toUpperCase();
+            if (!letterGroups[letter]) letterGroups[letter] = [];
+            letterGroups[letter].push(entry);
+        });
+
+        // Build A–Z tabs
+        var alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+        var availableLetters = Object.keys(letterGroups).sort();
+        var firstLetter = availableLetters.length > 0 ? availableLetters[0] : 'A';
+
+        var tabsHtml = alphabet.map(function (letter) {
+            var hasEntries = letterGroups[letter] ? true : false;
+            var activeClass = letter === firstLetter ? ' ylms-sg_az-active' : '';
+            var disabledClass = !hasEntries ? ' ylms-sg_az-disabled' : '';
+            return '<button class="ylms-sg_az-tab' + activeClass + disabledClass + '" data-letter="' + letter + '"' +
+                (!hasEntries ? ' disabled' : '') + '>' + letter + '</button>';
+        }).join('');
+
+        // Build all entries in one continuous tbody with letter heading rows
+        var allRowsHtml = availableLetters.map(function (letter) {
+            var headingRow = '<tr class="ylms-sg_letter-heading" data-letter="' + letter + '">' +
+                '<td colspan="3">' + letter + '</td></tr>';
+            var rows = letterGroups[letter].map(function (entry) {
+                return '<tr data-word="' + entry.word.toLowerCase() + '" data-letter="' + letter + '">' +
+                    '<td class="ylms-sg_word">' + entry.word + '</td>' +
+                    '<td class="ylms-sg_iast">' + (entry.iast || '') + '</td>' +
+                    '<td class="ylms-sg_meaning">' + entry.meaning + '</td>' +
+                    '</tr>';
+            }).join('');
+            return headingRow + rows;
+        }).join('');
+
+        overlay.innerHTML =
+            '<div class="ylms-sg_modal" role="dialog" aria-labelledby="ylms-sg-title" aria-modal="true">' +
+            '<button class="ylms-sg_close" aria-label="Close glossary">&times;</button>' +
+            '<h2 id="ylms-sg-title" class="ylms-sg_title">Sanskrit Glossary</h2>' +
+            '<div class="ylms-sg_az-bar">' + tabsHtml + '</div>' +
+            '<div class="ylms-sg_table-wrap">' +
+            '<table class="ylms-sg_table">' +
+            '<tbody>' + allRowsHtml + '</tbody>' +
+            '</table>' +
+            '</div>' +
+            '<details class="ylms-sg_legend">' +
+            '<summary>Diacritics Guide</summary>' +
+            '<div class="ylms-sg_legend-body">' +
+            '<div class="ylms-sg_legend-col">' +
+            '<span><b>ā ī ū</b> Long vowels — held for twice the duration</span>' +
+            '<span><b>ṛ</b> Vowel r — a short, rolled sound</span>' +
+            '<span><b>ṃ</b> Anusvāra — a nasal hum (as in <i>oṃ</i>)</span>' +
+            '<span><b>ḥ</b> Visarga — a soft, breathy echo of the preceding vowel</span>' +
+            '</div>' +
+            '<div class="ylms-sg_legend-col">' +
+            '<span><b>ś</b> Palatal sibilant — like English "sh"</span>' +
+            '<span><b>ṣ</b> Retroflex sibilant — tongue curled back</span>' +
+            '<span><b>ṭ ḍ ṇ</b> Retroflex consonants — tongue touches the palate</span>' +
+            '<span><b>ñ ṅ</b> Nasal consonants — as in "canyon" and "sing"</span>' +
+            '</div>' +
+            '</div>' +
+            '</details>' +
+            '</div>';
+
+        document.body.appendChild(overlay);
+
+        var wrap = overlay.querySelector('.ylms-sg_table-wrap');
+        var scrollingFromClick = false;
+
+        // A–Z tab click → scroll to that letter heading
+        var azTabs = overlay.querySelectorAll('.ylms-sg_az-tab:not(.ylms-sg_az-disabled)');
+        azTabs.forEach(function (tab) {
+            tab.addEventListener('click', function () {
+                var letter = this.dataset.letter;
+                var heading = overlay.querySelector('.ylms-sg_letter-heading[data-letter="' + letter + '"]');
+                if (heading && wrap) {
+                    scrollingFromClick = true;
+                    overlay.querySelectorAll('.ylms-sg_az-tab').forEach(function (t) { t.classList.remove('ylms-sg_az-active'); });
+                    this.classList.add('ylms-sg_az-active');
+                    heading.scrollIntoView({ block: 'start', behavior: 'smooth' });
+                    // Re-enable scroll detection after animation
+                    setTimeout(function () { scrollingFromClick = false; }, 600);
+                }
+            });
+        });
+
+        // Scroll detection → update active letter tab
+        if (wrap) {
+            wrap.addEventListener('scroll', function () {
+                if (scrollingFromClick) return;
+                var headings = overlay.querySelectorAll('.ylms-sg_letter-heading');
+                var currentLetter = firstLetter;
+                var wrapTop = wrap.scrollTop;
+                headings.forEach(function (h) {
+                    if (h.offsetTop - wrap.offsetTop <= wrapTop + 10) {
+                        currentLetter = h.dataset.letter;
+                    }
+                });
+                overlay.querySelectorAll('.ylms-sg_az-tab').forEach(function (t) {
+                    t.classList.toggle('ylms-sg_az-active', t.dataset.letter === currentLetter);
+                });
+            });
+        }
+
+        // Close handlers
+        overlay.querySelector('.ylms-sg_close').addEventListener('click', closeGlossaryModal);
+        overlay.addEventListener('click', function (e) {
+            if (e.target === overlay) closeGlossaryModal();
+        });
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') closeGlossaryModal();
+        });
+    }
+
+    function openGlossaryModal(highlightWord) {
+        var overlay = document.getElementById('ylms-sg-overlay');
+        if (overlay) {
+            // Clear previous highlights
+            var rows = overlay.querySelectorAll('.ylms-sg_table tbody tr');
+            rows.forEach(function (row) { row.classList.remove('ylms-sg_highlight'); });
+
+            overlay.classList.add('ylms-sg_visible');
+            document.body.style.overflow = 'hidden';
+
+            if (highlightWord) {
+                var target = highlightWord.toLowerCase();
+                // Activate the correct letter tab
+                var letter = highlightWord.charAt(0).toUpperCase();
+                overlay.querySelectorAll('.ylms-sg_az-tab').forEach(function (t) {
+                    t.classList.toggle('ylms-sg_az-active', t.dataset.letter === letter);
+                });
+                // Highlight and scroll to the row
+                rows.forEach(function (row) {
+                    if (row.dataset.word === target) {
+                        row.classList.add('ylms-sg_highlight');
+                        setTimeout(function () { row.scrollIntoView({ block: 'center', behavior: 'instant' }); }, 80);
+                    }
+                });
+            } else {
+                // Reset scroll to top when opened from header button
+                var wrap = overlay.querySelector('.ylms-sg_table-wrap');
+                if (wrap) wrap.scrollTop = 0;
+                // Activate first letter
+                var firstHeading = overlay.querySelector('.ylms-sg_letter-heading');
+                if (firstHeading) {
+                    var fl = firstHeading.dataset.letter;
+                    overlay.querySelectorAll('.ylms-sg_az-tab').forEach(function (t) {
+                        t.classList.toggle('ylms-sg_az-active', t.dataset.letter === fl);
+                    });
+                }
+            }
+
+            var closeBtn = overlay.querySelector('.ylms-sg_close');
+            if (closeBtn) closeBtn.focus();
+        }
+    }
+
+    function closeGlossaryModal() {
+        var overlay = document.getElementById('ylms-sg-overlay');
+        if (overlay) {
+            overlay.classList.remove('ylms-sg_visible');
+            document.body.style.overflow = '';
+        }
+    }
+
     setTimeout(init, 250);
     setTimeout(initAttachments, 500);
+    setTimeout(initSanskritGlossary, 600);
 
 })();
