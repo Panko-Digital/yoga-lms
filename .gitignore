@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+figma/module-components.*.min.*
+figma/module-components.min.*
+figma/module-components.min.js

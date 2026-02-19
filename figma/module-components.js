@@ -632,7 +632,7 @@
         var contentEl = findContentEl();
         if (!contentEl) return;
 
-        var links = contentEl.querySelectorAll('a.file_download_btn[href*="/files/"]');
+        var links = contentEl.querySelectorAll('a[href*="/files/"]');
         if (links.length === 0) return;
 
         // Dedupe by file ID extracted from URL path
@@ -642,9 +642,6 @@
         links.forEach(function (link) {
             var href = link.href;
             var rawText = link.textContent.trim();
-            var isPdf = /\.pdf(?:$|\?|#)/i.test(href) || /\.pdf\b/i.test(rawText) ||
-                ((link.getAttribute('type') || '').toLowerCase() === 'application/pdf');
-            if (isPdf) return;
             var match = href.match(/\/files\/(\d+)/);
             var fileId = match ? match[1] : href;
             if (seen[fileId]) return;
@@ -902,7 +899,7 @@
                     scrollingFromClick = true;
                     overlay.querySelectorAll('.ylms-sg_az-tab').forEach(function (t) { t.classList.remove('ylms-sg_az-active'); });
                     this.classList.add('ylms-sg_az-active');
-                    heading.scrollIntoView({ block: 'start', behavior: 'smooth' });
+                    heading.scrollIntoView({ block: 'start', behavior: 'instant' });
                     // Re-enable scroll detection after animation
                     setTimeout(function () { scrollingFromClick = false; }, 600);
                 }
@@ -991,6 +988,7 @@
     preloadFonts();
     setTimeout(initIframeTips, 450);
     setTimeout(init, 250);
+    setTimeout(initAttachments, 500);
     setTimeout(initSanskritGlossary, 600);
 
 })();

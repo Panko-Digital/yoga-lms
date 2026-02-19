@@ -50,13 +50,41 @@ function compressJS(filename) {
     console.log(`${filename} → module-components.min.js  (${src.length} → ${out.length} bytes, ${pct}% smaller)`);
 }
 
+function stripUserContentScope(css) {
+    // Convert root .user_content selector to body, then remove descendant scoping.
+    // Examples:
+    // .user_content{...} -> body{...}
+    // .user_content p,.user_content li -> p,li
+    var out = css;
+
+    out = out.replace(/(^|[,{])\s*\.user_content(?=\s*[{,])/g, function (_, prefix) {
+        return prefix + 'body';
+    });
+
+    out = out.replace(/\.user_content\s+(?=[.#\[:a-zA-Z*])/g, '');
+    out = out.replace(/\.user_content\s*([>+~])/g, '$1');
+
+    return out;
+}
+
 compressJS('module-components.js');
 
-// Compile SCSS → compressed CSS
+// Compile SCSS → compressed CSS (web + mobile)
 const scssInput = join(__dirname, 'module-components.scss');
-const cssOutput = join(__dirname, 'module-components.min.css');
-execSync(`npx sass "${scssInput}" "${cssOutput}" --style=compressed --no-source-map`);
+const webCssOutput = join(__dirname, 'module-components.desktop.min.css');
+const mobileCssOutput = join(__dirname, 'module-components.mobile.min.css');
+
+const webCss = execSync(`npx sass "${scssInput}" --style=compressed --no-source-map`, { encoding: 'utf8' });
+writeFileSync(webCssOutput, webCss, 'utf8');
+
+const mobileCss = stripUserContentScope(webCss);
+writeFileSync(mobileCssOutput, mobileCss, 'utf8');
+
 const scssSize = readFileSync(scssInput, 'utf8').length;
-const cssSize = readFileSync(cssOutput, 'utf8').length;
-const cssPct = ((1 - cssSize / scssSize) * 100).toFixed(1);
-console.log(`module-components.scss → module-components.min.css  (${scssSize} → ${cssSize} bytes, ${cssPct}% smaller)`);
+const webCssSize = readFileSync(webCssOutput, 'utf8').length;
+const webCssPct = ((1 - webCssSize / scssSize) * 100).toFixed(1);
+console.log(`module-components.scss → module-components.desktop.min.css  (${scssSize} → ${webCssSize} bytes, ${webCssPct}% smaller)`);
+
+const mobileCssSize = readFileSync(mobileCssOutput, 'utf8').length;
+const mobileCssPct = ((1 - mobileCssSize / scssSize) * 100).toFixed(1);
+console.log(`module-components.scss → module-components.mobile.min.css  (${scssSize} → ${mobileCssSize} bytes, ${mobileCssPct}% smaller)`);

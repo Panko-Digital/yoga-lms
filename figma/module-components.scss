@@ -100,11 +100,17 @@ $download-button-bg: #f8f8f8;
     border: none !important;
     border-radius: $radius;
     overflow: hidden;
+    width: 75%;
   }
 
   td, th {
     border: solid 1px #000 !important;
     border-style: none solid solid none !important;
+  }
+
+  td {
+    vertical-align: top;
+    text-align: center;
   }
 
   tr:first-child td,
@@ -725,10 +731,12 @@ $download-button-bg: #f8f8f8;
       width: 90%;
     }
 
-    a.file_download_btn {
-      margin-inline-start: 0 !important;
-    }
   }
+
+  table {
+    width: 100%;
+  }
+
 
   .ylms-pb_label {
     display: none;
@@ -951,8 +959,8 @@ $download-button-bg: #f8f8f8;
 .ylms-sg_letter-heading {
   td {
     font-family: $font-heading;
-    font-size: 1.4rem;
-    font-weight: normal;
+    font-size: 1.5rem;
+    font-weight: 600;
     color: rgba(white, 0.5);
     padding: 18px 16px 6px;
     border: none !important;
