@@ -148,6 +148,14 @@
 
     // Module lesson data registry
     var moduleLessons = {
+        module0: [
+            { short: "Welcome", full: "Welcome to the Course" },
+            { short: "Essentials", full: "Course Essentials" },
+            { short: "Timeline", full: "Course Timeline" },
+            { short: "Asanas", full: "Asana Library" },
+            { short: "Resources", full: "Additional Resources" },
+            { short: "Introduction", full: "Introduction to Yoga" }
+        ],
         module1: [
             { short: "Why Anatomy", full: "Why Anatomy?" },
             { short: "Locations", full: "Locations of Structures on the Body" },
@@ -191,37 +199,54 @@
     // Shared header assets (logo is the same across all modules)
     var headerDefaults = {
         logoImage: '/courses/548/files/20032/preview',
-        logoImageAlt: 'White SOM logo circular'
+        altLogoImage: '/courses/548/files/20171/preview',
+        logoImageAlt: 'White SOM logo circular',
+        altLogoImageAlt: 'YOGA TEACHER TRAINING logo'
     };
 
     var imageBaseLocal = 'https://coreplus.instructure.com';
 
     var moduleHeaders = {
         '0-1': {
-            bgImage: '/courses/548/files/20074/preview',
-            bgImageAlt: 'module-0-bg-2.jpg',
+            bgImage: '/courses/548/files/20048/preview',
+            bgImageAlt: 'module-0-bg-welcome.jpg',
             title: 'Course Orientation',
-            subtitle: 'Course Essentials',
-            animVariant: 'fade'
-        }, '0-2': {
+            subtitle: '',
+            animVariant: 'welcome'
+        },
+        '0-2': {
             bgImage: '/courses/548/files/20075/preview',
             bgImageAlt: 'module-0-bg-1.jpg',
             title: 'Course Orientation',
-            subtitle: 'Asana Library',
+            subtitle: 'Course Essentials',
             animVariant: 'fade'
         },
         '0-3': {
             bgImage: '/courses/548/files/20075/preview',
-            bgImageAlt: 'module-0-bg-1.jpg',
+            bgImageAlt: 'module-0-bg-3.jpg',
             title: 'Course Orientation',
-            subtitle: 'Additional Resources',
+            subtitle: 'Course Timeline',
             animVariant: 'fade'
         },
         '0-4': {
             bgImage: '/courses/548/files/20104/preview',
             bgImageAlt: 'module-0-bg-4.jpg',
             title: 'Course Orientation',
-            subtitle: 'Intro to Yoga',
+            subtitle: 'Asana Library',
+            animVariant: 'fade'
+        },
+        '0-5': {
+            bgImage: '/courses/548/files/20104/preview',
+            bgImageAlt: 'module-0-bg-5.jpg',
+            title: 'Course Orientation',
+            subtitle: 'Additional Resources',
+            animVariant: 'fade'
+        },
+        '0-6': {
+            bgImage: '/courses/548/files/20104/preview',
+            bgImageAlt: 'module-0-bg-6.jpg',
+            title: 'Course Orientation',
+            subtitle: 'Introduction to Yoga',
             animVariant: 'fade'
         },
         '1': {
@@ -436,6 +461,24 @@
         });
     }
 
+    function initIframeTips() {
+        var wrappers = document.querySelectorAll('.ylms-iframe-wrapper');
+        if (wrappers.length === 0) return;
+
+        wrappers.forEach(function (wrapper) {
+            if (wrapper.previousElementSibling && wrapper.previousElementSibling.classList &&
+                wrapper.previousElementSibling.classList.contains('ylms-iframe-tip')) {
+                return;
+            }
+
+            var tip = document.createElement('div');
+            tip.className = 'ylms-iframe-tip';
+            tip.textContent = 'Rotate device for best experience';
+
+            wrapper.parentNode.insertBefore(tip, wrapper);
+        });
+    }
+
     function calculateReadTime() {
         var WORDS_PER_MIN = 200;
         var SECS_PER_IMAGE = 10;
@@ -500,11 +543,28 @@
         var header = moduleHeaders[moduleNum];
         if (!header) return false;
         var d = headerDefaults;
-        var variantClass = 'ylms-img-blended ylms-img-blended--' + (header.animVariant || 'from-left');
+        var variant = header.animVariant || 'from-left';
+        var imageVariant = variant === 'welcome' ? 'fade' : variant;
+        var variantClass = 'ylms-img-blended ylms-img-blended--' + imageVariant;
+        var logoImage = header.logoImage || d.logoImage;
+        var logoImageAlt = header.logoImageAlt || d.logoImageAlt;
+        var altLogoImage = header.altLogoImage || d.altLogoImage;
+        var altLogoImageAlt = header.altLogoImageAlt || d.altLogoImageAlt || logoImageAlt;
+
+        if (variant === 'welcome') {
+            container.innerHTML =
+                '<img class="' + variantClass + '" src="' + header.bgImage + '" alt="' + header.bgImageAlt + '" />' +
+                '<div class="ylms-header_container ylms-header_container--welcome">' +
+                '<img class="ylms-header_logo ylms-header_logo--welcome-left" src="' + altLogoImage + '" alt="' + altLogoImageAlt + '" />' +
+                '<img class="ylms-header_logo ylms-header_logo--welcome-right" src="' + logoImage + '" alt="' + logoImageAlt + '" />' +
+                '</div>';
+            return true;
+        }
+
         container.innerHTML =
             '<img class="' + variantClass + '" src="' + header.bgImage + '" alt="' + header.bgImageAlt + '" />' +
             '<div class="ylms-header_container">' +
-            '<img class="ylms-header_logo" src="' + (header.logoImage || d.logoImage) + '" alt="' + (header.logoImageAlt || d.logoImageAlt) + '" />' +
+            '<img class="ylms-header_logo" src="' + logoImage + '" alt="' + logoImageAlt + '" />' +
             '<div>' +
             '<h1>' + header.title + '</h1>' +
             '<h2>' + header.subtitle + '</h2>' +
@@ -572,7 +632,7 @@
         var contentEl = findContentEl();
         if (!contentEl) return;
 
-        var links = contentEl.querySelectorAll('a[href*="/files/"]');
+        var links = contentEl.querySelectorAll('a.file_download_btn[href*="/files/"]');
         if (links.length === 0) return;
 
         // Dedupe by file ID extracted from URL path
@@ -581,11 +641,15 @@
         var stripWords = /\b(download|view|click|open|here|file|preview|the|this|a|an)\b/gi;
         links.forEach(function (link) {
             var href = link.href;
+            var rawText = link.textContent.trim();
+            var isPdf = /\.pdf(?:$|\?|#)/i.test(href) || /\.pdf\b/i.test(rawText) ||
+                ((link.getAttribute('type') || '').toLowerCase() === 'application/pdf');
+            if (isPdf) return;
             var match = href.match(/\/files\/(\d+)/);
             var fileId = match ? match[1] : href;
             if (seen[fileId]) return;
             seen[fileId] = true;
-            var text = link.textContent.trim()
+            var text = rawText
                 .replace(stripWords, '')
                 .replace(/\s{2,}/g, ' ')
                 .trim();
@@ -679,6 +743,7 @@
                 if (parent.classList && parent.classList.contains('ylms-sanskrit')) return;
                 if (parent.closest && parent.closest('.ylms-sg_modal')) return;
                 if (parent.closest && parent.closest('.ylms-pb_wrapper')) return;
+                if (parent.closest && parent.closest('a, button, [role="button"]')) return;
 
                 // Only detect in body copy — p, span, li (skip headings, buttons, etc.)
                 var allowedParent = parent.closest && parent.closest('p, span, li');
@@ -924,8 +989,8 @@
     }
 
     preloadFonts();
+    setTimeout(initIframeTips, 450);
     setTimeout(init, 250);
-    setTimeout(initAttachments, 500);
     setTimeout(initSanskritGlossary, 600);
 
 })();
