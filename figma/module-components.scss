@@ -546,6 +546,8 @@ $download-button-bg: #f8f8f8;
   display: flex;
   align-items: center;
   margin: 0 auto;
+  position: relative;
+  z-index: 1;
 
   &.ylms-header_container--welcome {
     justify-content: space-between;
@@ -719,6 +721,14 @@ $download-button-bg: #f8f8f8;
   width: 14px;
   height: 14px;
   fill: $gray;
+
+  &.ylms-inline-dl {
+    width: 16px;
+    height: 16px;
+    fill: $blue;
+    vertical-align: middle;
+    margin-left: 4px;
+  }
 }
 
 // ─── Mobile ───
@@ -734,9 +744,8 @@ $download-button-bg: #f8f8f8;
   }
 
   table {
-    width: 100%;
+    width: 100% !important
   }
-
 
   .ylms-pb_label {
     display: none;

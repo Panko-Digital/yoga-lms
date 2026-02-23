@@ -124,7 +124,7 @@
         { word: 'Svadhyaya', iast: 'svādhyāya', meaning: 'Self-study — reflection through sacred texts and introspection' },
         { word: 'Svadhisthana', iast: 'svādhiṣṭhāna', meaning: 'Sacral chakra — the centre of creativity and emotional flow' },
         { word: 'Tadasana', iast: 'tāḍāsana', meaning: 'Mountain Pose — a foundational standing posture of stillness and alignment' },
-        { word: 'Tantra', iast: 'tantra', meaning: 'A path using internal energy, chakras and ritual for spiritual growth' },
+        { word: 'Tantra', iast: 'tantra', meanifng: 'A path using internal energy, chakras and ritual for spiritual growth' },
         { word: 'Tapas', iast: 'tapas', meaning: 'Inner fire — the heat of discipline and self-effort' },
         { word: 'Trikonasana', iast: 'trikoṇāsana', meaning: 'Triangle Pose — stretches the side body and improves balance' },
         { word: 'Turiya', iast: 'turīya', meaning: 'The fourth state of consciousness beyond waking, dreaming and sleep' },
@@ -153,7 +153,6 @@
             { short: "Essentials", full: "Course Essentials" },
             { short: "Timeline", full: "Course Timeline" },
             { short: "Asanas", full: "Asana Library" },
-            { short: "Resources", full: "Additional Resources" },
             { short: "Introduction", full: "Introduction to Yoga" }
         ],
         module1: [
@@ -235,14 +234,14 @@
             subtitle: 'Asana Library',
             animVariant: 'fade'
         },
-        '0-5': {
+        '0-5-removed': {
             bgImage: '/courses/548/files/20104/preview',
             bgImageAlt: 'module-0-bg-5.jpg',
             title: 'Course Orientation',
             subtitle: 'Additional Resources',
             animVariant: 'fade'
         },
-        '0-6': {
+        '0-5': {
             bgImage: '/courses/548/files/20104/preview',
             bgImageAlt: 'module-0-bg-6.jpg',
             title: 'Course Orientation',
@@ -694,6 +693,23 @@
         });
     }
 
+    function initFileDownloadIcons() {
+        var contentEl = findContentEl();
+        if (!contentEl) return;
+
+        var dlIcon = '<svg class="ylms-att_icon ylms-inline-dl" viewBox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg"><path d="m1807.093 1482.477 79.736 79.963-355.313 355.312H355.346L.035 1562.44l79.85-79.963 322.22 322.334H1484.76l322.334-322.334ZM997.677-.033v1167.02l355.313-355.313 79.962 79.85-491.858 491.633L449.46 891.524l79.962-79.85 355.313 355.313V-.033h112.941Z" fill-rule="evenodd"/></svg>';
+
+        var links = contentEl.querySelectorAll('a[data-api-returntype="File"]');
+        links.forEach(function (link) {
+            if (link.querySelector('.ylms-inline-dl')) return;
+            // Skip if a Canvas download button already follows this link
+            if (link.nextElementSibling && link.nextElementSibling.classList.contains('file_download_btn')) return;
+            if (link.classList.contains('file_download_btn')) return;
+
+            link.insertAdjacentHTML('beforeend', ' ' + dlIcon);
+        });
+    }
+
     function initSanskritGlossary() {
         if (!sanskritGlossary || sanskritGlossary.length === 0) return;
 
@@ -989,6 +1005,7 @@
     setTimeout(initIframeTips, 450);
     setTimeout(init, 250);
     setTimeout(initAttachments, 500);
+    setTimeout(initFileDownloadIcons, 550);
     setTimeout(initSanskritGlossary, 600);
 
 })();
