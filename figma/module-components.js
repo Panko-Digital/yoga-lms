@@ -157,19 +157,19 @@
         ],
         module1: [
             { short: "Why Anatomy", full: "Why Anatomy?" },
-            { short: "Locations", full: "Locations of Structures on the Body" },
-            { short: "Pose", full: "Pose with Movements" },
-            { short: "Positions", full: "Positions and Curvatures of the Spine and Pelvis" },
+            { short: "Terminology", full: "Directional Terminology" },
             { short: "Bone Tissue", full: "Structure of Bone Tissue" },
             { short: "Skeleton", full: "The Axial and Appendicular Skeletons" },
-            { short: "Joints", full: "Joints in the Skeletal System" },
-            { short: "Variable", full: "Variable Anatomy" },
+            { short: "Variable Anatomy", full: "Variable Anatomy" },
             { short: "Tissue Types", full: "Types of Tissue" },
             { short: "Stretching", full: "Physiology of Stretching" },
-            { short: "Anatomy", full: "Anatomy of the Pelvis, Shoulder Girdle and Trunk" },
+            { short: "Anatomy - Pelvis", full: "Anatomy of the Trunk" },
+            { short: "Anatomy - Shoulder", full: "Anatomy of the Shoulder Girdle" },
+            { short: "Anatomy - Trunk", full: "Anatomy of the Trunk" },
+            { short: "Anatomy - Spine", full: "Anatomy of the Spine" },
             { short: "Tadasana", full: "Tadasana Alignment" },
             { short: "Energy", full: "Muscular and Organic Energy" },
-            { short: "Principles", full: "Principles of Forward Folding, Back-Bending, Lateral Bending and Twisting" }
+            { short: "Principles - Bending", full: "Principles of Forward Folding, Back-Bending, Lateral Bending and Twisting" }
         ],
         module2: [
             { short: "History", full: "History of Yoga" },
