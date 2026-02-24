@@ -1,6 +1,15 @@
 // ─── Variables ───
-$font-heading: 'ITC Garamond Condensed', Georgia, 'Times New Roman', serif;
-$font-body: 'Banana Grotesk Regular', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+$font-heading: "ITC Garamond Condensed", Georgia, "Times New Roman", serif;
+$font-body:
+  "Banana Grotesk Regular",
+  -apple-system,
+  BlinkMacSystemFont,
+  "Segoe UI",
+  Roboto,
+  Oxygen,
+  Ubuntu,
+  Cantarell,
+  sans-serif;
 $font-system: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 $blue: #327fef;
 $blue-dark: #023f94;
@@ -14,18 +23,24 @@ $download-button-bg: #f8f8f8;
 
 // ─── Font Faces ───
 @font-face {
-  font-family: 'ITC Garamond Condensed';
-  src: url('https://yoga-lms.netlify.app/fonts/itc-garamond-cond.static.woff2') format('woff2'),
-    url('https://yoga-lms.netlify.app/fonts/itc-garamond-cond.static.woff') format('woff');
+  font-family: "ITC Garamond Condensed";
+  src:
+    url("https://yoga-lms.netlify.app/fonts/itc-garamond-cond.static.woff2")
+      format("woff2"),
+    url("https://yoga-lms.netlify.app/fonts/itc-garamond-cond.static.woff")
+      format("woff");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Banana Grotesk Regular';
-  src: url('https://yoga-lms.netlify.app/fonts/BananaGrotesk-Regular.woff2') format('woff2'),
-    url('https://yoga-lms.netlify.app/fonts/BananaGrotesk-Regular.woff') format('woff');
+  font-family: "Banana Grotesk Regular";
+  src:
+    url("https://yoga-lms.netlify.app/fonts/BananaGrotesk-Regular.woff2")
+      format("woff2"),
+    url("https://yoga-lms.netlify.app/fonts/BananaGrotesk-Regular.woff")
+      format("woff");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -39,11 +54,18 @@ $download-button-bg: #f8f8f8;
 .user_content {
   --text-max-width: 60rem;
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-family: $font-heading;
   }
 
-  p, li, button {
+  p,
+  li,
+  button {
     font-family: $font-body;
   }
 
@@ -78,12 +100,14 @@ $download-button-bg: #f8f8f8;
     margin-top: 16px;
   }
 
-  h5, h6 {
+  h5,
+  h6 {
     font-size: 1.32rem;
     max-width: var(--text-max-width);
   }
 
-  p, li {
+  p,
+  li {
     font-size: clamp(1rem, 0.9rem + 0.4vw, 1.125rem) !important;
     line-height: 1.4;
     max-width: var(--text-max-width);
@@ -100,10 +124,11 @@ $download-button-bg: #f8f8f8;
     border: none !important;
     border-radius: $radius;
     overflow: hidden;
-    width: 75%;
+    width: 80%;
   }
 
-  td, th {
+  td,
+  th {
     border: solid 1px #000 !important;
     border-style: none solid solid none !important;
   }
@@ -219,15 +244,23 @@ $download-button-bg: #f8f8f8;
   left: var(--ylms-pb-pad, 32px);
   height: 2px;
   background-color: $blue;
-  width: calc((100% - var(--ylms-pb-pad, 32px) * 2) * var(--ylms-pb-previous, 0) / 100);
+  width: calc(
+    (100% - var(--ylms-pb-pad, 32px) * 2) * var(--ylms-pb-previous, 0) / 100
+  );
   z-index: 1;
 }
 
 .ylms-pb_fill-animated {
   position: absolute;
   top: var(--ylms-pb-line-top);
-  left: calc(var(--ylms-pb-pad, 32px) + (100% - var(--ylms-pb-pad, 32px) * 2) * var(--ylms-pb-previous, 0) / 100);
-  width: calc((100% - var(--ylms-pb-pad, 32px) * 2) * (var(--ylms-pb-current, 0) - var(--ylms-pb-previous, 0)) / 100);
+  left: calc(
+    var(--ylms-pb-pad, 32px) + (100% - var(--ylms-pb-pad, 32px) * 2) *
+      var(--ylms-pb-previous, 0) / 100
+  );
+  width: calc(
+    (100% - var(--ylms-pb-pad, 32px) * 2) *
+      (var(--ylms-pb-current, 0) - var(--ylms-pb-previous, 0)) / 100
+  );
   height: 2px;
   background-color: $blue;
   transform: scaleX(0);
@@ -238,8 +271,12 @@ $download-button-bg: #f8f8f8;
 }
 
 @keyframes ylms-pb_fillSegment {
-  from { transform: scaleX(0); }
-  to { transform: scaleX(1); }
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
 }
 
 .ylms-pb_right {
@@ -258,8 +295,12 @@ $download-button-bg: #f8f8f8;
 }
 
 @keyframes ylms-pb_fadeToBlue {
-  from { background-color: $gray-light; }
-  to { background-color: $blue; }
+  from {
+    background-color: $gray-light;
+  }
+  to {
+    background-color: $blue;
+  }
 }
 
 .ylms-pb_steps {
@@ -318,15 +359,25 @@ $download-button-bg: #f8f8f8;
   &.ylms-pb_tick-animate {
     opacity: 0;
     transform: scale(0);
-    animation: ylms-pb_popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    animation: ylms-pb_popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)
+      forwards;
     animation-delay: 1.2s;
   }
 }
 
 @keyframes ylms-pb_popIn {
-  0% { opacity: 0; transform: scale(0); }
-  50% { opacity: 1; transform: scale(1.3); }
-  100% { opacity: 1; transform: scale(1); }
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.3);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .ylms-pb_label {
@@ -356,7 +407,9 @@ $download-button-bg: #f8f8f8;
   background: white;
   border: 1.5px solid $blue;
   box-sizing: border-box;
-  transition: background-color 0.2s ease, border-color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .ylms-pb_substep-active {
@@ -391,7 +444,9 @@ $download-button-bg: #f8f8f8;
   font-weight: 500;
   cursor: pointer;
   position: relative;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
 
   &.ylms-tb_active {
     background: $blue;
@@ -435,10 +490,16 @@ $download-button-bg: #f8f8f8;
 }
 
 .ylms-iframe-wrapper {
-  width: 75%;
+  width: 80%;
 
-  p { width: 100%; margin-bottom: 1em; }
-  div { width: 100%; margin-bottom: 1em; }
+  p {
+    width: 100%;
+    margin-bottom: 1em;
+  }
+  div {
+    width: 100%;
+    margin-bottom: 1em;
+  }
 }
 
 .ylms-iframe-tip {
@@ -517,28 +578,56 @@ $download-button-bg: #f8f8f8;
 }
 
 @keyframes ylms-header-from-left {
-  from { opacity: 0; object-position: 20% 90%; }
-  to { opacity: 0.9; object-position: 60% 50%; }
+  from {
+    opacity: 0;
+    object-position: 20% 90%;
+  }
+  to {
+    opacity: 0.9;
+    object-position: 60% 50%;
+  }
 }
 
 @keyframes ylms-header-from-right {
-  from { opacity: 0; object-position: 140% 90%; }
-  to { opacity: 0.9; object-position: 70% 50%; }
+  from {
+    opacity: 0;
+    object-position: 140% 90%;
+  }
+  to {
+    opacity: 0.9;
+    object-position: 70% 50%;
+  }
 }
 
 @keyframes ylms-header-from-bottom {
-  from { opacity: 0; object-position: 60% 100%; }
-  to { opacity: 0.9; object-position: 60% 50%; }
+  from {
+    opacity: 0;
+    object-position: 60% 100%;
+  }
+  to {
+    opacity: 0.9;
+    object-position: 60% 50%;
+  }
 }
 
 @keyframes ylms-header-zoom {
-  from { opacity: 0; transform: scale(1.3); }
-  to { opacity: 0.9; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(1.3);
+  }
+  to {
+    opacity: 0.9;
+    transform: scale(1);
+  }
 }
 
 @keyframes ylms-header-fade {
-  from { opacity: 0; }
-  to { opacity: 0.9; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.9;
+  }
 }
 
 .ylms-header_container {
@@ -605,13 +694,25 @@ $download-button-bg: #f8f8f8;
 }
 
 @keyframes ylms-logo-spin-in {
-  from { opacity: 0; transform: rotate(-30deg); }
-  to { opacity: 1; transform: rotate(0deg); }
+  from {
+    opacity: 0;
+    transform: rotate(-30deg);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(0deg);
+  }
 }
 
 @keyframes ylms-heading-fade-in {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 // ─── Attachments Widget ───
@@ -673,7 +774,10 @@ $download-button-bg: #f8f8f8;
   box-shadow: 0 4px 12px rgba(black, 0.15);
   opacity: 0;
   transform: translateY(-4px);
-  transition: max-height 0.25s ease, opacity 0.2s ease, transform 0.2s ease;
+  transition:
+    max-height 0.25s ease,
+    opacity 0.2s ease,
+    transform 0.2s ease;
   pointer-events: none;
 }
 
@@ -731,8 +835,15 @@ $download-button-bg: #f8f8f8;
   }
 }
 
-// ─── Mobile ───
-@media (max-width: 767px) {
+// --- Smaller screen needs to allow side menu still --
+@media (max-width: 1240px) {
+  .ylms-iframe-wrapper {
+    width: 100%;
+  }
+}
+
+// ─── Mobile (Or Desktop Squishy with Side Navs) ───
+@media (max-width: 1240px) {
   .user_content {
     --text-max-width: 100%;
 
@@ -740,11 +851,10 @@ $download-button-bg: #f8f8f8;
       min-width: 0 !important;
       width: 90%;
     }
-
   }
 
   table {
-    width: 100% !important
+    width: 100% !important;
   }
 
   .ylms-pb_label {
@@ -789,10 +899,6 @@ $download-button-bg: #f8f8f8;
   #ylms-header {
     height: auto;
     padding: 8px 0;
-  }
-
-  .ylms-iframe-wrapper {
-    width: 100%;
   }
 
   #ylms-reading-time {
@@ -1096,15 +1202,19 @@ $download-button-bg: #f8f8f8;
     gap: 6px;
     transition: color 0.2s ease;
 
-    &::-webkit-details-marker { display: none; }
+    &::-webkit-details-marker {
+      display: none;
+    }
 
     &::before {
-      content: '▸';
+      content: "▸";
       display: inline-block;
       transition: transform 0.2s ease;
     }
 
-    &:hover { color: rgba(white, 0.8); }
+    &:hover {
+      color: rgba(white, 0.8);
+    }
   }
 
   &[open] summary::before {
@@ -1172,7 +1282,7 @@ $download-button-bg: #f8f8f8;
   }
 }
 
-@media (max-width: 767px) {
+@media (max-width: 1240px) {
   .ylms-sg_modal {
     padding: 20px 14px 18px;
     width: 96%;
@@ -1302,7 +1412,9 @@ $download-button-bg: #f8f8f8;
   .ylms-sg_legend {
     font-size: 0.68rem;
 
-    summary { font-size: 0.65rem; }
+    summary {
+      font-size: 0.65rem;
+    }
   }
 
   .ylms-sg_legend-col b {
