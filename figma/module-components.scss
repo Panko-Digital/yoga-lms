@@ -524,13 +524,14 @@ $download-button-bg: #f8f8f8;
 // ─── Header ───
 #ylms-header {
   height: 240px;
+  min-height: 160px;
   width: 100%;
   background: linear-gradient(to right, $blue-dark, $blue, $blue-darker);
   padding: 8px 0;
   display: flex;
   align-items: center;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   border-radius: 4px;
 }
 
