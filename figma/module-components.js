@@ -149,7 +149,7 @@
     // Module lesson data registry
     var moduleLessons = {
         module0: [
-            { short: "Welcome", full: "Welcome to the Course" },
+            // { short: "Welcome", full: "Welcome to the Course" },
             { short: "Essentials", full: "Course Essentials" },
             { short: "Timeline", full: "Course Timeline" },
             { short: "Asanas", full: "Asana Library" },
