@@ -120,6 +120,7 @@
         { word: 'Sirsasana', iast: 'śīrṣāsana', meaning: 'Headstand — builds mental clarity and shifts perspective' },
         { word: 'Sitkari', iast: 'sītkārī', meaning: 'Hissing breath through the teeth — cools and calms the system' },
         { word: 'So Hum', iast: 'so\'ham', meaning: '"I am That" — a mantra connecting self to universal consciousness' },
+        { word: 'Sthira Sukham Asanam', iast: 'Sthira-sukham āsanam', meaning: 'A balance of effort and ease in the body' },
         { word: 'Supta Baddha Konasana', iast: 'supta baddha koṇāsana', meaning: 'Reclined Butterfly — opens the hips in deep relaxation' },
         { word: 'Surya Bhedana', iast: 'sūrya bhedana', meaning: 'Right-nostril breathing that heats the body and sharpens focus' },
         { word: 'Surya Namaskar', iast: 'sūrya namaskāra', meaning: 'Sun Salutation — a flowing sequence linking breath and movement' },
@@ -797,6 +798,10 @@
     function initSanskritGlossary() {
         if (!sanskritGlossary || sanskritGlossary.length === 0) return;
 
+        // Check if header exists - if not, don't highlight words in content
+        var headerEl = document.getElementById('ylms-header');
+        var shouldHighlightWords = !!headerEl;
+
         // Build a lookup map (lowercase word -> glossary entry)
         var glossaryMap = {};
         sanskritGlossary.forEach(function (entry) {
@@ -812,89 +817,102 @@
             .filter(function (w) { return !skipDetection[w.toLowerCase()]; });
         words.push('Sanskrit Glossary', 'Sanskrit');
         words.sort(function (a, b) { return b.length - a.length; });
-        var pattern = new RegExp('\\b(' + words.join('|') + ')\\b', 'gi');
 
-        // Scan text nodes in panels and content area
-        var contentEl = findContentEl();
-        var containers = document.querySelectorAll('[data-panel]');
-        if (contentEl) {
-            var panelContainers = Array.prototype.slice.call(containers);
-            panelContainers.push(contentEl);
-            containers = panelContainers;
-        }
-        if (containers.length === 0) {
-            containers = document.querySelectorAll('body');
-        }
+        // Create pattern that matches words with optional 's' at the end for plurals
+        // e.g., "Asana" matches both "Asana" and "Asanas"
+        var escapedWords = words.map(function (word) {
+            // Escape special regex characters
+            return word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        });
+        var pattern = new RegExp('\\b(' + escapedWords.join('|') + ')s?\\b', 'gi');
 
-        containers.forEach(function (container) {
-            var walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, null, false);
-            var textNodes = [];
-            while (walker.nextNode()) textNodes.push(walker.currentNode);
+        // Only scan and highlight text if header exists
+        if (shouldHighlightWords) {
+            // Scan text nodes in panels and content area
+            var contentEl = findContentEl();
+            var containers = document.querySelectorAll('[data-panel]');
+            if (contentEl) {
+                var panelContainers = Array.prototype.slice.call(containers);
+                panelContainers.push(contentEl);
+                containers = panelContainers;
+            }
+            if (containers.length === 0) {
+                containers = document.querySelectorAll('body');
+            }
 
-            textNodes.forEach(function (node) {
-                if (!pattern.test(node.textContent)) return;
-                pattern.lastIndex = 0;
+            containers.forEach(function (container) {
+                var walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, null, false);
+                var textNodes = [];
+                while (walker.nextNode()) textNodes.push(walker.currentNode);
 
-                var parent = node.parentNode;
-                if (!parent) return;
-                if (parent.classList && parent.classList.contains('ylms-sanskrit')) return;
-                if (parent.closest && parent.closest('.ylms-sg_modal')) return;
-                if (parent.closest && parent.closest('.ylms-pb_wrapper')) return;
-                if (parent.closest && parent.closest('a, button, [role="button"]')) return;
+                textNodes.forEach(function (node) {
+                    if (!pattern.test(node.textContent)) return;
+                    pattern.lastIndex = 0;
 
-                // Only detect in body copy — p, span, li (skip headings, buttons, etc.)
-                var allowedParent = parent.closest && parent.closest('p, span, li');
-                if (!allowedParent) return;
+                    var parent = node.parentNode;
+                    if (!parent) return;
+                    if (parent.classList && parent.classList.contains('ylms-sanskrit')) return;
+                    if (parent.closest && parent.closest('.ylms-sg_modal')) return;
+                    if (parent.closest && parent.closest('.ylms-pb_wrapper')) return;
+                    if (parent.closest && parent.closest('a, button, [role="button"]')) return;
 
-                var frag = document.createDocumentFragment();
-                var text = node.textContent;
-                var lastIndex = 0;
-                var match;
-                pattern.lastIndex = 0;
+                    // Only detect in body copy — p, span, li (skip headings, buttons, etc.)
+                    var allowedParent = parent.closest && parent.closest('p, span, li');
+                    if (!allowedParent) return;
 
-                while ((match = pattern.exec(text)) !== null) {
-                    if (match.index > lastIndex) {
-                        frag.appendChild(document.createTextNode(text.slice(lastIndex, match.index)));
-                    }
-                    var span = document.createElement('span');
-                    span.className = 'ylms-sanskrit';
-                    span.textContent = match[0];
-                    span.setAttribute('tabindex', '0');
-                    span.setAttribute('role', 'button');
-                    span.setAttribute('aria-label', match[0] + ' — click to open Sanskrit Glossary');
-                    span.addEventListener('click', function () {
-                        var word = this.textContent;
-                        if (word.toLowerCase().indexOf('sanskrit') === 0) {
-                            openGlossaryModal();
-                        } else {
-                            openGlossaryModal(word);
+                    var frag = document.createDocumentFragment();
+                    var text = node.textContent;
+                    var lastIndex = 0;
+                    var match;
+                    pattern.lastIndex = 0;
+
+                    while ((match = pattern.exec(text)) !== null) {
+                        if (match.index > lastIndex) {
+                            frag.appendChild(document.createTextNode(text.slice(lastIndex, match.index)));
                         }
-                    });
-                    span.addEventListener('keydown', function (e) {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                            e.preventDefault();
+                        var span = document.createElement('span');
+                        span.className = 'ylms-sanskrit';
+                        span.textContent = match[0];
+                        span.setAttribute('tabindex', '0');
+                        span.setAttribute('role', 'button');
+                        span.setAttribute('aria-label', match[0] + ' — click to open Sanskrit Glossary');
+                        span.addEventListener('click', function () {
                             var word = this.textContent;
                             if (word.toLowerCase().indexOf('sanskrit') === 0) {
                                 openGlossaryModal();
                             } else {
-                                openGlossaryModal(word);
+                                // Strip trailing 's' for plural lookup
+                                var lookupWord = word.replace(/s$/i, '');
+                                openGlossaryModal(lookupWord);
                             }
-                        }
-                    });
-                    frag.appendChild(span);
-                    lastIndex = pattern.lastIndex;
-                }
+                        });
+                        span.addEventListener('keydown', function (e) {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                var word = this.textContent;
+                                if (word.toLowerCase().indexOf('sanskrit') === 0) {
+                                    openGlossaryModal();
+                                } else {
+                                    // Strip trailing 's' for plural lookup
+                                    var lookupWord = word.replace(/s$/i, '');
+                                    openGlossaryModal(lookupWord);
+                                }
+                            }
+                        });
+                        frag.appendChild(span);
+                        lastIndex = pattern.lastIndex;
+                    }
 
-                if (lastIndex < text.length) {
-                    frag.appendChild(document.createTextNode(text.slice(lastIndex)));
-                }
+                    if (lastIndex < text.length) {
+                        frag.appendChild(document.createTextNode(text.slice(lastIndex)));
+                    }
 
-                parent.replaceChild(frag, node);
+                    parent.replaceChild(frag, node);
+                });
             });
-        });
+        }
 
         // Add standalone "Sanskrit" button in the header, below downloads if present
-        var headerEl = document.getElementById('ylms-header');
         if (headerEl) {
             var sgIcon = '<svg class="ylms-att_icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">' +
                 '<path d="M12.87 15.07l-2.54-2.51.03-.03A17.52 17.52 0 0014.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z" fill="currentColor"/>' +
@@ -911,7 +929,8 @@
             headerEl.appendChild(sgBtn);
         }
 
-        // Create modal (hidden by default)
+        // Create modal (hidden by default) - always create it even if header doesn't exist
+        // This allows programmatic access to the glossary
         createGlossaryModal();
     }
 
@@ -1102,6 +1121,12 @@
             selector: '.ylms-sg_header-btn',
             message: 'Access the Sanskrit Glossary anytime to learn yoga terminology',
             position: 'auto'
+        },
+        {
+            selector: 'iframe[src*="vimeo.com"], iframe[src*="player.vimeo.com"]',
+            message: 'Use the video controls in the bottom-right corner to adjust playback, enable captions, or go fullscreen',
+            position: 'auto',
+            offsetTarget: 'bottom-right' // Special positioning for iframe controls
         }
         // Add more steps as needed
     ];
@@ -1138,7 +1163,7 @@
         }
     }
 
-    function calculateTooltipPosition(targetEl, tooltip) {
+    function calculateTooltipPosition(targetEl, tooltip, step) {
         var rect = targetEl.getBoundingClientRect();
         var tooltipRect = tooltip.getBoundingClientRect();
         var viewportWidth = window.innerWidth;
@@ -1147,18 +1172,34 @@
         var ARROW_SIZE = 10;
         var SPACING = 20; // Spacing from target element
 
+        // Handle special offset targets (e.g., iframe controls)
+        var targetRect = rect;
+        if (step && step.offsetTarget === 'bottom-right') {
+            // Point to bottom-right area of the element (where video controls typically are)
+            var controlsWidth = 200; // Approximate width of video controls
+            var controlsHeight = 50; // Approximate height of video controls
+            targetRect = {
+                top: rect.bottom - controlsHeight,
+                bottom: rect.bottom,
+                left: rect.right - controlsWidth,
+                right: rect.right,
+                width: controlsWidth,
+                height: controlsHeight
+            };
+        }
+
         // All calculations are viewport-relative (for position: fixed)
-        var spaceTop = rect.top;
-        var spaceBottom = viewportHeight - rect.bottom;
-        var spaceLeft = rect.left;
-        var spaceRight = viewportWidth - rect.right;
+        var spaceTop = targetRect.top;
+        var spaceBottom = viewportHeight - targetRect.bottom;
+        var spaceLeft = targetRect.left;
+        var spaceRight = viewportWidth - targetRect.right;
 
         var position = 'bottom'; // default
         var top, left, arrowPosition;
 
         // Prefer right/left for elements on the sides of the page
-        var isLeftSide = rect.left < viewportWidth / 3;
-        var isRightSide = rect.right > (viewportWidth * 2) / 3;
+        var isLeftSide = targetRect.left < viewportWidth / 3;
+        var isRightSide = targetRect.right > (viewportWidth * 2) / 3;
 
         // Choose position with most space, with preference for horizontal on sides
         if (isLeftSide && spaceRight >= tooltipRect.width + SPACING + ARROW_SIZE) {
@@ -1181,23 +1222,23 @@
         // Calculate viewport-relative position (for position: fixed)
         switch (position) {
             case 'bottom':
-                top = rect.bottom + SPACING;
-                left = rect.left + (rect.width / 2) - (tooltipRect.width / 2);
+                top = targetRect.bottom + SPACING;
+                left = targetRect.left + (targetRect.width / 2) - (tooltipRect.width / 2);
                 arrowPosition = 'top';
                 break;
             case 'top':
-                top = rect.top - tooltipRect.height - SPACING;
-                left = rect.left + (rect.width / 2) - (tooltipRect.width / 2);
+                top = targetRect.top - tooltipRect.height - SPACING;
+                left = targetRect.left + (targetRect.width / 2) - (tooltipRect.width / 2);
                 arrowPosition = 'bottom';
                 break;
             case 'right':
-                top = rect.top + (rect.height / 2) - (tooltipRect.height / 2);
-                left = rect.right + SPACING;
+                top = targetRect.top + (targetRect.height / 2) - (tooltipRect.height / 2);
+                left = targetRect.right + SPACING;
                 arrowPosition = 'left';
                 break;
             case 'left':
-                top = rect.top + (rect.height / 2) - (tooltipRect.height / 2);
-                left = rect.left - tooltipRect.width - SPACING;
+                top = targetRect.top + (targetRect.height / 2) - (tooltipRect.height / 2);
+                left = targetRect.left - tooltipRect.width - SPACING;
                 arrowPosition = 'right';
                 break;
         }
@@ -1213,7 +1254,7 @@
         if (top < minTop) top = minTop;
         if (top > maxTop) top = maxTop;
 
-        return { top: top, left: left, arrowPosition: arrowPosition };
+        return { top: top, left: left, arrowPosition: arrowPosition, targetRect: targetRect };
     }
 
     function createGuideTooltip(step, stepIndex, totalSteps) {
@@ -1291,14 +1332,17 @@
         function updatePositions() {
             var rect = targetEl.getBoundingClientRect();
 
-            // Update highlight ring position
-            highlightRing.style.top = rect.top + 'px';
-            highlightRing.style.left = rect.left + 'px';
-            highlightRing.style.width = rect.width + 'px';
-            highlightRing.style.height = rect.height + 'px';
+            // Calculate tooltip position (may use offset target)
+            var pos = calculateTooltipPosition(targetEl, tooltip, step);
+
+            // Update highlight ring position (use offset target if specified)
+            var highlightRect = pos.targetRect || rect;
+            highlightRing.style.top = highlightRect.top + 'px';
+            highlightRing.style.left = highlightRect.left + 'px';
+            highlightRing.style.width = highlightRect.width + 'px';
+            highlightRing.style.height = highlightRect.height + 'px';
 
             // Update tooltip position
-            var pos = calculateTooltipPosition(targetEl, tooltip);
             tooltip.style.top = pos.top + 'px';
             tooltip.style.left = pos.left + 'px';
 
