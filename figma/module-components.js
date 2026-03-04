@@ -14,10 +14,12 @@
         { word: 'Ajna', iast: 'ājñā', meaning: 'Third-eye chakra — the centre of intuition and inner wisdom' },
         { word: 'Ananda', iast: 'ānanda', meaning: 'A state of pure bliss and unconditional joy' },
         { word: 'Anahata', iast: 'anāhata', meaning: 'Heart chakra — the energy centre of love and compassion' },
+        { word: 'Anjaneyasana', iast: 'āñjaneyāsana', meaning: 'Foundational asana that deeply stretches the hip flexors, quads, and groin' },
         { word: 'Antar Mouna', iast: 'antar mauna', meaning: 'Inner silence — a meditation practice of stilling mental chatter' },
         { word: 'Apana', iast: 'apāna', meaning: 'The downward-moving vital energy governing elimination' },
         { word: 'Aparigraha', iast: 'aparigraha', meaning: 'Non-possessiveness — freedom from greed and attachment' },
         { word: 'Ardha', iast: 'ardha', meaning: 'Half — as in Ardha Chandrasana (Half Moon Pose)' },
+        { word: 'Ardha Hanumanasana', iast: 'ardha hanumānāsana', meaning: 'Half split pose named after lord Hanuman' },
         { word: 'Ardha Matsyendrasana', iast: 'ardha matsyendrāsana', meaning: 'Seated spinal twist named after the sage Matsyendra' },
         { word: 'Asana', iast: 'āsana', meaning: 'A physical posture practised in yoga' },
         { word: 'Ashram', iast: 'āśrama', meaning: 'A spiritual hermitage or school dedicated to yoga study' },
@@ -50,6 +52,7 @@
         { word: 'Granthi', iast: 'granthi', meaning: 'An energetic knot or blockage in the central energy channel' },
         { word: 'Guna', iast: 'guṇa', meaning: 'One of three qualities of nature: tamas, rajas, or sattva' },
         { word: 'Guru', iast: 'guru', meaning: 'A spiritual teacher who guides one toward awakening' },
+        { word: 'Hanumanasana', iast: 'hanumānāsana', meaning: 'Full split pose named after lord Hanuman' },
         { word: 'Hasta', iast: 'hasta', meaning: 'The hand or arm — used in many pose names' },
         { word: 'Hatha', iast: 'haṭha', meaning: 'The "forceful path" — balancing sun (ha) and moon (tha) energy' },
         { word: 'Ida Nadi', iast: 'iḍā nāḍī', meaning: 'The left energy channel carrying cooling, lunar energy' },
@@ -79,6 +82,7 @@
         { word: 'Nadi', iast: 'nāḍī', meaning: 'A subtle energy channel through which prana flows' },
         { word: 'Nadi Shodhana', iast: 'nāḍī śodhana', meaning: 'Alternate-nostril breathing to balance the nervous system' },
         { word: 'Namaste', iast: 'namaste', meaning: '"I bow to you" — a greeting honouring the light in another' },
+        { word: 'Natarajasana', iast: 'naṭarājāsana', meaning: 'Lord of the Dance pose or Dancer\'s pose' },
         { word: 'Nidra', iast: 'nidrā', meaning: 'Yogic sleep — the body rests while awareness remains' },
         { word: 'Niyama', iast: 'niyama', meaning: 'The five internal observances — the second limb of yoga' },
         { word: 'Om', iast: 'oṃ', meaning: 'The primordial sound representing the vibration of the universe' },
@@ -131,6 +135,7 @@
         { word: 'Uddiyana Bandha', iast: 'uḍḍīyāna bandha', meaning: 'Abdominal lock — lifts the diaphragm and stokes inner fire' },
         { word: 'Ujjayi', iast: 'ujjāyī', meaning: 'Ocean-sounding victorious breath that calms and warms the body' },
         { word: 'Upavistha Konasana', iast: 'upaviṣṭha koṇāsana', meaning: 'Wide-angle seated forward fold — opens hips and quiets the mind' },
+        { word: 'Urdhva Dhanurasana', iast: 'ūrdhva dhanurāsana', meaning: 'Upward bow or wheel pose - opens the chest and shoulders' },
         { word: 'Ustrasana', iast: 'uṣṭrāsana', meaning: 'Camel Pose — a kneeling backbend that opens the throat and heart' },
         { word: 'Utkatasana', iast: 'utkaṭāsana', meaning: 'Chair Pose — builds leg strength, focus and determination' },
         { word: 'Uttanasana', iast: 'uttānāsana', meaning: 'Standing Forward Fold — calms the mind and lengthens the spine' },
@@ -140,6 +145,7 @@
         { word: 'Vinyasa', iast: 'vinyāsa', meaning: 'Flow — linking breath with movement in a continuous sequence' },
         { word: 'Viparita Karani', iast: 'viparīta karaṇī', meaning: 'Legs Up the Wall — a restorative inversion that calms anxiety' },
         { word: 'Virabhadrasana', iast: 'vīrabhadrāsana', meaning: 'Warrior Pose — builds courage, strength and determination' },
+        { word: 'Virasana', iast: 'vīrāsana', meaning: 'A deep stretching of the thighs, knees, and ankles' },
         { word: 'Vishuddha', iast: 'viśuddha', meaning: 'Throat chakra — the centre of truthful expression and clarity' },
         { word: 'Yama', iast: 'yama', meaning: 'The five ethical restraints — the first limb of yoga' },
         { word: 'Yoga', iast: 'yoga', meaning: 'Union — the practice of joining mind, body and spirit' },
@@ -184,12 +190,13 @@
             { short: "Pre-Post Natal", full: "Pre-Post Natal Yoga" }
         ],
         module4: [
-            { short: "Sequencing", full: "How to Sequencing around Beginners/Gentle" },
+            { short: "Sequencing", full: "How to Sequence (Beginners/Gentle)" },
             { short: "Standard", full: "Standard Online Class" },
             { short: "Beginners", full: "Beginners Online Class" },
-            { short: "Mellow", full: "Mellow Online Class" },
+            { short: "Mellow Class", full: "Mellow Online Class" },
             { short: "Yin Intro", full: "Intro to Yin - Yin Principals" },
-            { short: "Yin Class", full: "Yin Class" }
+            { short: "Yin Class", full: "Yin Class" },
+            { short: "Wrap Up", full: "Wrap Up" }
         ]
     };
 
@@ -566,9 +573,22 @@
             return;
         }
         if (mins < 1) mins = 1;
+
+        var timeText;
+        if (mins >= 60) {
+            var hours = Math.floor(mins / 60);
+            var remainingMins = mins % 60;
+            timeText = hours + 'hr';
+            if (remainingMins > 0) {
+                timeText += ' ' + remainingMins + 'min';
+            }
+        } else {
+            timeText = mins + ' min';
+        }
+
         var badge = document.createElement('div');
         badge.className = 'ylms-pb_readtime';
-        badge.textContent = mins + ' min';
+        badge.textContent = timeText;
         container.after(badge);
     }
 
