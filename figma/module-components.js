@@ -1085,6 +1085,323 @@
         }
     }
 
+    // ─── Interactive Guide / Tutorial System ───
+    // [DESKTOP-ONLY-START]
+    var guideSteps = [
+        {
+            selector: '#modules-link',
+            message: 'Click this to view the full course module and lessons overview',
+            position: 'auto' // auto, top, bottom, left, right
+        },
+        {
+            selector: '.ylms-pb_circle',
+            message: 'Track your progress through each module with this visual indicator',
+            position: 'auto'
+        },
+        {
+            selector: '.ylms-sg_header-btn',
+            message: 'Access the Sanskrit Glossary anytime to learn yoga terminology',
+            position: 'auto'
+        }
+        // Add more steps as needed
+    ];
+
+    var GUIDE_STORAGE_KEY = 'ylms-guide-completed';
+    var GUIDE_DELAY_MS = 20000; // 20 seconds
+    var GUIDE_DISABLE_ON_MOBILE = true; // Set to false to enable on mobile
+
+    function isMobileDevice() {
+        // Check for mobile viewport width
+        if (window.innerWidth <= 768) return true;
+
+        // Check for touch-only devices
+        if ('ontouchstart' in window && !window.matchMedia('(pointer: fine)').matches) return true;
+
+        // Check user agent for mobile indicators
+        var ua = navigator.userAgent || navigator.vendor || window.opera;
+        return /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(ua);
+    }
+
+    function hasSeenGuide() {
+        try {
+            return localStorage.getItem(GUIDE_STORAGE_KEY) === 'true';
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function markGuideAsSeen() {
+        try {
+            localStorage.setItem(GUIDE_STORAGE_KEY, 'true');
+        } catch (e) {
+            // Silently fail if localStorage is unavailable
+        }
+    }
+
+    function calculateTooltipPosition(targetEl, tooltip) {
+        var rect = targetEl.getBoundingClientRect();
+        var tooltipRect = tooltip.getBoundingClientRect();
+        var viewportWidth = window.innerWidth;
+        var viewportHeight = window.innerHeight;
+
+        var ARROW_SIZE = 10;
+        var SPACING = 20; // Spacing from target element
+
+        // All calculations are viewport-relative (for position: fixed)
+        var spaceTop = rect.top;
+        var spaceBottom = viewportHeight - rect.bottom;
+        var spaceLeft = rect.left;
+        var spaceRight = viewportWidth - rect.right;
+
+        var position = 'bottom'; // default
+        var top, left, arrowPosition;
+
+        // Prefer right/left for elements on the sides of the page
+        var isLeftSide = rect.left < viewportWidth / 3;
+        var isRightSide = rect.right > (viewportWidth * 2) / 3;
+
+        // Choose position with most space, with preference for horizontal on sides
+        if (isLeftSide && spaceRight >= tooltipRect.width + SPACING + ARROW_SIZE) {
+            position = 'right';
+        } else if (isRightSide && spaceLeft >= tooltipRect.width + SPACING + ARROW_SIZE) {
+            position = 'left';
+        } else if (spaceBottom >= tooltipRect.height + SPACING + ARROW_SIZE) {
+            position = 'bottom';
+        } else if (spaceTop >= tooltipRect.height + SPACING + ARROW_SIZE) {
+            position = 'top';
+        } else if (spaceRight >= tooltipRect.width + SPACING + ARROW_SIZE) {
+            position = 'right';
+        } else if (spaceLeft >= tooltipRect.width + SPACING + ARROW_SIZE) {
+            position = 'left';
+        } else {
+            // Not enough space anywhere, default to bottom
+            position = 'bottom';
+        }
+
+        // Calculate viewport-relative position (for position: fixed)
+        switch (position) {
+            case 'bottom':
+                top = rect.bottom + SPACING;
+                left = rect.left + (rect.width / 2) - (tooltipRect.width / 2);
+                arrowPosition = 'top';
+                break;
+            case 'top':
+                top = rect.top - tooltipRect.height - SPACING;
+                left = rect.left + (rect.width / 2) - (tooltipRect.width / 2);
+                arrowPosition = 'bottom';
+                break;
+            case 'right':
+                top = rect.top + (rect.height / 2) - (tooltipRect.height / 2);
+                left = rect.right + SPACING;
+                arrowPosition = 'left';
+                break;
+            case 'left':
+                top = rect.top + (rect.height / 2) - (tooltipRect.height / 2);
+                left = rect.left - tooltipRect.width - SPACING;
+                arrowPosition = 'right';
+                break;
+        }
+
+        // Keep tooltip within viewport bounds
+        var minLeft = 10;
+        var maxLeft = viewportWidth - tooltipRect.width - 10;
+        var minTop = 10;
+        var maxTop = viewportHeight - tooltipRect.height - 10;
+
+        if (left < minLeft) left = minLeft;
+        if (left > maxLeft) left = maxLeft;
+        if (top < minTop) top = minTop;
+        if (top > maxTop) top = maxTop;
+
+        return { top: top, left: left, arrowPosition: arrowPosition };
+    }
+
+    function createGuideTooltip(step, stepIndex, totalSteps) {
+        var tooltip = document.createElement('div');
+        tooltip.className = 'ylms-guide_tooltip';
+        tooltip.setAttribute('role', 'dialog');
+        tooltip.setAttribute('aria-live', 'polite');
+
+        var isLastStep = stepIndex === totalSteps - 1;
+        var nextBtnText = isLastStep ? 'Got it!' : 'More';
+
+        // Create dot indicators
+        var dotsHtml = '';
+        for (var i = 0; i < totalSteps; i++) {
+            var dotClass = 'ylms-guide_dot';
+            if (i === stepIndex) dotClass += ' ylms-guide_dot--active';
+            dotsHtml += '<span class="' + dotClass + '"></span>';
+        }
+
+        tooltip.innerHTML =
+            '<div class="ylms-guide_arrow"></div>' +
+            '<div class="ylms-guide_content">' +
+            '<p class="ylms-guide_message">' + step.message + '</p>' +
+            '<div class="ylms-guide_actions">' +
+            '<div class="ylms-guide_dots">' + dotsHtml + '</div>' +
+            '<div class="ylms-guide_buttons">' +
+            '<button class="ylms-guide_btn ylms-guide_btn--skip">Skip</button>' +
+            '<button class="ylms-guide_btn ylms-guide_btn--next">' + nextBtnText + '</button>' +
+            '</div>' +
+            '</div>' +
+            '</div>';
+
+        return tooltip;
+    }
+
+    function showGuideStep(stepIndex) {
+        // Remove any existing tooltip, overlay, and highlight
+        var existingTooltip = document.querySelector('.ylms-guide_tooltip');
+        var existingOverlay = document.querySelector('.ylms-guide_overlay');
+        var existingHighlight = document.querySelector('.ylms-guide_highlight-ring');
+
+        if (existingTooltip) existingTooltip.remove();
+        if (existingOverlay) existingOverlay.remove();
+        if (existingHighlight) existingHighlight.remove();
+
+        if (stepIndex >= guideSteps.length) {
+            markGuideAsSeen();
+            return;
+        }
+
+        var step = guideSteps[stepIndex];
+        var targetEl = document.querySelector(step.selector);
+
+        if (!targetEl) {
+            // Element not found, skip to next step
+            showGuideStep(stepIndex + 1);
+            return;
+        }
+
+        // Create semi-transparent overlay
+        var overlay = document.createElement('div');
+        overlay.className = 'ylms-guide_overlay';
+        document.body.appendChild(overlay);
+
+        // Create non-disruptive highlight ring (fixed position, doesn't affect layout)
+        var highlightRing = document.createElement('div');
+        highlightRing.className = 'ylms-guide_highlight-ring';
+        document.body.appendChild(highlightRing);
+
+        // Create tooltip (appended to body, not near target element)
+        var tooltip = createGuideTooltip(step, stepIndex, guideSteps.length);
+        document.body.appendChild(tooltip);
+
+        // Position highlight ring to match target element
+        function updatePositions() {
+            var rect = targetEl.getBoundingClientRect();
+
+            // Update highlight ring position
+            highlightRing.style.top = rect.top + 'px';
+            highlightRing.style.left = rect.left + 'px';
+            highlightRing.style.width = rect.width + 'px';
+            highlightRing.style.height = rect.height + 'px';
+
+            // Update tooltip position
+            var pos = calculateTooltipPosition(targetEl, tooltip);
+            tooltip.style.top = pos.top + 'px';
+            tooltip.style.left = pos.left + 'px';
+
+            // Update arrow position
+            var arrow = tooltip.querySelector('.ylms-guide_arrow');
+            arrow.className = 'ylms-guide_arrow ylms-guide_arrow--' + pos.arrowPosition;
+        }
+
+        // Initial positioning
+        updatePositions();
+
+        // Position tooltip after it's in the DOM so we can measure it
+        requestAnimationFrame(function () {
+            updatePositions();
+
+            // Fade in
+            requestAnimationFrame(function () {
+                overlay.classList.add('ylms-guide_visible');
+                tooltip.classList.add('ylms-guide_visible');
+            });
+
+            // Scroll target into view if needed
+            var rect = targetEl.getBoundingClientRect();
+            if (rect.top < 0 || rect.bottom > window.innerHeight) {
+                targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                // Update positions after scroll
+                setTimeout(updatePositions, 500);
+            }
+        });
+
+        // Update positions on scroll/resize
+        var updateTimer;
+        function scheduleUpdate() {
+            if (updateTimer) clearTimeout(updateTimer);
+            updateTimer = setTimeout(updatePositions, 10);
+        }
+        window.addEventListener('scroll', scheduleUpdate, true);
+        window.addEventListener('resize', scheduleUpdate);
+
+        // Event handlers
+        var nextBtn = tooltip.querySelector('.ylms-guide_btn--next');
+        var skipBtn = tooltip.querySelector('.ylms-guide_btn--skip');
+
+        function cleanup() {
+            tooltip.classList.remove('ylms-guide_visible');
+            overlay.classList.remove('ylms-guide_visible');
+            highlightRing.remove();
+            window.removeEventListener('scroll', scheduleUpdate, true);
+            window.removeEventListener('resize', scheduleUpdate);
+        }
+
+        nextBtn.addEventListener('click', function () {
+            cleanup();
+            setTimeout(function () {
+                tooltip.remove();
+                overlay.remove();
+                showGuideStep(stepIndex + 1);
+            }, 300);
+        });
+
+        skipBtn.addEventListener('click', function () {
+            cleanup();
+            setTimeout(function () {
+                tooltip.remove();
+                overlay.remove();
+            }, 300);
+            markGuideAsSeen();
+        });
+
+        // Close on Escape
+        function handleEscape(e) {
+            if (e.key === 'Escape') {
+                cleanup();
+                tooltip.remove();
+                overlay.remove();
+                markGuideAsSeen();
+                document.removeEventListener('keydown', handleEscape);
+            }
+        }
+        document.addEventListener('keydown', handleEscape);
+    }
+
+    function initGuide() {
+        // Check if guide element exists on page
+        var guideEl = document.querySelector('.ylms-guide');
+        if (!guideEl) return;
+
+        // Disable on mobile if flag is set
+        if (GUIDE_DISABLE_ON_MOBILE && isMobileDevice()) {
+            console.log('[YLMS-Guide] Disabled on mobile devices');
+            return;
+        }
+
+        // Check if user has already seen the guide
+        if (hasSeenGuide()) return;
+
+        // Wait for delay, then start guide
+        setTimeout(function () {
+            showGuideStep(0);
+        }, GUIDE_DELAY_MS);
+    }
+    // [DESKTOP-ONLY-END]
+
     preloadFonts();
     setTimeout(initIframeTips, 450);
     setTimeout(init, 250);
@@ -1092,5 +1409,8 @@
     setTimeout(initFileDownloadIcons, 550);
     setTimeout(initExternalLinkIcons, 575);
     setTimeout(initSanskritGlossary, 600);
+    // [DESKTOP-ONLY-START]
+    setTimeout(initGuide, 650);
+    // [DESKTOP-ONLY-END]
 
 })();

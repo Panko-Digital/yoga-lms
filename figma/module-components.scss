@@ -13,6 +13,7 @@ $font-body:
 $font-system: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 $blue: #327fef;
 $blue-dark: #023f94;
+$white: #fff;
 $blue-darker: #023076;
 $gray: #6c7684;
 $gray-light: #ccc;
@@ -1499,3 +1500,242 @@ $download-button-bg: #f8f8f8;
     overflow-x: hidden;
   }
 }
+
+// ─── Interactive Guide / Tutorial System ───
+// [DESKTOP-ONLY-START]
+.ylms-guide_overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  background: rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+
+  &.ylms-guide_visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+.ylms-guide_tooltip {
+  position: fixed;
+  z-index: 9999;
+  background: $blue-dark;
+  color: white;
+  border-radius: 12px;
+  padding: 14px 16px 12px;
+  max-width: 320px;
+  min-width: 240px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+  font-family: $font-body;
+  opacity: 0;
+  transform: scale(0.9);
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
+  pointer-events: auto;
+
+  &.ylms-guide_visible {
+    opacity: 1;
+    transform: scale(1);
+    animation: ylms-guide_glow 2.5s ease-in-out infinite;
+  }
+}
+
+@keyframes ylms-guide_glow {
+  0%,
+  100% {
+    box-shadow:
+      0 12px 40px rgba(0, 0, 0, 0.3),
+      0 0 0 0 rgba(255, 255, 255, 0.4),
+      0 0 20px rgba(255, 255, 255, 0.2);
+  }
+  50% {
+    box-shadow:
+      0 12px 40px rgba(0, 0, 0, 0.3),
+      0 0 0 3px rgba(255, 255, 255, 0.6),
+      0 0 30px rgba(255, 255, 255, 0.4);
+  }
+}
+
+.ylms-guide_arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.4));
+
+  &--top {
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid $white;
+  }
+
+  &--bottom {
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid $white;
+  }
+
+  &--left {
+    left: -10px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-right: 10px solid $white;
+  }
+
+  &--right {
+    right: -10px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-left: 10px solid $white;
+  }
+}
+
+.ylms-guide_content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ylms-guide_message {
+  font-size: 0.9rem;
+  line-height: 1.35;
+  margin: 0;
+  color: rgba(white, 0.95);
+}
+
+.ylms-guide_actions {
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ylms-guide_dots {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.ylms-guide_dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(white, 0.3);
+  transition: background 0.2s ease;
+
+  &--active {
+    background: rgba(white, 0.9);
+  }
+}
+
+.ylms-guide_buttons {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.ylms-guide_btn {
+  font-family: $font-system;
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    transform 0.1s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &--skip {
+    background: rgba(white, 0.15);
+    color: rgba(white, 0.8);
+
+    &:hover {
+      background: rgba(white, 0.25);
+      color: white;
+    }
+  }
+
+  &--next {
+    background: white;
+    color: $blue-dark;
+    font-weight: 600;
+
+    &:hover {
+      background: rgba(white, 0.95);
+    }
+  }
+}
+
+// Non-disruptive highlight overlay (doesn't affect layout)
+.ylms-guide_highlight-ring {
+  position: fixed;
+  z-index: 9997;
+  pointer-events: none;
+  border-radius: 4px;
+  box-shadow: 0 0 0 3px rgba(white, 0.4);
+  animation: ylms-guide_pulse 2s ease-in-out infinite;
+}
+
+@keyframes ylms-guide_pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 3px rgba(white, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(white, 0.25);
+  }
+}
+
+// Mobile responsive
+@media (max-width: 600px) {
+  .ylms-guide_tooltip {
+    max-width: calc(100vw - 40px);
+    min-width: calc(100vw - 40px);
+    padding: 12px 14px 10px;
+  }
+
+  .ylms-guide_message {
+    font-size: 0.85rem;
+    line-height: 1.3;
+  }
+
+  .ylms-guide_btn {
+    font-size: 0.8rem;
+    padding: 5px 10px;
+  }
+
+  .ylms-guide_buttons {
+    gap: 6px;
+  }
+
+  .ylms-guide_dots {
+    gap: 5px;
+  }
+
+  .ylms-guide_dot {
+    width: 5px;
+    height: 5px;
+  }
+}
+// [DESKTOP-ONLY-END]

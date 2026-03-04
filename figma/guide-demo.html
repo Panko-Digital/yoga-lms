@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interactive Guide Demo - YLMS</title>
+    <link rel="stylesheet" href="module-components.desktop.min.css" />
+    <!-- <link rel="stylesheet" href="module-components.mobile.min.css" /> -->
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      }
+      .demo-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 20px;
+      }
+      .demo-section {
+        margin: 40px 0;
+        padding: 20px;
+        background: #f5f5f5;
+        border-radius: 8px;
+      }
+      .demo-button {
+        display: inline-block;
+        padding: 12px 24px;
+        background: #327fef;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 16px;
+        margin: 10px 10px 10px 0;
+      }
+      .demo-button:hover {
+        background: #2868c7;
+      }
+      #modules-link {
+        display: inline-block;
+        padding: 10px 20px;
+        background: #023f94;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        margin: 20px 0;
+      }
+      .info-box {
+        background: #e3f2fd;
+        border-left: 4px solid #327fef;
+        padding: 16px;
+        margin: 20px 0;
+        border-radius: 4px;
+      }
+      .code-block {
+        background: #2d2d2d;
+        color: #f8f8f2;
+        padding: 16px;
+        border-radius: 6px;
+        overflow-x: auto;
+        font-family: "Courier New", monospace;
+        font-size: 14px;
+        margin: 16px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Enable the guide by adding this element -->
+    <div class="ylms-guide"></div>
+
+    <!-- Header with Sanskrit button (will be added by JS) -->
+    <div id="ylms-header" data-module="1"></div>
+
+    <div class="demo-container">
+      <h1>Interactive Guide / Tutorial Demo</h1>
+
+      <div class="info-box">
+        <strong>📚 How it works:</strong> The interactive guide will
+        automatically appear 20 seconds after page load (for first-time users
+        only). It uses localStorage to remember if you've already seen it.
+      </div>
+
+      <div class="demo-section">
+        <h2>Quick Start</h2>
+        <p>To enable the guide on any page, simply add this element:</p>
+        <div class="code-block">&lt;div class="ylms-guide"&gt;&lt;/div&gt;</div>
+
+        <p>The guide will:</p>
+        <ul>
+          <li>Wait 20 seconds after page load</li>
+          <li>Check if the user has seen it before (using localStorage)</li>
+          <li>Show tooltips pointing to important elements</li>
+          <li>Allow users to step through or skip the tutorial</li>
+        </ul>
+      </div>
+
+      <div class="demo-section">
+        <h2>Demo Elements</h2>
+        <p>These elements are referenced in the guide steps:</p>
+
+        <a href="#" id="modules-link">View Course Modules</a>
+
+        <div style="margin-top: 20px">
+          <button class="demo-button">Sample Button 1</button>
+          <button class="demo-button">Sample Button 2</button>
+        </div>
+      </div>
+
+      <div class="demo-section">
+        <h2>Customizing Guide Steps</h2>
+        <p>
+          Edit the <code>guideSteps</code> array in
+          <code>module-components.js</code>:
+        </p>
+        <div class="code-block">
+          var guideSteps = [ { selector: '#modules-link', message: 'Click this
+          to view the full course module and lessons overview', position: 'auto'
+          // auto, top, bottom, left, right }, { selector: '.ylms-pb_circle',
+          message: 'Track your progress through each module', position: 'auto' }
+          // Add more steps as needed ];
+        </div>
+      </div>
+
+      <div class="demo-section">
+        <h2>Testing the Guide</h2>
+        <p>To test the guide again:</p>
+        <ol>
+          <li>Open browser DevTools (F12)</li>
+          <li>Go to Console tab</li>
+          <li>
+            Run: <code>localStorage.removeItem('ylms-guide-completed')</code>
+          </li>
+          <li>Refresh the page</li>
+          <li>Wait 20 seconds (or change GUIDE_DELAY_MS in the code)</li>
+        </ol>
+
+        <button class="demo-button" onclick="resetGuide()">
+          Reset Guide (Clear localStorage)
+        </button>
+      </div>
+
+      <div class="demo-section">
+        <h2>Features</h2>
+        <ul>
+          <li>
+            ✅ Automatic positioning (top, bottom, left, right) based on
+            available space
+          </li>
+          <li>✅ Pointed arrow that points to the target element</li>
+          <li>
+            ✅ High z-index (9999) to appear above iframes and other content
+          </li>
+          <li>
+            ✅ Matches Sanskrit glossary modal styling (blue-dark background,
+            white text)
+          </li>
+          <li>✅ LocalStorage persistence - won't show again once completed</li>
+          <li>✅ Skip button to dismiss tutorial</li>
+          <li>✅ Step counter (e.g., "1 of 3")</li>
+          <li>✅ Smooth animations and transitions</li>
+          <li>✅ Keyboard support (Escape to close)</li>
+          <li>✅ Mobile responsive</li>
+          <li>✅ Highlights target elements with pulsing animation</li>
+          <li>✅ Auto-scrolls to bring target elements into view</li>
+        </ul>
+      </div>
+
+      <div class="info-box">
+        <strong>⏱️ Note:</strong> The guide has a 20-second delay. For testing,
+        you can reduce <code>GUIDE_DELAY_MS</code> in the JavaScript file, or
+        use the reset button above and wait.
+      </div>
+    </div>
+
+    <script src="module-components.desktop.min.js"></script>
+    <script>
+      function resetGuide() {
+        localStorage.removeItem("ylms-guide-completed");
+        alert(
+          "Guide reset! Refresh the page to see it again (after 20 seconds).",
+        );
+      }
+    </script>
+  </body>
+</html>
