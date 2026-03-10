@@ -141,6 +141,7 @@
         { word: 'Utkatasana', iast: 'utkaṭāsana', meaning: 'Chair Pose — builds leg strength, focus and determination' },
         { word: 'Uttanasana', iast: 'uttānāsana', meaning: 'Standing Forward Fold — calms the mind and lengthens the spine' },
         { word: 'Utthita', iast: 'utthita', meaning: 'Extended — used in poses where the body stretches beyond its usual range' },
+        { word: 'Utthita Hasta Padangusthasana', iast: 'utthita hasta pādaṅguṣṭhāsana', meaning: 'Extended Hand-to-Big-Toe Pose — improves balance and stretches the legs' },
         { word: 'Vairagya', iast: 'vairāgya', meaning: 'Detachment — inner renunciation of worldly attachment' },
         { word: 'Vedas', iast: 'vedāḥ', meaning: 'The oldest yogic scriptures — foundational texts of Indian philosophy' },
         { word: 'Vinyasa', iast: 'vinyāsa', meaning: 'Flow — linking breath with movement in a continuous sequence' },
