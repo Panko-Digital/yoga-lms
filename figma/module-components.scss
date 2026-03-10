@@ -18,6 +18,9 @@ $blue-darker: #023076;
 $gray: #6c7684;
 $gray-light: #ccc;
 $border-light: #eef1f5;
+$bookmark-yellow: #f6dc64;
+$bookmark-yellow-border: #d2b642;
+$bookmark-yellow-text: #3a2d00;
 $radius: 6px;
 $download-button-radius: 32px;
 $download-button-bg: #f8f8f8;
@@ -1381,6 +1384,51 @@ $download-button-bg: #f8f8f8;
   }
 }
 
+// ─── Bookmark reminder banner ───
+.ylms-bookmark-banner {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 12;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: min(92%, 820px);
+  padding: 6px 10px;
+  border-radius: 5px;
+  border: 1px solid $bookmark-yellow-border;
+  background: $bookmark-yellow;
+  color: $bookmark-yellow-text;
+  font-family: $font-system;
+  font-size: 12px;
+  line-height: 1.25;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+}
+
+.ylms-bookmark-banner_text {
+  white-space: normal;
+}
+
+.ylms-bookmark-banner_dismiss {
+  border: 0;
+  border-radius: 4px;
+  padding: 4px 6px;
+  background: rgba(0, 0, 0, 0.12);
+  color: $bookmark-yellow-text;
+  font-family: $font-system;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+
+  &:hover,
+  &:focus {
+    background: rgba(0, 0, 0, 0.2);
+    outline: none;
+  }
+}
+
 @media (max-width: 1240px) {
   .ylms-sg_modal {
     padding: 20px 14px 18px;
@@ -1459,6 +1507,18 @@ $download-button-bg: #f8f8f8;
     right: 10px;
     bottom: 8px;
     font-size: 11px;
+  }
+
+  .ylms-bookmark-banner {
+    top: 6px;
+    gap: 8px;
+    padding: 5px 8px;
+    font-size: 11px;
+  }
+
+  .ylms-bookmark-banner_dismiss {
+    padding: 3px 5px;
+    font-size: 10px;
   }
 }
 

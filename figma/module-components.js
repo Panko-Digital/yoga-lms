@@ -1229,7 +1229,7 @@
     ];
 
     var GUIDE_STORAGE_KEY = 'ylms-guide-completed';
-    var GUIDE_DELAY_MS = 20000; // 20 seconds
+    var GUIDE_DELAY_MS = 5000; // 5 seconds
     var GUIDE_DISABLE_ON_MOBILE = true; // Set to false to enable on mobile
 
     function isMobileDevice() {
@@ -1361,7 +1361,7 @@
         tooltip.setAttribute('aria-live', 'polite');
 
         var isLastStep = stepIndex === totalSteps - 1;
-        var nextBtnText = isLastStep ? 'Got it!' : 'More';
+        var nextBtnText = isLastStep ? 'Done' : 'Next';
 
         // Create dot indicators
         var dotsHtml = '';
@@ -1378,7 +1378,7 @@
             '<div class="ylms-guide_actions">' +
             '<div class="ylms-guide_dots">' + dotsHtml + '</div>' +
             '<div class="ylms-guide_buttons">' +
-            '<button class="ylms-guide_btn ylms-guide_btn--skip">Skip</button>' +
+            '<button class="ylms-guide_btn ylms-guide_btn--skip">Hide</button>' +
             '<button class="ylms-guide_btn ylms-guide_btn--next">' + nextBtnText + '</button>' +
             '</div>' +
             '</div>' +
@@ -1535,18 +1535,29 @@
             // Ignore storage access errors and continue showing reminder
         }
 
+        if (headerEl.querySelector('.ylms-bookmark-banner')) return;
+
         var shortcut = navigator.userAgent.toLowerCase().indexOf('mac') !== -1 ? 'Command/Cmd' : 'CTRL';
-        var shouldHideReminder = confirm(
-            'You may find it useful to bookmark this reference page using ' + shortcut + ' + D.\n\nClick OK to stop seeing this reminder.'
-        );
+        var banner = document.createElement('div');
+        banner.className = 'ylms-bookmark-banner';
+        banner.innerHTML =
+            '<span class="ylms-bookmark-banner_text">You may find it useful to bookmark this reference page using ' + shortcut + ' + D.</span>' +
+            '<button type="button" class="ylms-bookmark-banner_dismiss" aria-label="Dismiss bookmark reminder">Don\'t show again</button>';
 
-        if (!shouldHideReminder) return;
+        var dismissBtn = banner.querySelector('.ylms-bookmark-banner_dismiss');
+        dismissBtn.addEventListener('click', function () {
+            try {
+                localStorage.setItem(storageKey, 'true');
+            } catch (e) {
+                // Ignore storage access errors
+            }
 
-        try {
-            localStorage.setItem(storageKey, 'true');
-        } catch (e) {
-            // Ignore storage access errors
-        }
+            if (banner.parentNode) {
+                banner.parentNode.removeChild(banner);
+            }
+        });
+
+        headerEl.appendChild(banner);
     }
 
     function initGuide(options) {
