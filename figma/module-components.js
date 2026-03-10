@@ -283,7 +283,40 @@
             title: 'Module 4',
             subtitle: 'From Teaching Skills to Transformation',
             animVariant: 'zoom'
-        }
+        },
+        'final-1': {
+            bgImage: '/courses/548/files/20075/preview',
+            bgImageAlt: 'module-0-bg-1.jpg',
+            title: 'Final Requirements',
+            subtitle: 'Instructions For Assessment',
+            animVariant: 'fade'
+        },
+        'final-2': {
+            bgImage: '/courses/548/files/20075/preview',
+            bgImageAlt: 'module-0-bg-1.jpg',
+            title: 'Final Requirements',
+            subtitle: 'Essay',
+            animVariant: 'fade'
+        },
+        'final-3': {
+            bgImage: '/courses/548/files/20075/preview',
+            bgImageAlt: 'module-0-bg-1.jpg',
+            title: 'Final Requirements',
+            subtitle: 'Journal',
+            animVariant: 'fade'
+        }, 'final-4': {
+            bgImage: '/courses/548/files/20075/preview',
+            bgImageAlt: 'module-0-bg-1.jpg',
+            title: 'Final Requirements',
+            subtitle: 'Studio Bookings',
+            animVariant: 'fade'
+        }, 'final-5': {
+            bgImage: '/courses/548/files/20075/preview',
+            bgImageAlt: 'module-0-bg-1.jpg',
+            title: 'Final Requirements',
+            subtitle: 'Certification',
+            animVariant: 'fade'
+        },
     };
 
     var currentState = {
@@ -1104,17 +1137,46 @@
         }
     }
 
+    function isGuideEnabledForPage(headerEl) {
+        if (!headerEl) return false;
+        if (headerEl.dataset.module === '0-2') return true;
+        return !!document.querySelector('.ylms-guide');
+    }
+
+    function initGuideTriggerLink() {
+        var headerEl = document.getElementById('ylms-header');
+        if (!isGuideEnabledForPage(headerEl)) return;
+
+        if (headerEl.querySelector('.ylms-guide_header-link')) return;
+
+        var guideLink = document.createElement('a');
+        guideLink.href = '#';
+        guideLink.className = 'ylms-guide_header-link';
+        guideLink.textContent = 'Show guide';
+        guideLink.setAttribute('aria-label', 'Show onscreen guide');
+        guideLink.addEventListener('click', function (e) {
+            e.preventDefault();
+            initGuide({ manual: true });
+        });
+
+        headerEl.appendChild(guideLink);
+    }
+
     // ─── Interactive Guide / Tutorial System ───
     // [DESKTOP-ONLY-START]
     var guideSteps = [
         {
+            selector: '#breadcrumbs > ol > li:nth-child(4)',
+            message: 'Nav page title - Module, Part, Title e.g Course Essentials',
+            position: 'bottom' // auto, top, bottom, left, right
+        }, {
             selector: '#modules-link',
             message: 'Click this to view the full course module and lessons overview',
             position: 'auto' // auto, top, bottom, left, right
         },
         {
-            selector: '.ylms-pb_circle',
-            message: 'Track your progress through each module with this visual indicator',
+            selector: '#ylms-header > div.ylms-att_widget',
+            message: 'Attachments button',
             position: 'auto'
         },
         {
@@ -1123,10 +1185,45 @@
             position: 'auto'
         },
         {
+            selector: '.ylms-guide_header-link',
+            message: 'Use this link anytime to replay the on-screen guide',
+            position: 'auto'
+        },
+        {
+            selector: '#ylms-module0-progress > div > div > div.ylms-pb_steps',
+            message: 'Track your progress through each module with this visual indicator',
+            position: 'auto'
+        },
+        {
+            selector: '#wiki_page_show > div > div.ylms-pb_readtime',
+            message: 'Approx Time Estimation',
+            position: 'auto'
+        },
+        {
             selector: 'iframe[src*="vimeo.com"], iframe[src*="player.vimeo.com"]',
             message: 'Use the video controls in the bottom-right corner to adjust playback, enable captions, or go fullscreen',
             position: 'auto',
             offsetTarget: 'bottom-right' // Special positioning for iframe controls
+        },
+        {
+            selector: '#wiki_page_show > div > ul:nth-child(18) > li:nth-child(1) > span > span > a.file_download_btn',
+            message: 'Download a file',
+            position: 'auto'
+        },
+        {
+            selector: '#wiki_page_show > div > ul:nth-child(18) > li:nth-child(6) > span > a > span.external_link_icon',
+            message: 'External link icon',
+            position: 'auto'
+        },
+        {
+            selector: '#mark-as-done-container',
+            message: 'Mark As Done button',
+            position: 'auto'
+        },
+        {
+            selector: '#module_navigation_target > div > div.module-sequence-footer > div > div.module-sequence-footer-right > span.module-sequence-footer-button--next',
+            message: 'Next button',
+            position: 'auto'
         }
         // Add more steps as needed
     ];
@@ -1425,10 +1522,40 @@
         document.addEventListener('keydown', handleEscape);
     }
 
-    function initGuide() {
-        // Check if guide element exists on page
-        var guideEl = document.querySelector('.ylms-guide');
-        if (!guideEl) return;
+    function bookmarkSite() {
+        if (isMobileDevice()) return;
+
+        var headerEl = document.getElementById('ylms-header');
+        if (!isGuideEnabledForPage(headerEl)) return;
+
+        var storageKey = 'ylms-bookmark-reminder-dismissed';
+        try {
+            if (localStorage.getItem(storageKey) === 'true') return;
+        } catch (e) {
+            // Ignore storage access errors and continue showing reminder
+        }
+
+        var shortcut = navigator.userAgent.toLowerCase().indexOf('mac') !== -1 ? 'Command/Cmd' : 'CTRL';
+        var shouldHideReminder = confirm(
+            'You may find it useful to bookmark this reference page using ' + shortcut + ' + D.\n\nClick OK to stop seeing this reminder.'
+        );
+
+        if (!shouldHideReminder) return;
+
+        try {
+            localStorage.setItem(storageKey, 'true');
+        } catch (e) {
+            // Ignore storage access errors
+        }
+    }
+
+    function initGuide(options) {
+        var opts = options || {};
+        var isManual = !!opts.manual;
+
+        // Activate guide for module 0-2 pages or guide demo pages
+        var headerEl = document.getElementById('ylms-header');
+        if (!isGuideEnabledForPage(headerEl)) return;
 
         // Disable on mobile if flag is set
         if (GUIDE_DISABLE_ON_MOBILE && isMobileDevice()) {
@@ -1437,7 +1564,12 @@
         }
 
         // Check if user has already seen the guide
-        if (hasSeenGuide()) return;
+        if (!isManual && hasSeenGuide()) return;
+
+        if (isManual) {
+            showGuideStep(0);
+            return;
+        }
 
         // Wait for delay, then start guide
         setTimeout(function () {
@@ -1454,7 +1586,12 @@
     setTimeout(initExternalLinkIcons, 575);
     setTimeout(initSanskritGlossary, 600);
     // [DESKTOP-ONLY-START]
+    setTimeout(initGuideTriggerLink, 625);
     setTimeout(initGuide, 650);
+
+    setTimeout(bookmarkSite, 10000);
     // [DESKTOP-ONLY-END]
+
+
 
 })();

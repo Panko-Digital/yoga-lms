@@ -1357,6 +1357,30 @@ $download-button-bg: #f8f8f8;
   }
 }
 
+// ─── Guide header link ───
+.ylms-guide_header-link {
+  position: absolute;
+  right: 12px;
+  bottom: 10px;
+  z-index: 10;
+  color: rgba(white, 0.85);
+  font-family: $font-system;
+  font-size: 12px;
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-color: rgba(white, 0.55);
+  cursor: pointer;
+  transition: color 0.2s ease, text-decoration-color 0.2s ease;
+
+  &:hover,
+  &:focus {
+    color: white;
+    text-decoration-color: rgba(white, 0.95);
+    outline: none;
+  }
+}
+
 @media (max-width: 1240px) {
   .ylms-sg_modal {
     padding: 20px 14px 18px;
@@ -1429,6 +1453,12 @@ $download-button-bg: #f8f8f8;
   .ylms-sg_header-btn {
     padding: 6px 8px;
     gap: 0;
+  }
+
+  .ylms-guide_header-link {
+    right: 10px;
+    bottom: 8px;
+    font-size: 11px;
   }
 }
 
