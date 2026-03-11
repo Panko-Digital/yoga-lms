@@ -83,6 +83,7 @@
         { word: 'Nadi Shodhana', iast: 'nāḍī śodhana', meaning: 'Alternate-nostril breathing to balance the nervous system' },
         { word: 'Namaste', iast: 'namaste', meaning: '"I bow to you" — a greeting honouring the light in another' },
         { word: 'Natarajasana', iast: 'naṭarājāsana', meaning: 'Lord of the Dance pose or Dancer\'s pose' },
+        { word: 'Navasana', iast: 'navāsana', meaning: 'Boat Pose — strengthens the core and improves balance' },
         { word: 'Nidra', iast: 'nidrā', meaning: 'Yogic sleep — the body rests while awareness remains' },
         { word: 'Niyama', iast: 'niyama', meaning: 'The five internal observances — the second limb of yoga' },
         { word: 'Om', iast: 'oṃ', meaning: 'The primordial sound representing the vibration of the universe' },
