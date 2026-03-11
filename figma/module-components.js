@@ -208,6 +208,7 @@
     // Shared header assets (logo is the same across all modules)
     var headerDefaults = {
         logoImage: '/courses/548/files/20032/preview',
+        logoImageMbl: '/courses/548/files/21331/preview',
         altLogoImage: '/courses/548/files/20171/preview',
         logoImageAlt: 'White SOM logo circular',
         altLogoImageAlt: 'YOGA TEACHER TRAINING logo'
@@ -327,6 +328,18 @@
         moduleId: null,
         lessons: null
     };
+
+    function isMobileDevice() {
+        // Check for mobile viewport width
+        if (window.innerWidth <= 768) return true;
+
+        // Check for touch-only devices
+        if ('ontouchstart' in window && !window.matchMedia('(pointer: fine)').matches) return true;
+
+        // Check user agent for mobile indicators
+        var ua = navigator.userAgent || navigator.vendor || window.opera;
+        return /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(ua);
+    }
 
     function createSubstepDots(count, activeSubstep, isActiveStep, isCompleted) {
         if (count <= 1) return '';
@@ -645,7 +658,9 @@
         var variant = header.animVariant || 'from-left';
         var imageVariant = variant === 'welcome' ? 'fade' : variant;
         var variantClass = 'ylms-img-blended ylms-img-blended--' + imageVariant;
-        var logoImage = header.logoImage || d.logoImage;
+        var defaultLogoImage = header.logoImage || d.logoImage;
+        var mobileLogoImage = header.logoImageMbl || d.logoImageMbl || defaultLogoImage;
+        var logoImage = isMobileDevice() ? mobileLogoImage : defaultLogoImage;
         var logoImageAlt = header.logoImageAlt || d.logoImageAlt;
         var altLogoImage = header.altLogoImage || d.altLogoImage;
         var altLogoImageAlt = header.altLogoImageAlt || d.altLogoImageAlt || logoImageAlt;
@@ -1169,26 +1184,26 @@
     var guideSteps = [
         {
             selector: '#breadcrumbs > ol > li:nth-child(4)',
-            message: 'Nav page title - Module, Part, Title e.g Course Essentials',
+            message: 'Main navigation - Page title, module number, lesson title can be found here',
             position: 'bottom' // auto, top, bottom, left, right
         }, {
             selector: '#modules-link',
-            message: 'Click this to view the full course module and lessons overview',
+            message: 'Secondary navigation - access a view of the full list of modules and lessons here',
             position: 'auto' // auto, top, bottom, left, right
         },
         {
             selector: '#ylms-header > div.ylms-att_widget',
-            message: 'Attachments button',
+            message: 'Resources - a quick list of downloads available for each lesson page',
             position: 'auto'
         },
         {
             selector: '.ylms-sg_header-btn',
-            message: 'Access the Sanskrit Glossary anytime to learn yoga terminology',
+            message: 'Access a Sanskrit glossary to learn yoga terminology',
             position: 'auto'
         },
         {
             selector: '.ylms-guide_header-link',
-            message: 'Use this link anytime to replay the on-screen guide',
+            message: 'Use this link on this page to replay the on-screen guide',
             position: 'auto'
         },
         {
@@ -1198,7 +1213,7 @@
         },
         {
             selector: '#wiki_page_show > div > div.ylms-pb_readtime',
-            message: 'Approx Time Estimation',
+            message: 'Approximate reading and exercise time required to work through each lesson',
             position: 'auto'
         },
         {
@@ -1214,37 +1229,24 @@
         },
         {
             selector: '#wiki_page_show > div > ul:nth-child(18) > li:nth-child(6) > span > a > span.external_link_icon',
-            message: 'External link icon',
+            message: 'Open a link in a new window',
             position: 'auto'
         },
         {
             selector: '#mark-as-done-container',
-            message: 'Mark As Done button',
+            message: 'Mark As Done button, mandatory for unlocking the next lesson',
             position: 'auto'
         },
         {
             selector: '#module_navigation_target > div > div.module-sequence-footer > div > div.module-sequence-footer-right > span.module-sequence-footer-button--next',
-            message: 'Next button',
+            message: 'Next button to proceed to the next lesson after marking current lesson as done',
             position: 'auto'
         }
-        // Add more steps as needed
     ];
 
     var GUIDE_STORAGE_KEY = 'ylms-guide-completed';
     var GUIDE_DELAY_MS = 5000; // 5 seconds
     var GUIDE_DISABLE_ON_MOBILE = true; // Set to false to enable on mobile
-
-    function isMobileDevice() {
-        // Check for mobile viewport width
-        if (window.innerWidth <= 768) return true;
-
-        // Check for touch-only devices
-        if ('ontouchstart' in window && !window.matchMedia('(pointer: fine)').matches) return true;
-
-        // Check user agent for mobile indicators
-        var ua = navigator.userAgent || navigator.vendor || window.opera;
-        return /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(ua);
-    }
 
     function hasSeenGuide() {
         try {

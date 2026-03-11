@@ -913,15 +913,12 @@ $download-button-bg: #f8f8f8;
   }
 }
 
-// --- Smaller screen needs to allow side menu still --
+// ─── Mobile (Or Desktop Squishy with Side Navs) ───
 @media (max-width: 1240px) {
   .ylms-iframe-wrapper {
     width: 100%;
   }
-}
 
-// ─── Mobile (Or Desktop Squishy with Side Navs) ───
-@media (max-width: 1240px) {
   .user_content {
     --text-max-width: 100%;
 
@@ -977,6 +974,7 @@ $download-button-bg: #f8f8f8;
   #ylms-header {
     height: auto;
     padding: 8px 0;
+    overflow: visible;
   }
 
   #ylms-reading-time {
@@ -1374,7 +1372,9 @@ $download-button-bg: #f8f8f8;
   text-underline-offset: 2px;
   text-decoration-color: rgba(white, 0.55);
   cursor: pointer;
-  transition: color 0.2s ease, text-decoration-color 0.2s ease;
+  transition:
+    color 0.2s ease,
+    text-decoration-color 0.2s ease;
 
   &:hover,
   &:focus {
