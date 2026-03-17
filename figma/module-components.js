@@ -49,6 +49,7 @@
         { word: 'Dwi', iast: 'dvi', meaning: 'Two — used in pose names involving two limbs' },
         { word: 'Eka', iast: 'eka', meaning: 'One — used in pose names focusing on a single limb' },
         { word: 'Gayatri Mantra', iast: 'gāyatrī mantra', meaning: 'An ancient solar chant for awakening wisdom and clarity' },
+        { word: 'Gomukhasana', iast: 'gomukhāsana', meaning: 'Cow Face Pose — a deep stretch for the hips and shoulders' },
         { word: 'Granthi', iast: 'granthi', meaning: 'An energetic knot or blockage in the central energy channel' },
         { word: 'Guna', iast: 'guṇa', meaning: 'One of three qualities of nature: tamas, rajas, or sattva' },
         { word: 'Guru', iast: 'guru', meaning: 'A spiritual teacher who guides one toward awakening' },
@@ -95,6 +96,7 @@
         { word: 'Pingala Nadi', iast: 'piṅgalā nāḍī', meaning: 'The right energy channel carrying heating, solar energy' },
         { word: 'Prakriti', iast: 'prakṛti', meaning: 'Nature — the material world including body and mind' },
         { word: 'Prana', iast: 'prāṇa', meaning: 'Life-force energy that sustains and animates the body' },
+        { word: 'Pranamaya Kosha', iast: 'prāṇamaya kośa', meaning: 'The energy sheath — one of the five layers of the self' },
         { word: 'Pranayama', iast: 'prāṇāyāma', meaning: 'Breath control — techniques for regulating the flow of prana' },
         { word: 'Pratyahara', iast: 'pratyāhāra', meaning: 'Sense withdrawal — turning attention inward away from distractions' },
         { word: 'Puraka', iast: 'pūraka', meaning: 'Controlled inhalation in pranayama practice' },
@@ -1155,9 +1157,7 @@
     }
 
     function isGuideEnabledForPage(headerEl) {
-        if (!headerEl) return false;
-        if (headerEl.dataset.module === '0-2') return true;
-        return !!document.querySelector('.ylms-guide');
+        return !!headerEl;
     }
 
     function initGuideTriggerLink() {
