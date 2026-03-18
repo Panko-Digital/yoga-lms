@@ -1614,7 +1614,7 @@ $download-button-bg: #f8f8f8;
   background: $blue-dark;
   color: white;
   border-radius: 12px;
-  padding: 14px 16px 12px;
+  padding: 18px 20px 14px;
   max-width: 320px;
   min-width: 240px;
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
@@ -1633,63 +1633,109 @@ $download-button-bg: #f8f8f8;
   }
 }
 
+.ylms-guide_close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: rgba(white, 0.5);
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: color 0.2s ease, background 0.2s ease;
+  padding: 0;
+
+  &:hover {
+    color: white;
+    background: rgba(white, 0.15);
+  }
+}
+
 @keyframes ylms-guide_glow {
   0%,
   100% {
     box-shadow:
       0 12px 40px rgba(0, 0, 0, 0.3),
-      0 0 0 0 rgba(255, 255, 255, 0.4),
-      0 0 20px rgba(255, 255, 255, 0.2);
+      0 0 0 2px rgba(255, 255, 255, 0),
+      0 0 20px rgba(255, 255, 255, 0);
   }
   50% {
     box-shadow:
       0 12px 40px rgba(0, 0, 0, 0.3),
-      0 0 0 3px rgba(255, 255, 255, 0.6),
+      0 0 0 2px rgba(255, 255, 255, 0.6),
       0 0 30px rgba(255, 255, 255, 0.4);
   }
 }
 
 .ylms-guide_arrow {
   position: absolute;
-  width: 0;
-  height: 0;
-  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.4));
+  width: 14px;
+  height: 14px;
+  background: $blue-dark;
 
   &--top {
-    top: -10px;
+    top: -7px;
     left: 50%;
-    transform: translateX(-50%);
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
-    border-bottom: 10px solid $white;
+    transform: translateX(-50%) rotate(45deg);
+    border-top: 2px solid rgba(white, 0);
+    border-left: 2px solid rgba(white, 0);
+    animation: ylms-guide_arrow-top-glow 2.5s ease-in-out infinite;
   }
 
   &--bottom {
-    bottom: -10px;
+    bottom: -7px;
     left: 50%;
-    transform: translateX(-50%);
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
-    border-top: 10px solid $white;
+    transform: translateX(-50%) rotate(45deg);
+    border-bottom: 2px solid rgba(white, 0);
+    border-right: 2px solid rgba(white, 0);
+    animation: ylms-guide_arrow-bottom-glow 2.5s ease-in-out infinite;
   }
 
   &--left {
-    left: -10px;
+    left: -7px;
     top: 50%;
-    transform: translateY(-50%);
-    border-top: 10px solid transparent;
-    border-bottom: 10px solid transparent;
-    border-right: 10px solid $white;
+    transform: translateY(-50%) rotate(45deg);
+    border-left: 2px solid rgba(white, 0);
+    border-bottom: 2px solid rgba(white, 0);
+    animation: ylms-guide_arrow-left-glow 2.5s ease-in-out infinite;
   }
 
   &--right {
-    right: -10px;
+    right: -7px;
     top: 50%;
-    transform: translateY(-50%);
-    border-top: 10px solid transparent;
-    border-bottom: 10px solid transparent;
-    border-left: 10px solid $white;
+    transform: translateY(-50%) rotate(45deg);
+    border-top: 2px solid rgba(white, 0);
+    border-right: 2px solid rgba(white, 0);
+    animation: ylms-guide_arrow-right-glow 2.5s ease-in-out infinite;
   }
+
+  &--none {
+    display: none;
+  }
+}
+
+@keyframes ylms-guide_arrow-top-glow {
+  0%, 100% { border-top-color: rgba(white, 0); border-left-color: rgba(white, 0); }
+  50% { border-top-color: rgba(white, 0.6); border-left-color: rgba(white, 0.6); }
+}
+@keyframes ylms-guide_arrow-bottom-glow {
+  0%, 100% { border-bottom-color: rgba(white, 0); border-right-color: rgba(white, 0); }
+  50% { border-bottom-color: rgba(white, 0.6); border-right-color: rgba(white, 0.6); }
+}
+@keyframes ylms-guide_arrow-left-glow {
+  0%, 100% { border-left-color: rgba(white, 0); border-bottom-color: rgba(white, 0); }
+  50% { border-left-color: rgba(white, 0.6); border-bottom-color: rgba(white, 0.6); }
+}
+@keyframes ylms-guide_arrow-right-glow {
+  0%, 100% { border-top-color: rgba(white, 0); border-right-color: rgba(white, 0); }
+  50% { border-top-color: rgba(white, 0.6); border-right-color: rgba(white, 0.6); }
 }
 
 .ylms-guide_content {
@@ -1702,7 +1748,17 @@ $download-button-bg: #f8f8f8;
   font-size: 0.9rem;
   line-height: 1.35;
   margin: 0;
+  padding-right: 18px;
   color: rgba(white, 0.95);
+
+  strong {
+    font-weight: 700;
+    color: white;
+  }
+
+  em {
+    font-style: italic;
+  }
 }
 
 .ylms-guide_actions {
@@ -1754,16 +1810,6 @@ $download-button-bg: #f8f8f8;
 
   &:active {
     transform: translateY(0);
-  }
-
-  &--skip {
-    background: rgba(white, 0.15);
-    color: rgba(white, 0.8);
-
-    &:hover {
-      background: rgba(white, 0.25);
-      color: white;
-    }
   }
 
   &--next {
