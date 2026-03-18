@@ -1190,68 +1190,68 @@
         },
         {
             selector: '#header > div.ic-app-header__main-navigation > div',
-            message: 'Main platform navigation - Use the main platform navigation to find your course.',
+            message: '<strong>Main platform navigation</strong> - Use the main platform navigation to find your course.',
             position: 'right', // auto, top, bottom, left, right
             index: 1
         },
         {
             selector: '#modules-link',
-            message: 'Course navigation - Use these tabs to navigate your course. Select <strong>Modules</strong> to access the full list of modules and lessons at any time. ',
+            message: '<strong>Course navigation</strong> - Use these tabs to navigate your course. Select <strong>Modules</strong> to access the full list of modules and lessons at any time. ',
             position: 'auto', // auto, top, bottom, left, right
             index: 2
         },
         {
             selector: '#breadcrumbs > ol > li:nth-child(4)',
-            message: 'Lesson navigation - See the module number, lesson title, and page title here. For easiest navigation, use the Modules tab.',
+            message: '<strong>Lesson navigation</strong> - See the module number, lesson title, and page title here. For easiest navigation, use the Modules tab.',
             position: 'bottom', // auto, top, bottom, left, right
             index: 3
         },
         {
             selector: '#ylms-header > div.ylms-att_widget',
-            message: 'Downloadable resources - Easily find all downloads for a particular lesson in one convenient place for quick access.',
+            message: '<strong>Downloadable resources</strong> - Easily find all downloads for a particular lesson in one convenient place for quick access.',
             position: 'auto',
             index: 4
         },
         {
             selector: '.ylms-sg_header-btn',
-            message: 'Sanskrit glossary - Open the Sanskrit glossary to explore yoga terms and build your confidence with key language.',
+            message: '<strong>Sanskrit glossary</strong> - Open the Sanskrit glossary to explore yoga terms and build your confidence with key language.',
             position: 'auto',
             index: 5
         },
         {
             selector: '#ylms-module0-progress > div > div > div.ylms-pb_steps',
-            message: 'Lesson progress bar - Track your progress through each module with this visual progress bar.',
+            message: '<strong>Lesson progress bar</strong> - Track your progress through each module with this visual progress bar.',
             position: 'bottom',
             index: 6
         },
         {
             selector: '#wiki_page_show > div > div.ylms-pb_readtime',
-            message: 'Estimated lesson time - Check the estimated reading and exercise time to plan your learning.',
+            message: '<strong>Estimated lesson time</strong> - Check the estimated reading and exercise time to plan your learning.',
             position: 'right',
             index: 7
         },
         {
             selector: 'iframe[src*="vimeo.com"], iframe[src*="player.vimeo.com"]',
-            message: 'Video and interactive content - Lessons include text, video, and interactive content to support your learning. Use the video controls to adjust playback, turn on captions, or go fullscreen.',
+            message: '<strong>Video and interactive content</strong> - Lessons include text, video, and interactive content to support your learning. Use the video controls to adjust playback, turn on captions, or go fullscreen.',
             position: 'auto',
             offsetTarget: 'bottom-right', // Special positioning for iframe controls
             index: 8
         },
         {
             selector: '#mark-as-done-container',
-            message: 'Mark as Done - Mark each lesson as done to unlock the next one.',
+            message: '<strong>Mark as Done</strong> - Mark each lesson as done to unlock the next one.',
             position: 'auto',
             index: 9
         },
         {
             selector: '#module_navigation_target > div > div.module-sequence-footer > div > div.module-sequence-footer-right > span.module-sequence-footer-button--next',
-            message: 'Next Lesson - Once you have marked the lesson as done, click Next to continue.',
+            message: '<strong>Next Lesson</strong> - Once you have marked the lesson as done, click Next to continue.',
             position: 'auto',
             index: 10
         },
         {
             selector: '.ylms-guide_header-link',
-            message: 'Use this link on this page to replay the on-screen guide',
+            message: '<strong>Replay Guide</strong> - Use this link on this page to replay the on-screen guide.',
             position: 'auto',
             index: 11
         },
@@ -1404,6 +1404,8 @@
             dotsHtml += '<span class="' + dotClass + '"></span>';
         }
 
+        var backBtnHtml = stepIndex > 0 ? '<button class="ylms-guide_btn ylms-guide_btn--back">Back</button>' : '';
+
         tooltip.innerHTML =
             '<div class="ylms-guide_arrow"></div>' +
             '<button class="ylms-guide_close" aria-label="Close guide">&times;</button>' +
@@ -1412,6 +1414,7 @@
             '<div class="ylms-guide_actions">' +
             '<div class="ylms-guide_dots">' + dotsHtml + '</div>' +
             '<div class="ylms-guide_buttons">' +
+            backBtnHtml +
             '<button class="ylms-guide_btn ylms-guide_btn--next">' + nextBtnText + '</button>' +
             '</div>' +
             '</div>' +
@@ -1527,6 +1530,18 @@
             highlightRing.remove();
             window.removeEventListener('scroll', scheduleUpdate, true);
             window.removeEventListener('resize', scheduleUpdate);
+        }
+
+        var backBtn = tooltip.querySelector('.ylms-guide_btn--back');
+        if (backBtn) {
+            backBtn.addEventListener('click', function () {
+                cleanup();
+                setTimeout(function () {
+                    tooltip.remove();
+                    overlay.remove();
+                    showGuideStep(stepIndex - 1);
+                }, 300);
+            });
         }
 
         nextBtn.addEventListener('click', function () {

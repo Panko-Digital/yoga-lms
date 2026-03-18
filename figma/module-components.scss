@@ -1812,6 +1812,15 @@ $download-button-bg: #f8f8f8;
     transform: translateY(0);
   }
 
+  &--back {
+    background: rgba(white, 0.15);
+    color: white;
+
+    &:hover {
+      background: rgba(white, 0.25);
+    }
+  }
+
   &--next {
     background: white;
     color: $blue-dark;
