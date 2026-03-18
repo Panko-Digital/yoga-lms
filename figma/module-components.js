@@ -1183,65 +1183,78 @@
     // [DESKTOP-ONLY-START]
     var guideSteps = [
         {
-            selector: '#breadcrumbs > ol > li:nth-child(4)',
-            message: 'Main navigation - Page title, module number, lesson title can be found here',
-            position: 'bottom' // auto, top, bottom, left, right
-        }, {
+            selector: '#ylms-header',
+            message: 'Welcome to your course tour. We\'ll quickly show you around so you can navigate the platform with confidence',
+            position: 'none', // auto, top, bottom, left, right
+            index: 0
+        },
+        {
+            selector: '#header > div.ic-app-header__main-navigation > div',
+            message: 'Main platform navigation - Use the main platform navigation to find your course.',
+            position: 'right', // auto, top, bottom, left, right
+            index: 1
+        },
+        {
             selector: '#modules-link',
-            message: 'Secondary navigation - access a view of the full list of modules and lessons here',
-            position: 'auto' // auto, top, bottom, left, right
+            message: 'Course navigation - Use these tabs to navigate your course. Select <strong>Modules</strong> to access the full list of modules and lessons at any time. ',
+            position: 'auto', // auto, top, bottom, left, right
+            index: 2
+        },
+        {
+            selector: '#breadcrumbs > ol > li:nth-child(4)',
+            message: 'Lesson navigation - See the module number, lesson title, and page title here. For easiest navigation, use the Modules tab.',
+            position: 'bottom', // auto, top, bottom, left, right
+            index: 3
         },
         {
             selector: '#ylms-header > div.ylms-att_widget',
-            message: 'Resources - a quick list of downloads available for each lesson page',
-            position: 'auto'
+            message: 'Downloadable resources - Easily find all downloads for a particular lesson in one convenient place for quick access.',
+            position: 'auto',
+            index: 4
         },
         {
             selector: '.ylms-sg_header-btn',
-            message: 'Access a Sanskrit glossary to learn yoga terminology',
-            position: 'auto'
+            message: 'Sanskrit glossary - Open the Sanskrit glossary to explore yoga terms and build your confidence with key language.',
+            position: 'auto',
+            index: 5
+        },
+        {
+            selector: '#ylms-module0-progress > div > div > div.ylms-pb_steps',
+            message: 'Lesson progress bar - Track your progress through each module with this visual progress bar.',
+            position: 'bottom',
+            index: 6
+        },
+        {
+            selector: '#wiki_page_show > div > div.ylms-pb_readtime',
+            message: 'Estimated lesson time - Check the estimated reading and exercise time to plan your learning.',
+            position: 'right',
+            index: 7
+        },
+        {
+            selector: 'iframe[src*="vimeo.com"], iframe[src*="player.vimeo.com"]',
+            message: 'Video and interactive content - Lessons include text, video, and interactive content to support your learning. Use the video controls to adjust playback, turn on captions, or go fullscreen.',
+            position: 'auto',
+            offsetTarget: 'bottom-right', // Special positioning for iframe controls
+            index: 8
+        },
+        {
+            selector: '#mark-as-done-container',
+            message: 'Mark as Done - Mark each lesson as done to unlock the next one.',
+            position: 'auto',
+            index: 9
+        },
+        {
+            selector: '#module_navigation_target > div > div.module-sequence-footer > div > div.module-sequence-footer-right > span.module-sequence-footer-button--next',
+            message: 'Next Lesson - Once you have marked the lesson as done, click Next to continue.',
+            position: 'auto',
+            index: 10
         },
         {
             selector: '.ylms-guide_header-link',
             message: 'Use this link on this page to replay the on-screen guide',
-            position: 'auto'
-        },
-        {
-            selector: '#ylms-module0-progress > div > div > div.ylms-pb_steps',
-            message: 'Track your progress through each module with this visual indicator',
-            position: 'auto'
-        },
-        {
-            selector: '#wiki_page_show > div > div.ylms-pb_readtime',
-            message: 'Approximate reading and exercise time required to work through each lesson',
-            position: 'auto'
-        },
-        {
-            selector: 'iframe[src*="vimeo.com"], iframe[src*="player.vimeo.com"]',
-            message: 'Use the video controls in the bottom-right corner to adjust playback, enable captions, or go fullscreen',
             position: 'auto',
-            offsetTarget: 'bottom-right' // Special positioning for iframe controls
+            index: 11
         },
-        {
-            selector: '#wiki_page_show > div > ul:nth-child(18) > li:nth-child(1) > span > span > a.file_download_btn',
-            message: 'Download a file',
-            position: 'auto'
-        },
-        {
-            selector: '#wiki_page_show > div > ul:nth-child(18) > li:nth-child(6) > span > a > span.external_link_icon',
-            message: 'Open a link in a new window',
-            position: 'auto'
-        },
-        {
-            selector: '#mark-as-done-container',
-            message: 'Mark As Done button, mandatory for unlocking the next lesson',
-            position: 'auto'
-        },
-        {
-            selector: '#module_navigation_target > div > div.module-sequence-footer > div > div.module-sequence-footer-right > span.module-sequence-footer-button--next',
-            message: 'Next button to proceed to the next lesson after marking current lesson as done',
-            position: 'auto'
-        }
     ];
 
     var GUIDE_STORAGE_KEY = 'ylms-guide-completed';
@@ -1269,6 +1282,16 @@
         var tooltipRect = tooltip.getBoundingClientRect();
         var viewportWidth = window.innerWidth;
         var viewportHeight = window.innerHeight;
+
+        // 'none' position: center on screen, no arrow
+        if (step && step.position === 'none') {
+            return {
+                top: (viewportHeight - tooltipRect.height) / 2,
+                left: (viewportWidth - tooltipRect.width) / 2,
+                arrowPosition: 'none',
+                targetRect: rect
+            };
+        }
 
         var ARROW_SIZE = 10;
         var SPACING = 20; // Spacing from target element
@@ -1298,26 +1321,32 @@
         var position = 'bottom'; // default
         var top, left, arrowPosition;
 
-        // Prefer right/left for elements on the sides of the page
-        var isLeftSide = targetRect.left < viewportWidth / 3;
-        var isRightSide = targetRect.right > (viewportWidth * 2) / 3;
-
-        // Choose position with most space, with preference for horizontal on sides
-        if (isLeftSide && spaceRight >= tooltipRect.width + SPACING + ARROW_SIZE) {
-            position = 'right';
-        } else if (isRightSide && spaceLeft >= tooltipRect.width + SPACING + ARROW_SIZE) {
-            position = 'left';
-        } else if (spaceBottom >= tooltipRect.height + SPACING + ARROW_SIZE) {
-            position = 'bottom';
-        } else if (spaceTop >= tooltipRect.height + SPACING + ARROW_SIZE) {
-            position = 'top';
-        } else if (spaceRight >= tooltipRect.width + SPACING + ARROW_SIZE) {
-            position = 'right';
-        } else if (spaceLeft >= tooltipRect.width + SPACING + ARROW_SIZE) {
-            position = 'left';
+        // Use explicitly specified position; only auto-detect for 'auto' or unset
+        var specifiedPosition = step && step.position;
+        if (specifiedPosition && specifiedPosition !== 'auto' && specifiedPosition !== 'none') {
+            position = specifiedPosition;
         } else {
-            // Not enough space anywhere, default to bottom
-            position = 'bottom';
+            // Prefer right/left for elements on the sides of the page
+            var isLeftSide = targetRect.left < viewportWidth / 3;
+            var isRightSide = targetRect.right > (viewportWidth * 2) / 3;
+
+            // Choose position with most space, with preference for horizontal on sides
+            if (isLeftSide && spaceRight >= tooltipRect.width + SPACING + ARROW_SIZE) {
+                position = 'right';
+            } else if (isRightSide && spaceLeft >= tooltipRect.width + SPACING + ARROW_SIZE) {
+                position = 'left';
+            } else if (spaceBottom >= tooltipRect.height + SPACING + ARROW_SIZE) {
+                position = 'bottom';
+            } else if (spaceTop >= tooltipRect.height + SPACING + ARROW_SIZE) {
+                position = 'top';
+            } else if (spaceRight >= tooltipRect.width + SPACING + ARROW_SIZE) {
+                position = 'right';
+            } else if (spaceLeft >= tooltipRect.width + SPACING + ARROW_SIZE) {
+                position = 'left';
+            } else {
+                // Not enough space anywhere, default to bottom
+                position = 'bottom';
+            }
         }
 
         // Calculate viewport-relative position (for position: fixed)
@@ -1377,12 +1406,12 @@
 
         tooltip.innerHTML =
             '<div class="ylms-guide_arrow"></div>' +
+            '<button class="ylms-guide_close" aria-label="Close guide">&times;</button>' +
             '<div class="ylms-guide_content">' +
             '<p class="ylms-guide_message">' + step.message + '</p>' +
             '<div class="ylms-guide_actions">' +
             '<div class="ylms-guide_dots">' + dotsHtml + '</div>' +
             '<div class="ylms-guide_buttons">' +
-            '<button class="ylms-guide_btn ylms-guide_btn--skip">Hide</button>' +
             '<button class="ylms-guide_btn ylms-guide_btn--next">' + nextBtnText + '</button>' +
             '</div>' +
             '</div>' +
@@ -1438,10 +1467,15 @@
 
             // Update highlight ring position (use offset target if specified)
             var highlightRect = pos.targetRect || rect;
-            highlightRing.style.top = highlightRect.top + 'px';
-            highlightRing.style.left = highlightRect.left + 'px';
-            highlightRing.style.width = highlightRect.width + 'px';
-            highlightRing.style.height = highlightRect.height + 'px';
+            if (pos.arrowPosition === 'none') {
+                highlightRing.style.display = 'none';
+            } else {
+                highlightRing.style.display = '';
+                highlightRing.style.top = highlightRect.top + 'px';
+                highlightRing.style.left = highlightRect.left + 'px';
+                highlightRing.style.width = highlightRect.width + 'px';
+                highlightRing.style.height = highlightRect.height + 'px';
+            }
 
             // Update tooltip position
             tooltip.style.top = pos.top + 'px';
@@ -1485,7 +1519,7 @@
 
         // Event handlers
         var nextBtn = tooltip.querySelector('.ylms-guide_btn--next');
-        var skipBtn = tooltip.querySelector('.ylms-guide_btn--skip');
+        var skipBtn = tooltip.querySelector('.ylms-guide_close');
 
         function cleanup() {
             tooltip.classList.remove('ylms-guide_visible');
