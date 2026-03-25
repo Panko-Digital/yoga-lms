@@ -37,6 +37,7 @@
         { word: 'Buddhi', iast: 'buddhi', meaning: 'The higher mind — the seat of wisdom and discernment' },
         { word: 'Chakra', iast: 'cakra', meaning: 'A spinning wheel of energy in the subtle body' },
         { word: 'Chakrasana', iast: 'cakrāsana', meaning: 'Full Wheel Pose — a deep backbend opening the entire front body' },
+        { word: 'Chapasana', iast: 'capāsana', meaning: 'Incorporates a backbend by bending the back knee and grabbing the foot' },
         { word: 'Chandra', iast: 'candra', meaning: 'The moon — as in Ardha Chandrasana (Half Moon Pose)' },
         { word: 'Chandra Bhedana', iast: 'candra bhedana', meaning: 'Left-nostril breathing that cools the body and calms emotions' },
         { word: 'Chaturanga', iast: 'caturaṅga', meaning: 'Four-limbed staff pose — the yogi\'s push-up' },
